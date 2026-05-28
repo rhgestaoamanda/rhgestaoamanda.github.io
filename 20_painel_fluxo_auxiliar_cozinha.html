@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxo de Atividades — Auxiliar de Cozinha | VittaRio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh;padding-bottom:60px}
+.topbar{background:#2E7D32;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left .logo{font-size:17px;font-weight:700;color:#fff}
+.topbar-left .sub{font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px}
+.topbar-right{text-align:right}
+.topbar-right .cargo{font-size:11px;color:rgba(255,255,255,0.8)}
+.topbar-right .dept{font-size:13px;font-weight:600;color:#fff}
+.tab-nav{display:flex;background:#fff;border-bottom:1px solid #e8e8e6;position:sticky;top:57px;z-index:99}
+.tab-nav button{flex:1;padding:12px 6px;border:none;background:transparent;font-size:12.5px;font-family:inherit;font-weight:500;color:#999;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab-nav button.active{color:#2E7D32;border-bottom-color:#2E7D32}
+.container{max-width:520px;margin:0 auto;padding:16px 14px}
+.section-header{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.section-header h2{font-size:20px;font-weight:700;color:#1a1a1a}
+.section-header p{font-size:13px;color:#888;margin-top:4px}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;background:#EAF3DE;color:#3B6D11}
+.badge.orange{background:#FDF1E3;color:#854F0B}
+.badge.red{background:#FFF0F0;color:#A32D2D}
+.badge.blue{background:#E6F1FB;color:#185FA5}
+
+/* ALERT */
+.alert-box{background:#EAF3DE;border:1px solid #b4ddc4;border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.alert-box.orange{background:#FDF1E3;border-color:#f5c07a;}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-text{font-size:13px;color:#1a4a25;line-height:1.5}
+.alert-box.orange .alert-text{color:#7a4510}
+.alert-text strong{font-weight:600}
+
+/* SERVIÇO BLOCK */
+.servico-block{margin-bottom:20px}
+.servico-title{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.servico-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+
+/* TIMELINE */
+.time-item{display:flex;gap:0;margin-bottom:0}
+.time-left{width:68px;flex-shrink:0;padding-top:14px;text-align:right;padding-right:14px}
+.time-label{font-size:12px;font-weight:600;color:#2E7D32;white-space:nowrap}
+.time-line{display:flex;flex-direction:column;align-items:center;padding-top:14px}
+.time-dot{width:10px;height:10px;border-radius:50%;background:#2E7D32;flex-shrink:0;margin-top:4px}
+.time-dot.orange{background:#d97b25}
+.time-dot.red{background:#A32D2D}
+.time-connector{width:2px;background:#e0e0de;flex:1;min-height:16px;margin-top:3px}
+.time-item:last-child .time-connector{display:none}
+.time-body{flex:1;padding:0 0 14px 14px}
+.time-card{background:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.time-card.orange{border-left:3px solid #d97b25}
+.time-card.green{border-left:3px solid #2E7D32}
+.time-card.blue{border-left:3px solid #185FA5}
+.time-title{font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.3;margin-bottom:4px}
+.time-desc{font-size:12.5px;color:#666;line-height:1.5}
+.time-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:100px}
+.tag-prep{background:#EAF3DE;color:#3B6D11}
+.tag-bpf{background:#E6F1FB;color:#185FA5}
+.tag-hig{background:#F5E6FB;color:#6A1B9A}
+.tag-doc{background:#f0f0ee;color:#555}
+.tag-org{background:#FFF8EC;color:#854F0B}
+.tag-crit{background:#FFF0F0;color:#A32D2D}
+
+.divider{height:1px;background:#e8e8e6;margin:16px 0}
+
+/* ROTINAS */
+.rotina-card{background:#fff;border-radius:14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.rotina-card-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.rotina-card-header:active{background:#f9f9f7}
+.rotina-card-left{display:flex;align-items:center;gap:10px}
+.rotina-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.rotina-card-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.rotina-card-sub{font-size:12px;color:#888;margin-top:1px}
+.rotina-chevron{font-size:16px;color:#ccc;transition:transform .2s}
+.rotina-chevron.open{transform:rotate(180deg)}
+.rotina-body{display:none;padding:0 16px 14px;border-top:1px solid #f0f0ee}
+.rotina-body.open{display:block}
+.rotina-item{padding:9px 0;border-bottom:1px solid #f5f5f3;display:flex;gap:10px;align-items:flex-start}
+.rotina-item:last-child{border-bottom:none}
+.rotina-icon-sm{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
+.rotina-text{flex:1}
+.rotina-item-title{font-size:13.5px;font-weight:500;color:#1a1a1a;line-height:1.3}
+.rotina-item-detail{font-size:12px;color:#888;margin-top:2px;line-height:1.4}
+
+/* CHECKLIST VISUAL */
+.checklist-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.checklist-title{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.checklist-title span{font-size:15px}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f3}
+.check-item:last-child{border-bottom:none}
+.check-box{width:20px;height:20px;border-radius:6px;border:2px solid #e0e0de;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s}
+.check-box.checked{background:#2E7D32;border-color:#2E7D32;color:#fff;}
+.check-text{font-size:13px;color:#555;line-height:1.4;flex:1}
+.check-text.done{color:#b0b0a8;text-decoration:line-through}
+.reset-btn{width:100%;padding:10px;background:transparent;border:1px solid #e0e0de;border-radius:10px;font-size:13px;font-family:inherit;color:#999;cursor:pointer;margin-top:10px}
+.reset-btn:active{background:#f5f5f3}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">VittaRio · Fluxo de Atividades</div>
+    <div class="sub">Auxiliar de Cozinha</div>
+  </div>
+  <div class="topbar-right">
+    <div class="cargo">Auxiliar de Cozinha</div>
+    <div class="dept">Suporte aos Serviços</div>
+  </div>
+</div>
+
+<div class="tab-nav">
+  <button class="active" onclick="showTab('diario',this)">Rotina Diária</button>
+  <button onclick="showTab('checklists',this)">Checklists</button>
+  <button onclick="showTab('semanal',this)">Semanal</button>
+</div>
+
+<div class="container">
+
+  <!-- ROTINA DIÁRIA -->
+  <div id="tab-diario">
+    <div class="section-header">
+      <h2>Rotina Diária</h2>
+      <p>Fluxo padrão de apoio aos três serviços</p>
+      <div class="badges">
+        <span class="badge">Pré-preparo</span>
+        <span class="badge">Higienização</span>
+        <span class="badge blue">BPF/PPHO</span>
+        <span class="badge orange">Reposição</span>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <div class="alert-icon">🙌</div>
+      <div class="alert-text"><strong>Regra do auxiliar:</strong> não espere ser mandado. Se está sujo, limpe. Se está acabando, repõe. Se não sabe o que fazer, pergunte ao cozinheiro. A proatividade é o que define um auxiliar de alto nível.</div>
+    </div>
+
+    <!-- CAFÉ DA MANHÃ -->
+    <div class="servico-block">
+      <div class="servico-title">
+        <div class="servico-icon" style="background:#FFF8EC;">☕</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#1a1a1a;">Café da Manhã</div>
+          <div style="font-size:12px;color:#888;margin-top:1px;">Início do suporte: 05h00 · Encerramento: ~08h00</div>
+        </div>
+      </div>
+
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">05h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Chegada e preparação pessoal</div>
+          <div class="time-desc">Verificar uniforme completo, touca e higienização das mãos. Receber orientações do cozinheiro sobre as tarefas do café. Separar os utensílios e ingredientes que serão utilizados.</div>
+          <div class="time-tags"><span class="tag tag-bpf">BPF pessoal</span><span class="tag tag-org">Organização</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">05h10</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Higienização das frutas e hortifruti do café</div>
+          <div class="time-desc">Higienizar as frutas e hortifruti que serão servidos no café da manhã: lavagem, imersão em solução sanitizante na concentração correta pelo tempo previsto no POP, enxágue. Nenhum produto entra no serviço sem higienização.</div>
+          <div class="time-tags"><span class="tag tag-hig">Higienização</span><span class="tag tag-bpf">POP obrigatório</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">05h30</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Pré-preparo de apoio ao café da manhã</div>
+          <div class="time-desc">Executar o pré-preparo conforme orientação do cozinheiro: cortar frutas, separar porcionar itens, organizar bandejas e utensílios para o serviço. Garantir que tudo esteja pronto antes da abertura às 06h00.</div>
+          <div class="time-tags"><span class="tag tag-prep">Pré-preparo</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">06h00</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Apoio durante o serviço de café — reposição e limpeza</div>
+          <div class="time-desc">Durante o serviço: repor preparações conforme a demanda, manter o balcão limpo e organizado, retirar utensílios usados, lavar louça de forma contínua. Não esperar o serviço encerrar para começar a lavar.</div>
+          <div class="time-tags"><span class="tag tag-org">Reposição</span><span class="tag tag-hig">Limpeza contínua</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">07h45</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Encerramento do café + início do pré-preparo do almoço</div>
+          <div class="time-desc">Encerrar e higienizar a área do café. Guardar sobras conforme orientação do cozinheiro. Sem pausar: iniciar imediatamente o pré-preparo dos ingredientes do almoço conforme a lista do cozinheiro.</div>
+          <div class="time-tags"><span class="tag tag-hig">Higienização</span><span class="tag tag-prep">Transição ágil</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ALMOÇO -->
+    <div class="servico-block">
+      <div class="servico-title">
+        <div class="servico-icon" style="background:#EAF3DE;">🍽️</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#1a1a1a;">Almoço</div>
+          <div style="font-size:12px;color:#888;margin-top:1px;">Pré-preparo: 08h00 · Serviço: 11h30 · Encerramento: ~13h30</div>
+        </div>
+      </div>
+
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">08h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Pré-preparo do almoço — prioridade máxima</div>
+          <div class="time-desc">Executar o pré-preparo conforme orientação do cozinheiro: lavar, descascar, cortar e porcionamento de todos os ingredientes. Higienizar todos os hortifruti antes do preparo. O mise en place do almoço precisa estar 100% pronto até às 11h00 — antes disso o cozinheiro já inicia o preparo.</div>
+          <div class="time-tags"><span class="tag tag-prep">Pré-preparo</span><span class="tag tag-hig">Higienização hortifruti</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">09h30</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Higienização contínua durante o preparo</div>
+          <div class="time-desc">Enquanto o cozinheiro prepara o almoço: lavar utensílios já utilizados, limpar superfícies de trabalho, descartar descascas e lixo orgânico. Manter a área de preparo limpa e organizada — não acumular para o final.</div>
+          <div class="time-tags"><span class="tag tag-hig">Higienização</span><span class="tag tag-org">Organização</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">11h00</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Preparação do balcão e área de serviço do almoço</div>
+          <div class="time-desc">Organizar e higienizar o balcão de distribuição. Separar utensílios de serviço. Garantir que a área esteja pronta para receber as preparações do cozinheiro às 11h30.</div>
+          <div class="time-tags"><span class="tag tag-org">Mise en place do balcão</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">11h30</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Apoio durante o pico do almoço</div>
+          <div class="time-desc">Pico de demanda — foco total: repor preparações sem atraso, manter balcão limpo e organizado, retirar utensílios sujos continuamente, apoiar o cozinheiro no que for necessário. Este é o momento mais crítico do dia na cozinha — sem pausa e sem distração.</div>
+          <div class="time-tags"><span class="tag tag-crit">Pico — foco total</span><span class="tag tag-org">Reposição</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">13h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Encerramento do almoço + higienização completa</div>
+          <div class="time-desc">Encerrar o serviço e higienizar toda a área: panelas, utensílios, superfícies, balcão. Guardar sobras conforme orientação do cozinheiro. Verificar com o cozinheiro se há pendências antes de considerar o encerramento concluído.</div>
+          <div class="time-tags"><span class="tag tag-hig">Higienização completa</span><span class="tag tag-crit">Verificar com cozinheiro</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- JANTAR -->
+    <div class="servico-block">
+      <div class="servico-title">
+        <div class="servico-icon" style="background:#2a3550;">🌙</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#1a1a1a;">Jantar</div>
+          <div style="font-size:12px;color:#888;margin-top:1px;">Pré-preparo: 16h00 · Serviço: 19h00 · Encerramento: ~21h00</div>
+        </div>
+      </div>
+
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">16h00</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Pré-preparo do jantar</div>
+          <div class="time-desc">Executar o pré-preparo dos ingredientes do jantar conforme orientação do cozinheiro. Higienizar os hortifruti antes do preparo. Garantir que o mise en place esteja completo antes das 18h30.</div>
+          <div class="time-tags"><span class="tag tag-prep">Pré-preparo</span><span class="tag tag-hig">Hortifruti</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">19h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Apoio durante o serviço de jantar</div>
+          <div class="time-desc">Apoiar o cozinheiro durante o serviço de jantar: reposição, organização do balcão, higienização contínua. O padrão de postura e higiene é o mesmo do almoço — independente de ser jantar.</div>
+          <div class="time-tags"><span class="tag tag-org">Reposição</span><span class="tag tag-bpf">BPF mantida</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">20h45</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Encerramento do turno — higienização e passagem</div>
+          <div class="time-desc">Higienizar toda a área de trabalho: utensílios, superfícies, equipamentos. Organizar e guardar insumos nos locais corretos. Verificar lixo retirado. Informar ao cozinheiro pendências relevantes para o próximo turno. Somente encerrar após confirmação do cozinheiro.</div>
+          <div class="time-tags"><span class="tag tag-hig">Higienização completa</span><span class="tag tag-crit">Confirmar com cozinheiro</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLISTS -->
+  <div id="tab-checklists" style="display:none;">
+
+    <div class="section-header">
+      <h2>Checklists do Turno</h2>
+      <p>Use para verificar as tarefas críticas. Reinicia a cada turno.</p>
+    </div>
+
+    <div class="checklist-card" id="checklist-abertura">
+      <div class="checklist-title"><span>🌅</span> Abertura do turno — BPF pessoal</div>
+      <div id="items-abertura">
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Uniforme completo e limpo</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Touca cobrindo todo o cabelo</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Mãos lavadas antes de iniciar qualquer atividade</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Unhas curtas, sem esmalte, sem adornos (brincos, anéis, pulseiras)</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Recebeu orientações do cozinheiro sobre as tarefas do turno</div></div>
+      </div>
+      <button class="reset-btn" onclick="resetChecklist('items-abertura')">↺ Reiniciar checklist</button>
+    </div>
+
+    <div class="checklist-card" id="checklist-higienizacao">
+      <div class="checklist-title"><span>🧽</span> Higienização de hortifruti — POP</div>
+      <div id="items-higienizacao">
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Lavagem inicial em água corrente para retirar sujidades visíveis</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Preparo da solução sanitizante na concentração correta (verificar com o cozinheiro)</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Imersão pelo tempo previsto no POP (geralmente 15 minutos)</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Enxágue em água corrente potável</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Produto armazenado corretamente após higienização</div></div>
+      </div>
+      <button class="reset-btn" onclick="resetChecklist('items-higienizacao')">↺ Reiniciar checklist</button>
+    </div>
+
+    <div class="checklist-card" id="checklist-encerramento">
+      <div class="checklist-title"><span>🌙</span> Encerramento do turno — obrigatório</div>
+      <div id="items-encerramento">
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Toda a louça e utensílios lavados e organizados no lugar</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Todas as superfícies de trabalho higienizadas</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Lixo retirado e descartado corretamente</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Sobras armazenadas corretamente (identificadas, temperatura, local correto)</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Insumos organizados nos locais corretos (PVPS aplicado)</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Pendências comunicadas ao cozinheiro antes de encerrar</div></div>
+        <div class="check-item"><div class="check-box" onclick="toggleCheck(this)"></div><div class="check-text">Encerramento confirmado pelo cozinheiro</div></div>
+      </div>
+      <button class="reset-btn" onclick="resetChecklist('items-encerramento')">↺ Reiniciar checklist</button>
+    </div>
+
+    <div class="alert-box orange" style="margin-top:4px;">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-text"><strong>Atenção:</strong> o turno não está encerrado enquanto o cozinheiro não confirmar. Não assuma que está tudo certo sem verificar.</div>
+    </div>
+
+  </div>
+
+  <!-- SEMANAL -->
+  <div id="tab-semanal" style="display:none;">
+    <div class="section-header">
+      <h2>Rotinas Semanais</h2>
+      <p>Atividades fixas de organização e higienização por dia da semana</p>
+    </div>
+
+    <div class="rotina-card">
+      <div class="rotina-card-header" onclick="toggleRotina(this)">
+        <div class="rotina-card-left">
+          <div class="rotina-icon" style="background:#EAF3DE;">🗒️</div>
+          <div><div class="rotina-card-title">Segunda-feira — Orientação da semana</div><div class="rotina-card-sub">Alinhamento com o cozinheiro</div></div>
+        </div>
+        <div class="rotina-chevron">▾</div>
+      </div>
+      <div class="rotina-body">
+        <div class="rotina-item"><div class="rotina-icon-sm" style="background:#EAF3DE;">📋</div><div class="rotina-text"><div class="rotina-item-title">Receber orientações sobre o cardápio e tarefas especiais da semana</div><div class="rotina-item-detail">Ler o cardápio da semana com o cozinheiro. Identificar ingredientes que demandam pré-preparo diferente do habitual. Tirar dúvidas antes de iniciar.</div></div></div>
+        <div class="rotina-item"><div class="rotina-icon-sm" style="background:#FFF8EC;">📦</div><div class="rotina-text"><div class="rotina-item-title">Verificar organização do estoque de insumos</div><div class="rotina-item-detail">Conferir organização da despensa e câmaras. Aplicar PVPS. Reportar ao cozinheiro qualquer produto próximo do vencimento ou com embalagem danificada.</div></div></div>
+      </div>
+    </div>
+
+    <div class="rotina-card">
+      <div class="rotina-card-header" onclick="toggleRotina(this)">
+        <div class="rotina-card-left">
+          <div class="rotina-icon" style="background:#E6F1FB;">🧹</div>
+          <div><div class="rotina-card-title">Quarta-feira — Higienização profunda</div><div class="rotina-card-sub">Apoio ao cozinheiro na limpeza semanal</div></div>
+        </div>
+        <div class="rotina-chevron">▾</div>
+      </div>
+      <div class="rotina-body">
+        <div class="rotina-item"><div class="rotina-icon-sm" style="background:#E6F1FB;">🧽</div><div class="rotina-text"><div class="rotina-item-title">Apoiar a higienização profunda dos equipamentos</div><div class="rotina-item-detail">Apoiar o cozinheiro na limpeza semanal: interior de armários, prateleiras, câmaras e áreas de difícil acesso. Executar conforme orientação do cozinheiro.</div></div></div>
+        <div class="rotina-item"><div class="rotina-icon-sm" style="background:#FFF8EC;">🗑️</div><div class="rotina-text"><div class="rotina-item-title">Higienização das lixeiras e áreas de descarte</div><div class="rotina-item-detail">Lavar e sanitizar as lixeiras da cozinha. Verificar o descarte correto dos resíduos. Limpar a área ao redor dos pontos de descarte.</div></div></div>
+      </div>
+    </div>
+
+    <div class="rotina-card">
+      <div class="rotina-card-header" onclick="toggleRotina(this)">
+        <div class="rotina-card-left">
+          <div class="rotina-icon" style="background:#FFF8EC;">📊</div>
+          <div><div class="rotina-card-title">Sexta-feira — Feedback semanal</div><div class="rotina-card-sub">Conversa com o cozinheiro</div></div>
+        </div>
+        <div class="rotina-chevron">▾</div>
+      </div>
+      <div class="rotina-body">
+        <div class="rotina-item"><div class="rotina-icon-sm" style="background:#F5E6FB;">💬</div><div class="rotina-text"><div class="rotina-item-title">Receber retorno do cozinheiro sobre a semana</div><div class="rotina-item-detail">Conversa breve com o cozinheiro: o que foi bem, o que pode melhorar, tarefas que precisam de mais atenção na próxima semana. Ouvir com abertura e anotar os pontos de melhoria.</div></div></div>
+        <div class="rotina-item"><div class="rotina-icon-sm" style="background:#EAF3DE;">🌱</div><div class="rotina-text"><div class="rotina-item-title">Tirar dúvidas técnicas com o cozinheiro ou nutricionista</div><div class="rotina-item-detail">Se houver dúvida sobre algum procedimento de higienização, pré-preparo ou BPF/PPHO que surgiu durante a semana — perguntar agora, não deixar acumular.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id,btn){
+  ['diario','checklists','semanal'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===id?'':'none';});
+  document.querySelectorAll('.tab-nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function toggleCheck(box){
+  box.classList.toggle('checked');
+  if(box.classList.contains('checked')) box.textContent='✓';
+  else box.textContent='';
+  const text=box.nextElementSibling;
+  text.classList.toggle('done');
+}
+
+function resetChecklist(containerId){
+  const container=document.getElementById(containerId);
+  container.querySelectorAll('.check-box').forEach(b=>{b.classList.remove('checked');b.textContent='';});
+  container.querySelectorAll('.check-text').forEach(t=>t.classList.remove('done'));
+}
+
+function toggleRotina(header){
+  const body=header.nextElementSibling;
+  const chevron=header.querySelector('.rotina-chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+</script>
+</body>
+</html>

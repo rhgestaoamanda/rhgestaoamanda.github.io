@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxo de Atividades — Técnico de Nutrição | VittaRio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh;padding-bottom:60px}
+.topbar{background:#2E7D32;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left .logo{font-size:17px;font-weight:700;color:#fff}
+.topbar-left .sub{font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px}
+.topbar-right{text-align:right}
+.topbar-right .turno{font-size:11px;color:rgba(255,255,255,0.8)}
+.topbar-right .horario{font-size:13px;font-weight:600;color:#fff}
+.tab-nav{display:flex;background:#fff;border-bottom:1px solid #e8e8e6;position:sticky;top:57px;z-index:99;overflow-x:auto}
+.tab-nav button{flex:1;min-width:90px;padding:12px 8px;border:none;background:transparent;font-size:12.5px;font-family:inherit;font-weight:500;color:#999;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab-nav button.active{color:#2E7D32;border-bottom-color:#2E7D32}
+.container{max-width:520px;margin:0 auto;padding:16px 14px}
+.turno-header{background:#fff;border-radius:14px;padding:16px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.turno-dia{font-size:20px;font-weight:700;color:#1a1a1a}
+.turno-sub{font-size:13px;color:#888;margin-top:2px}
+.turno-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.badge-turno{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;background:#EAF3DE;color:#3B6D11}
+.badge-turno.alerta{background:#FFF0F0;color:#A32D2D}
+.badge-turno.noite{background:#1a1a2e;color:#a0aec0}
+.badge-turno.aviso{background:#FFF8EC;color:#854F0B}
+.timeline-section{margin-bottom:20px}
+.timeline-section-title{font-size:11px;font-weight:700;color:#2E7D32;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;padding:0 2px}
+.time-item{display:flex;gap:0;margin-bottom:0}
+.time-left{width:68px;flex-shrink:0;padding-top:14px;text-align:right;padding-right:14px}
+.time-label{font-size:12px;font-weight:600;color:#2E7D32;white-space:nowrap}
+.time-label.noite{color:#5a6a8a}
+.time-line{display:flex;flex-direction:column;align-items:center;padding-top:14px}
+.time-dot{width:10px;height:10px;border-radius:50%;background:#2E7D32;flex-shrink:0;margin-top:4px}
+.time-dot.orange{background:#d97b25}
+.time-dot.noite{background:#5a6a8a}
+.time-connector{width:2px;background:#e0e0de;flex:1;min-height:20px;margin-top:3px}
+.time-item:last-child .time-connector{display:none}
+.time-body{flex:1;padding:0 0 16px 14px}
+.time-card{background:#fff;border-radius:12px;padding:13px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.time-card.orange{border-left:3px solid #d97b25}
+.time-card.critical{border-left:3px solid #A32D2D}
+.time-card.noite{border-left:3px solid #5a6a8a;background:#f8f9fc}
+.time-title{font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.3;margin-bottom:4px}
+.time-desc{font-size:12.5px;color:#666;line-height:1.5}
+.time-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:100px}
+.tag-temp{background:#E6F1FB;color:#185FA5}
+.tag-bpf{background:#EAF3DE;color:#3B6D11}
+.tag-nc{background:#FFF0F0;color:#A32D2D}
+.tag-doc{background:#f0f0ee;color:#555}
+.tag-critico{background:#FFF0F0;color:#A32D2D}
+.tag-insp{background:#F5E6FB;color:#6A1B9A}
+.tag-pass{background:#FFF8EC;color:#854F0B}
+.legenda-card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:16px}
+.legenda-titulo{font-size:11px;font-weight:600;color:#999;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+.legenda-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12.5px;color:#555}
+.legenda-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.rotina-group{margin-bottom:20px}
+.rotina-group-title{font-size:12px;font-weight:700;color:#2E7D32;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;padding:0 2px}
+.rotina-card{background:#fff;border-radius:14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.rotina-card-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.rotina-card-header:active{background:#f9f9f7}
+.rotina-card-left{display:flex;align-items:center;gap:10px}
+.rotina-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.rotina-card-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.rotina-card-sub{font-size:12px;color:#888;margin-top:1px}
+.rotina-chevron{font-size:16px;color:#ccc;transition:transform .2s}
+.rotina-chevron.open{transform:rotate(180deg)}
+.rotina-body{display:none;padding:0 16px 14px;border-top:1px solid #f0f0ee}
+.rotina-body.open{display:block}
+.rotina-item{padding:9px 0;border-bottom:1px solid #f5f5f3;display:flex;gap:10px;align-items:flex-start}
+.rotina-item:last-child{border-bottom:none}
+.rotina-icon-sm{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
+.rotina-text{flex:1}
+.rotina-item-title{font-size:13.5px;font-weight:500;color:#1a1a1a;line-height:1.3}
+.rotina-item-detail{font-size:12px;color:#888;margin-top:2px;line-height:1.4}
+.alert-box{background:#FFF0F0;border:1px solid #f5c5c5;border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.alert-box .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-box .alert-text{font-size:13px;color:#791F1F;line-height:1.5}
+.alert-box .alert-text strong{font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">VittaRio · Fluxo de Atividades</div>
+    <div class="sub">Técnico de Nutrição — Plantão 12x36</div>
+  </div>
+  <div class="topbar-right">
+    <div class="turno">Plantão 12x36</div>
+    <div class="horario">Dia & Noite</div>
+  </div>
+</div>
+
+<div class="tab-nav">
+  <button class="active" onclick="showTab('dia',this)">☀️ Plantão Dia</button>
+  <button onclick="showTab('noite',this)">🌙 Plantão Noite</button>
+  <button onclick="showTab('semanal',this)">Semanal</button>
+  <button onclick="showTab('mensal',this)">Mensal</button>
+</div>
+
+<div class="container">
+
+  <!-- PLANTÃO DIA -->
+  <div id="tab-dia">
+    <div class="turno-header">
+      <div class="turno-dia">Plantão Dia</div>
+      <div class="turno-sub">Fluxo padrão de controles técnicos · 06h00 às 18h00</div>
+      <div class="turno-badges">
+        <span class="badge-turno">Temperatura</span>
+        <span class="badge-turno">BPF/PPHO</span>
+        <span class="badge-turno">Inspeção</span>
+        <span class="badge-turno alerta">Passagem de Plantão</span>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <div class="alert-icon">🚫</div>
+      <div class="alert-text"><strong>Regra inegociável:</strong> nenhum produto deve ser expedido ou liberado para o próximo processo sem inspeção técnica documentada — independente de qualquer pressão de prazo ou volume.</div>
+    </div>
+
+    <div class="legenda-card">
+      <div class="legenda-titulo">Legenda</div>
+      <div class="legenda-item"><div class="legenda-dot" style="background:#2E7D32"></div>Controle técnico padrão do plantão</div>
+      <div class="legenda-item"><div class="legenda-dot" style="background:#d97b25"></div>Atividade crítica — não pode ser pulada</div>
+      <div class="legenda-item"><div class="legenda-dot" style="background:#A32D2D"></div>Ponto de atenção / risco de segurança alimentar</div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-section-title">Abertura do Plantão</div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">06h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Recebimento da passagem de plantão técnico</div>
+          <div class="time-desc">Receber do técnico do plantão anterior: produtos em monitoramento, não conformidades abertas, alertas de temperatura, pendências de inspeção e quaisquer situações que precisem de atenção continuada. Confirmar entendimento antes de liberar o colega.</div>
+          <div class="time-tags"><span class="tag tag-critico">Obrigatório</span><span class="tag tag-pass">Passagem</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">06h15</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">1ª verificação de temperaturas — todas as câmaras e áreas</div>
+          <div class="time-desc">Verificar e registrar temperaturas de todas as câmaras frias, áreas de armazenamento e produtos sensíveis. Registrar imediatamente na planilha de controle com horário exato. Acionar coordenador e manutenção se qualquer temperatura estiver fora do limite — sem aguardar.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-doc">Registro obrigatório</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">06h30</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Checklist de abertura de qualidade</div>
+          <div class="time-desc">Executar o checklist padrão de abertura: verificar condições gerais de higiene dos subsetores (expedição, processamento, estoque, cozinha), disponibilidade de EPIs, organização e conformidade inicial com BPF/PPHO. Registrar e acionar responsável em caso de não conformidades identificadas.</div>
+          <div class="time-tags"><span class="tag tag-bpf">BPF/PPHO</span><span class="tag tag-doc">Checklist</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-section-title">Manhã — Inspeção e Controle Intensivo</div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">07h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Inspeção dos produtos recebidos e em processamento</div>
+          <div class="time-desc">Realizar inspeção visual e sensorial dos produtos hortifruti recebidos no início do plantão e dos produtos em processo de higienização. Classificar conforme padrão: aprovado, aprovado com ressalva ou reprovado. Registrar resultado e produto em ficha de inspeção. Bloquear imediatamente produtos reprovados.</div>
+          <div class="time-tags"><span class="tag tag-insp">Inspeção</span><span class="tag tag-doc">Ficha obrigatória</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">08h00</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">1ª ronda de BPF/PPHO — todos os subsetores</div>
+          <div class="time-desc">Percorrer todos os subsetores em operação: verificar higiene pessoal dos colaboradores (uniformes, EPI, higienização das mãos), organização das superfícies, utensílios limpos e práticas de manipulação corretas. Orientar desvios in loco com clareza. Registrar não conformidades observadas.</div>
+          <div class="time-tags"><span class="tag tag-bpf">BPF/PPHO</span><span class="tag tag-nc">NC se houver</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">09h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">2ª verificação de temperaturas</div>
+          <div class="time-desc">Segunda rodada de verificação de temperaturas de câmaras e produtos sensíveis. Registrar na planilha com horário exato. Verificar se produtos que estavam em monitoramento continuam dentro dos parâmetros. Acionar imediatamente em caso de desvio.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-doc">Registro</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">10h00</div></div>
+        <div class="time-line"><div class="time-body-inline"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Acompanhamento e verificação do processo de higienização</div>
+          <div class="time-desc">Verificar o processo de higienização em andamento: concentração das soluções sanitizantes (conferir com kit de testes), tempo de imersão correto conforme POP, etapas de enxágue e acondicionamento pós-higienização. Registrar conferência. Bloquear lote se alguma etapa estiver fora do procedimento.</div>
+          <div class="time-tags"><span class="tag tag-bpf">Higienização</span><span class="tag tag-insp">Verificação</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-section-title">Tarde — Continuidade e Expedição</div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">12h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">3ª verificação de temperaturas — ponto crítico do dia</div>
+          <div class="time-desc">Verificação mais crítica do plantão: temperaturas tendem a subir no meio do dia com a movimentação intensa. Atenção especial para câmaras com maior fluxo de abertura. Registrar imediatamente. Qualquer desvio acionar em até 15 minutos.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-critico">Ponto crítico</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">13h00</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">2ª ronda de BPF/PPHO + inspeção de produtos para expedição</div>
+          <div class="time-desc">Segunda ronda nos subsetores com foco na expedição: verificar produtos que serão expedidos no período. Inspecionar condição, embalagem e rastreabilidade. Confirmar que cada produto tem registro de inspeção antes da liberação para carga. Orientar equipe sobre desvios identificados.</div>
+          <div class="time-tags"><span class="tag tag-bpf">BPF/PPHO</span><span class="tag tag-insp">Expedição</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">15h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">4ª verificação de temperaturas + tratativa de NCs do plantão</div>
+          <div class="time-desc">Quarta verificação de temperaturas — registrar e fechar monitoramento da tarde. Paralelamente: revisar todas as não conformidades registradas no plantão, verificar se todas têm tratativa documentada e escalonar para nutricionista as NCs que exigem decisão técnica além do plantão.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-nc">NCs</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-section-title">Encerramento do Plantão</div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">16h30</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Checklist de encerramento de qualidade</div>
+          <div class="time-desc">Executar checklist de fechamento: verificar condição de todas as câmaras, produtos em monitoramento, limpeza das áreas, equipamentos desligados/sanitizados conforme POP. Confirmar que nenhuma NC crítica está sem tratativa. Consolidar dados para o relatório do plantão.</div>
+          <div class="time-tags"><span class="tag tag-doc">Checklist</span><span class="tag tag-critico">Obrigatório</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">17h00</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Elaboração do relatório técnico do plantão</div>
+          <div class="time-desc">Consolidar e registrar o relatório técnico do plantão: registros de temperatura, ocorrências de NC, inspeções realizadas, orientações dadas à equipe, alertas e observações relevantes. O relatório deve estar pronto antes da passagem de plantão.</div>
+          <div class="time-tags"><span class="tag tag-doc">Relatório</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label">17h30</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Passagem de plantão técnica — estruturada e presencial</div>
+          <div class="time-desc">Passar ao técnico do plantão seguinte: todos os produtos em monitoramento, NCs abertas com status atual, alertas de temperatura identificados no plantão, pendências de inspeção e situações que precisam de atenção continuada. Passagem presencial, objetiva e documentada.</div>
+          <div class="time-tags"><span class="tag tag-critico">Obrigatório</span><span class="tag tag-pass">Documentar</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANTÃO NOITE -->
+  <div id="tab-noite" style="display:none;">
+    <div class="turno-header">
+      <div class="turno-dia">Plantão Noite</div>
+      <div class="turno-sub">Fluxo padrão de controles técnicos · 18h00 às 06h00</div>
+      <div class="turno-badges">
+        <span class="badge-turno noite">🌙 Turno Noturno</span>
+        <span class="badge-turno alerta">Atenção redobrada</span>
+        <span class="badge-turno">Temperatura</span>
+        <span class="badge-turno">BPF/PPHO</span>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <div class="alert-icon">🌙</div>
+      <div class="alert-text"><strong>Plantão noturno:</strong> com menor supervisão e equipe reduzida, o rigor técnico deve ser ainda maior. Todos os controles têm o mesmo peso do plantão diurno — a qualidade do produto não muda à noite.</div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-section-title">Abertura do Plantão Noturno</div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">18h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Recebimento da passagem de plantão técnico (turno dia)</div>
+          <div class="time-desc">Receber as informações completas do técnico do turno dia: produtos em monitoramento, NCs abertas, alertas de temperatura, pendências e situações que precisam de acompanhamento durante a noite. Confirmar entendimento antes de liberar o colega.</div>
+          <div class="time-tags"><span class="tag tag-critico">Obrigatório</span><span class="tag tag-pass">Passagem</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">18h15</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">1ª verificação de temperaturas — início da noite</div>
+          <div class="time-desc">Verificar e registrar temperaturas de todas as câmaras e áreas. Atenção especial para câmaras que ficaram com muito movimento durante o dia — podem estar elevadas. Registrar na planilha com horário exato.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-doc">Registro</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">18h30</div></div>
+        <div class="time-line"><div class="time-dot noite"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card noite">
+          <div class="time-title">Checklist de abertura de qualidade + ronda de BPF/PPHO</div>
+          <div class="time-desc">Executar checklist de abertura do turno noturno. Realizar ronda de BPF/PPHO nos subsetores em operação: higiene da equipe, uso de EPIs, organização e práticas corretas de manipulação. O turno noturno tem equipe reduzida — os desvios tendem a ser mais frequentes sem supervisão direta.</div>
+          <div class="time-tags"><span class="tag tag-bpf">BPF/PPHO</span><span class="tag tag-doc">Checklist</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-section-title">Noite — Controles Periódicos</div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">20h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">2ª verificação de temperaturas + inspeção de produtos</div>
+          <div class="time-desc">Segunda verificação de temperaturas noturna. Inspecionar produtos que chegaram no final da tarde ou início da noite — recebimento noturno é comum em distribuidoras. Registrar inspeção em ficha antes de qualquer movimentação do produto.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-insp">Inspeção</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">22h00</div></div>
+        <div class="time-line"><div class="time-dot noite"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card noite">
+          <div class="time-title">2ª ronda de BPF/PPHO + verificação de higienização noturna</div>
+          <div class="time-desc">Ronda nos subsetores com foco na higienização noturna dos equipamentos e utensílios. Verificar se os procedimentos de limpeza e sanitização estão sendo seguidos conforme POP. Atenção especial à área de processamento/higienização de produtos.</div>
+          <div class="time-tags"><span class="tag tag-bpf">BPF/PPHO</span><span class="tag tag-bpf">Higienização</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">00h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">3ª verificação de temperaturas — madrugada (ponto crítico)</div>
+          <div class="time-desc">Verificação mais silenciosa mas igualmente crítica. Câmaras podem sofrer variações durante a madrugada por manutenção, abertura de portas ou problemas elétricos. Registrar com atenção. Qualquer desvio: acionar imediatamente o coordenador de turno.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-critico">Madrugada</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">02h00</div></div>
+        <div class="time-line"><div class="time-dot noite"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card noite">
+          <div class="time-title">Verificação de produtos de chegada antecipada (pré-abertura)</div>
+          <div class="time-desc">Em distribuidoras de hortifruti, parte dos produtos chega na madrugada para o turno dia. Inspecionar produtos recebidos, verificar temperatura de entrega, condição das embalagens e documentação de recebimento. Registrar e informar na passagem de plantão.</div>
+          <div class="time-tags"><span class="tag tag-insp">Recebimento</span><span class="tag tag-doc">Registro</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">04h00</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">4ª verificação de temperaturas + tratativa de NCs do plantão</div>
+          <div class="time-desc">Última verificação completa de temperaturas antes do encerramento. Revisar todas as NCs do plantão noturno: todas devem ter tratativa registrada. NCs que precisam de decisão da nutricionista: preparar para discussão na passagem do dia.</div>
+          <div class="time-tags"><span class="tag tag-temp">Temperatura</span><span class="tag tag-nc">NCs</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="timeline-section">
+      <div class="timeline-section-title">Encerramento do Plantão Noturno</div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">05h00</div></div>
+        <div class="time-line"><div class="time-dot"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card">
+          <div class="time-title">Checklist de encerramento + relatório técnico da noite</div>
+          <div class="time-desc">Executar checklist de encerramento do turno noturno. Consolidar relatório técnico da noite: registros de temperatura, NCs, inspeções, orientações dadas à equipe e alertas para o turno dia. O relatório deve estar pronto antes da passagem.</div>
+          <div class="time-tags"><span class="tag tag-doc">Checklist + Relatório</span></div>
+        </div></div>
+      </div>
+      <div class="time-item">
+        <div class="time-left"><div class="time-label noite">05h30</div></div>
+        <div class="time-line"><div class="time-dot orange"></div><div class="time-connector"></div></div>
+        <div class="time-body"><div class="time-card orange">
+          <div class="time-title">Passagem de plantão técnica para o turno dia</div>
+          <div class="time-desc">Passar ao técnico do turno dia: produtos em monitoramento, NCs abertas, produtos inspecionados durante a noite, alertas de temperatura, produtos recebidos na madrugada e quaisquer situações que precisam de acompanhamento no dia. Passagem presencial e documentada.</div>
+          <div class="time-tags"><span class="tag tag-critico">Obrigatório</span><span class="tag tag-pass">Documentar</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEMANAL -->
+  <div id="tab-semanal" style="display:none;">
+    <div class="turno-header">
+      <div class="turno-dia">Rotinas Semanais</div>
+      <div class="turno-sub">Atividades técnicas fixas por período — aplica-se ao plantão em que o técnico estiver trabalhando naquele dia</div>
+    </div>
+
+    <div class="rotina-group">
+      <div class="rotina-group-title">Segunda-feira</div>
+      <div class="rotina-card">
+        <div class="rotina-card-header" onclick="toggleRotina(this)">
+          <div class="rotina-card-left">
+            <div class="rotina-icon" style="background:#EAF3DE;">📊</div>
+            <div><div class="rotina-card-title">Alinhamento com a nutricionista de planejamento</div><div class="rotina-card-sub">Início da semana · revisão de indicadores</div></div>
+          </div>
+          <div class="rotina-chevron">▾</div>
+        </div>
+        <div class="rotina-body">
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#EAF3DE;">📈</div>
+            <div class="rotina-text"><div class="rotina-item-title">Revisar indicadores técnicos da semana anterior</div><div class="rotina-item-detail">Levantar resultados de temperatura, NCs registradas, checklists executados e passagens de plantão antes do alinhamento.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#FFF8EC;">🎯</div>
+            <div class="rotina-text"><div class="rotina-item-title">Alinhar prioridades técnicas da semana</div><div class="rotina-item-detail">Receber da nutricionista: alertas sazonais, produtos de atenção, mudanças de POP, foco de qualidade da semana.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#FFF0F0;">🚨</div>
+            <div class="rotina-text"><div class="rotina-item-title">Revisão de NCs abertas da semana anterior</div><div class="rotina-item-detail">Verificar se todas as NCs da semana anterior tiveram tratativa concluída ou precisam de escalonamento.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rotina-group">
+      <div class="rotina-group-title">Quarta-feira</div>
+      <div class="rotina-card">
+        <div class="rotina-card-header" onclick="toggleRotina(this)">
+          <div class="rotina-card-left">
+            <div class="rotina-icon" style="background:#E6F1FB;">🔬</div>
+            <div><div class="rotina-card-title">Verificação de soluções sanitizantes e EPIs</div><div class="rotina-card-sub">Controle de insumos técnicos</div></div>
+          </div>
+          <div class="rotina-chevron">▾</div>
+        </div>
+        <div class="rotina-body">
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#E6F1FB;">🧪</div>
+            <div class="rotina-text"><div class="rotina-item-title">Testar e registrar concentrações das soluções sanitizantes</div><div class="rotina-item-detail">Verificar com kit de testes se as soluções estão na concentração correta. Substituir e registrar se necessário.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#EAF3DE;">🧤</div>
+            <div class="rotina-text"><div class="rotina-item-title">Verificar disponibilidade de EPIs em todos os subsetores</div><div class="rotina-item-detail">Conferir estoque de luvas, toucas, aventais e máscaras. Solicitar reposição ao coordenador se necessário.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#FFF8EC;">🌡️</div>
+            <div class="rotina-text"><div class="rotina-item-title">Calibrar e testar termômetros utilizados no controle</div><div class="rotina-item-detail">Verificar funcionamento dos termômetros usados no controle de temperatura. Registrar e solicitar substituição se necessário.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rotina-group">
+      <div class="rotina-group-title">Sexta-feira</div>
+      <div class="rotina-card">
+        <div class="rotina-card-header" onclick="toggleRotina(this)">
+          <div class="rotina-card-left">
+            <div class="rotina-icon" style="background:#F5E6FB;">📝</div>
+            <div><div class="rotina-card-title">Relatório semanal de qualidade</div><div class="rotina-card-sub">Fechamento da semana técnica</div></div>
+          </div>
+          <div class="rotina-chevron">▾</div>
+        </div>
+        <div class="rotina-body">
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#EAF3DE;">📊</div>
+            <div class="rotina-text"><div class="rotina-item-title">Consolidar dados da semana nos plantões trabalhados</div><div class="rotina-item-detail">Reunir registros de temperatura, NCs, inspeções e checklists dos plantões da semana. Consolidar para o relatório semanal.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#FFF8EC;">📋</div>
+            <div class="rotina-text"><div class="rotina-item-title">Enviar relatório semanal à nutricionista</div><div class="rotina-item-detail">Resumo técnico da semana: desvios de temperatura, NCs, produtos bloqueados, inspeções realizadas e observações relevantes.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENSAL -->
+  <div id="tab-mensal" style="display:none;">
+    <div class="turno-header">
+      <div class="turno-dia">Rotinas Mensais</div>
+      <div class="turno-sub">Atividades técnicas de controle e fechamento do período</div>
+    </div>
+
+    <div class="rotina-group">
+      <div class="rotina-card">
+        <div class="rotina-card-header" onclick="toggleRotina(this)">
+          <div class="rotina-card-left">
+            <div class="rotina-icon" style="background:#EAF3DE;">🗓️</div>
+            <div><div class="rotina-card-title">Abertura do mês — Alinhamento técnico</div><div class="rotina-card-sub">Dias 01–02 do mês</div></div>
+          </div>
+          <div class="rotina-chevron">▾</div>
+        </div>
+        <div class="rotina-body">
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#EAF3DE;">🎯</div>
+            <div class="rotina-text"><div class="rotina-item-title">Revisão de metas e indicadores do mês com a nutricionista</div><div class="rotina-item-detail">Alinhar metas mensais dos 5 KPIs. Receber prioridades técnicas do mês: sazonalidade de produtos, alertas de legislação, ajustes de POP.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#E6F1FB;">🧪</div>
+            <div class="rotina-text"><div class="rotina-item-title">Verificação de insumos técnicos para o mês</div><div class="rotina-item-detail">Conferir estoque de soluções sanitizantes, kits de teste, EPIs e formulários. Solicitar reposição com antecedência.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rotina-card">
+        <div class="rotina-card-header" onclick="toggleRotina(this)">
+          <div class="rotina-card-left">
+            <div class="rotina-icon" style="background:#FFF8EC;">📊</div>
+            <div><div class="rotina-card-title">Meio de mês — Acompanhamento de indicadores</div><div class="rotina-card-sub">Dias 14–16 do mês</div></div>
+          </div>
+          <div class="rotina-chevron">▾</div>
+        </div>
+        <div class="rotina-body">
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#EAF3DE;">📈</div>
+            <div class="rotina-text"><div class="rotina-item-title">Apuração parcial dos KPIs nos plantões do período</div><div class="rotina-item-detail">Verificar resultados parciais: conformidade de temperatura, checklists executados, NCs registradas. Identificar indicadores abaixo da meta.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#FFF0F0;">⚠️</div>
+            <div class="rotina-text"><div class="rotina-item-title">Análise de NCs recorrentes do período</div><div class="rotina-item-detail">Identificar padrões nas não conformidades dos últimos 15 dias. Propor ações preventivas à nutricionista para a segunda metade do mês.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rotina-card">
+        <div class="rotina-card-header" onclick="toggleRotina(this)">
+          <div class="rotina-card-left">
+            <div class="rotina-icon" style="background:#FFF0F0;">🏁</div>
+            <div><div class="rotina-card-title">Fechamento do mês — Relatório técnico mensal</div><div class="rotina-card-sub">Dias 25–30 do mês</div></div>
+          </div>
+          <div class="rotina-chevron">▾</div>
+        </div>
+        <div class="rotina-body">
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#EAF3DE;">📊</div>
+            <div class="rotina-text"><div class="rotina-item-title">Consolidar e fechar os KPIs mensais</div><div class="rotina-item-detail">Apurar resultados finais dos 5 KPIs dos plantões do mês. Calcular percentuais e registrar no painel de avaliação.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#FFF8EC;">📝</div>
+            <div class="rotina-text"><div class="rotina-item-title">Elaborar e enviar relatório técnico mensal</div><div class="rotina-item-detail">Relatório completo: KPIs por indicador, NCs do mês categorizadas, produtos bloqueados, desvios de temperatura e proposta de melhoria. Prazo: até o dia 28.</div></div>
+          </div>
+          <div class="rotina-item">
+            <div class="rotina-icon-sm" style="background:#E6F1FB;">🔄</div>
+            <div class="rotina-text"><div class="rotina-item-title">Revisão de POPs e checklists — propor atualizações</div><div class="rotina-item-detail">Avaliar se algum POP ou checklist precisa de atualização com base nos desvios e dificuldades observadas no mês. Encaminhar proposta à nutricionista.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  ['dia','noite','semanal','mensal'].forEach(t => { document.getElementById('tab-' + t).style.display = t === id ? '' : 'none'; });
+  document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleRotina(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.rotina-chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+</script>
+</body>
+</html>

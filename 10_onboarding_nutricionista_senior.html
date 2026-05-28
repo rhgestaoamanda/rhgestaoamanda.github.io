@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding — Nutricionista de Planejamento Senior · Vitta Rio</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --vr-green: #1a6b38; --vr-green-dark: #134f2a; --vr-green-mid: #2a8a4e;
+    --vr-green-light: #eaf5ef; --vr-green-border: #b4ddc4;
+    --vr-orange: #d97b25; --vr-orange-light: #fdf1e3;
+    --bg: #f7f8f6; --surface: #ffffff; --border: #e2e5df;
+    --text: #1c2118; --text-muted: #5a6358; --text-light: #8a9488;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+  .topbar { background: var(--vr-green-dark); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 15px; font-weight: 600; }
+  .topbar-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: #6fdb9a; }
+  .topbar-badge { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); font-size: 11px; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .shell { display: flex; min-height: calc(100vh - 56px); }
+  .sidebar { width: 230px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 1rem; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
+  .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); padding: 0 0.5rem; margin-bottom: 6px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13.5px; color: var(--text-muted); transition: all 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: var(--vr-green-light); color: var(--vr-green); }
+  .nav-item.active { background: var(--vr-green-light); color: var(--vr-green); font-weight: 600; }
+  .nav-item .nav-icon { width: 20px; text-align: center; font-size: 15px; flex-shrink: 0; }
+  .nav-divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .main { flex: 1; padding: 2rem 2.5rem; max-width: 820px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .cover { background: var(--vr-green); border-radius: var(--radius); padding: 2.5rem 2rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+  .cover::before { content:''; position:absolute; right:-50px; top:-50px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.05); }
+  .cover::after { content:''; position:absolute; right:60px; bottom:-70px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.04); }
+  .cover-tag { display:inline-block; background:rgba(255,255,255,0.15); color:rgba(255,255,255,0.9); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:1rem; }
+  .cover h1 { color:#fff; font-size:28px; font-weight:700; line-height:1.2; margin-bottom:0.5rem; position:relative; }
+  .cover .sub { color:rgba(255,255,255,0.7); font-size:14px; position:relative; }
+  .cover-meta { display:flex; flex-wrap:wrap; gap:1.5rem; margin-top:1.75rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.18); position:relative; }
+  .cover-meta-item { color:rgba(255,255,255,0.85); font-size:13px; }
+  .cover-meta-item span { display:block; font-size:11px; color:rgba(255,255,255,0.5); margin-bottom:2px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1rem; }
+  .card-title { font-size:12px; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--text-light); margin-bottom:1rem; }
+  .hl-green { background:var(--vr-green-light); border-left:3px solid var(--vr-green); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:1rem 1.25rem; margin-bottom:1rem; }
+  .hl-green .hl-title { font-size:13px; font-weight:600; color:var(--vr-green); margin-bottom:5px; }
+  .hl-green p { font-size:14px; color:var(--text); line-height:1.7; }
+  .hl-orange { background:var(--vr-orange-light); border-left:3px solid var(--vr-orange); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:1rem 1.25rem; margin-bottom:1rem; }
+  .hl-orange .hl-title { font-size:13px; font-weight:600; color:var(--vr-orange); margin-bottom:5px; }
+  .hl-orange p { font-size:14px; color:var(--text); line-height:1.7; }
+  .sec-header { display:flex; align-items:center; gap:12px; margin-bottom:1.5rem; }
+  .sec-icon { width:36px; height:36px; border-radius:var(--radius-sm); background:var(--vr-green-light); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .sec-header h2 { font-size:20px; font-weight:700; color:var(--text); }
+  .team-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .team-item:last-child { border-bottom:none; }
+  .avatar { width:38px; height:38px; border-radius:50%; background:var(--vr-green-light); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--vr-green); flex-shrink:0; }
+  .team-name { font-size:13px; font-weight:600; color:var(--text); }
+  .team-desc { font-size:12px; color:var(--text-muted); }
+  .resp-item { display:flex; gap:14px; padding:1.1rem 0; border-bottom:1px solid var(--border); }
+  .resp-item:last-child { border-bottom:none; padding-bottom:0; }
+  .resp-num { width:28px; height:28px; border-radius:50%; background:var(--vr-green); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .resp-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .resp-desc { font-size:13px; color:var(--text-muted); line-height:1.65; }
+  .comp-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:10px; margin-bottom:1rem; }
+  .comp-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1rem; }
+  .comp-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .comp-desc { font-size:12px; color:var(--text-muted); line-height:1.55; margin-bottom:8px; }
+  .stars { display:flex; gap:4px; }
+  .star { width:9px; height:9px; border-radius:50%; background:var(--border); }
+  .star.on { background:var(--vr-orange); }
+  .kpi-item { display:flex; gap:14px; align-items:flex-start; padding:1rem 1.25rem; background:#f7f9f7; border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:8px; }
+  .kpi-badge { min-width:30px; height:30px; border-radius:var(--radius-sm); background:var(--vr-orange); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .kpi-label { font-size:14px; font-weight:600; color:var(--text); margin-bottom:3px; }
+  .kpi-meta { font-size:13px; color:var(--text-muted); line-height:1.5; }
+  .check-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .check-list li { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:var(--text-muted); line-height:1.5; }
+  .check-list li::before { content:'✓'; color:var(--vr-green); font-weight:700; flex-shrink:0; margin-top:1px; }
+  .plan-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:1rem; }
+  .plan-phase { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .plan-header { padding:0.9rem 1rem; color:#fff; }
+  .plan-header small { display:block; font-size:11px; opacity:0.8; margin-top:2px; }
+  .p1 { background:var(--vr-green); } .p2 { background:var(--vr-green-mid); } .p3 { background:var(--vr-orange); }
+  .plan-body { padding:0.75rem 0; }
+  .plan-task { padding:7px 1rem; font-size:12.5px; color:var(--text-muted); border-bottom:1px solid var(--border); line-height:1.4; }
+  .plan-task:last-child { border-bottom:none; }
+  .plan-task.orange { color:var(--vr-orange); }
+  .expect-item { display:flex; gap:14px; padding:1.1rem 0; border-bottom:1px solid var(--border); }
+  .expect-item:last-child { border-bottom:none; }
+  .expect-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+  .expect-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .expect-desc { font-size:13px; color:var(--text-muted); line-height:1.65; }
+  .footer { text-align:center; font-size:11.5px; color:var(--text-light); padding:1.5rem; border-top:1px solid var(--border); margin-top:2rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand"><div class="dot"></div>Vitta Rio · Manual de Integração</div>
+  <div class="topbar-badge">Qualidade · Cozinha Corporativa</div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar-label">Navegação</div>
+    <button class="nav-item active" id="nav-bv" onclick="goTo('bv',this)"><span class="nav-icon">👋</span> Boas-vindas</button>
+    <button class="nav-item" id="nav-resp" onclick="goTo('resp',this)"><span class="nav-icon">📋</span> Responsabilidades</button>
+    <button class="nav-item" id="nav-comp" onclick="goTo('comp',this)"><span class="nav-icon">⭐</span> Competências</button>
+    <div class="nav-divider"></div>
+    <button class="nav-item" id="nav-kpi" onclick="goTo('kpi',this)"><span class="nav-icon">📊</span> KPIs</button>
+    <button class="nav-item" id="nav-plan" onclick="goTo('plan',this)"><span class="nav-icon">📅</span> Plano 30·60·90</button>
+    <button class="nav-item" id="nav-esp" onclick="goTo('esp',this)"><span class="nav-icon">🎯</span> O que esperamos</button>
+  </aside>
+
+  <main class="main">
+
+    <!-- BOAS-VINDAS -->
+    <div class="section active" id="sec-bv">
+      <div class="cover">
+        <div class="cover-tag">Manual de Integração · Cozinha Corporativa</div>
+        <h1>Nutricionista de Planejamento<br>Senior</h1>
+        <p class="sub">Bem-vinda à Vitta Rio. Este é o seu guia de entrada no cargo.</p>
+        <div class="cover-meta">
+          <div class="cover-meta-item"><span>Departamento</span>Qualidade · Operacional</div>
+          <div class="cover-meta-item"><span>Área de gestão</span>Cozinha Corporativa 24h</div>
+          <div class="cover-meta-item"><span>Reporta a</span>Gerente Operacional</div>
+          <div class="cover-meta-item"><span>Revisão</span>00 · Mai/2026</div>
+        </div>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Sobre a Vitta Rio</div>
+        <p>A Vitta Rio é uma distribuidora de hortifruti — in natura e higienizado — que opera 24 horas por dia, com colaboradores em turnos contínuos e plantões 12x36. Cuidar bem de quem faz a operação acontecer é parte da nossa cultura. A cozinha corporativa não é um benefício secundário: é a estrutura que sustenta o desempenho e o bem-estar de quem mantém a empresa funcionando.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Por que este cargo importa</div>
+        <p style="font-size:13.5px;color:var(--text-muted);line-height:1.75;">Um colaborador que come bem trabalha melhor, tem menos fadiga e adoece menos — especialmente em turnos noturnos e plantões de 12 horas. Você é quem garante que a Vitta Rio cuide de verdade dos seus colaboradores por meio da alimentação. Além disso, sua atuação na interface com o subsetor de qualidade fortalece a <strong style="color:var(--text);">cultura de segurança alimentar</strong> em toda a operação — da cozinha corporativa aos produtos que chegam ao cliente.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sua equipe e principais interfaces</div>
+        <div class="team-item"><div class="avatar">GO</div><div><div class="team-name">Gerente Operacional</div><div class="team-desc">Superior imediato. Alinhamento estratégico, aprovação de orçamento, cardápios e plano de expansão 24h.</div></div></div>
+        <div class="team-item"><div class="avatar">NJ</div><div><div class="team-name">Nutricionista de Planejamento Junior</div><div class="team-desc">Subordinada direta. Suporte técnico operacional na qualidade da distribuição e interface com os técnicos de nutrição.</div></div></div>
+        <div class="team-item"><div class="avatar">TN</div><div><div class="team-name">Técnicos de Nutrição (Plantão 12x36)</div><div class="team-desc">Equipe técnica de qualidade nos plantões. Você é a referência técnica deles nos aspectos de BPF/PPHO e segurança alimentar.</div></div></div>
+        <div class="team-item"><div class="avatar">CZ</div><div><div class="team-name">Cozinheiros e Auxiliares de Cozinha</div><div class="team-desc">Equipe operacional da cozinha corporativa. Você lidera, treina e desenvolve esses colaboradores diretamente.</div></div></div>
+        <div class="team-item"><div class="avatar">QA</div><div><div class="team-name">Subsetor de Qualidade (Operação)</div><div class="team-desc">Interface estratégica. Alinhamento de padrões BPF/PPHO, auditorias cruzadas e integração da cultura de qualidade.</div></div></div>
+        <div class="team-item"><div class="avatar">RH</div><div><div class="team-name">RH / DP</div><div class="team-desc">Parceiro para gestão da equipe, avaliações, desenvolvimento e questões de pessoal da cozinha corporativa.</div></div></div>
+      </div>
+
+      <div class="hl-orange">
+        <div class="hl-title">O desafio que espera você</div>
+        <p>A cozinha corporativa existe e alimenta os colaboradores — mas ainda precisa de <strong>estrutura, padronização e visão estratégica</strong>. Você entra para transformar uma cozinha operacional em uma cozinha de referência: com processos documentados, cardápios planejados, equipe desenvolvida, conformidade sanitária e, no horizonte, funcionamento 24 horas para atender todos os turnos da operação. É um projeto de construção — e você está no centro dele.</p>
+      </div>
+    </div>
+
+    <!-- RESPONSABILIDADES -->
+    <div class="section" id="sec-resp">
+      <div class="sec-header"><div class="sec-icon">📋</div><h2>Principais responsabilidades</h2></div>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem;">Seu cargo une <strong style="color:var(--text);">liderança técnica, gestão operacional e visão estratégica</strong>. As responsabilidades abaixo cobrem todas essas dimensões.</p>
+      <div class="card">
+        <div class="resp-item"><div class="resp-num">1</div><div>
+          <div class="resp-title">Gestão operacional da cozinha corporativa</div>
+          <div class="resp-desc">Planejar e supervisionar o funcionamento da cozinha nos três turnos de refeição (café da manhã, almoço e jantar). Garantir que as refeições sejam entregues no prazo, na quantidade adequada e com qualidade consistente. Liderar o projeto de expansão para funcionamento 24 horas, definindo processos, escalas e cardápio noturno para atender os colaboradores de plantão.</div>
+        </div></div>
+        <div class="resp-item"><div class="resp-num">2</div><div>
+          <div class="resp-title">Planejamento e elaboração de cardápios</div>
+          <div class="resp-desc">Elaborar cardápios mensais equilibrados e adequados ao perfil energético dos colaboradores operacionais — especialmente os de turno e plantão 12x36. Garantir variedade, uso estratégico dos hortifruti da Vitta Rio, adequação calórica para diferentes jornadas e atualização com base em feedback, custo e sazonalidade.</div>
+        </div></div>
+        <div class="resp-item"><div class="resp-num">3</div><div>
+          <div class="resp-title">Liderança e desenvolvimento da equipe da cozinha</div>
+          <div class="resp-desc">Liderar, orientar e desenvolver cozinheiros, auxiliares de cozinha e técnicos de nutrição. Definir escalas e funções por turno. Garantir que todos conheçam seus processos e padrões. Dar feedbacks estruturados com registro no RH. Identificar necessidades de capacitação e propor ações de desenvolvimento.</div>
+        </div></div>
+        <div class="resp-item"><div class="resp-num">4</div><div>
+          <div class="resp-title">Controle de qualidade e segurança alimentar da cozinha</div>
+          <div class="resp-desc">Garantir a aplicação das BPF/PPHO/HACCP em toda a cozinha. Supervisionar controles de temperatura. Aprovar fichas técnicas e procedimentos de preparo. Conduzir auditorias internas periódicas. Preparar a cozinha para inspeções da vigilância sanitária — zero surpresas em auditoria externa.</div>
+        </div></div>
+        <div class="resp-item"><div class="resp-num">5</div><div>
+          <div class="resp-title">Interface técnica com o subsetor de qualidade</div>
+          <div class="resp-desc">Atuar como ponte entre a cozinha corporativa e o subsetor de qualidade da operação. Alinhar padrões, participar de auditorias cruzadas, compartilhar aprendizados técnicos e garantir que os padrões de segurança alimentar da cozinha estejam integrados à cultura de qualidade da operação como um todo.</div>
+        </div></div>
+        <div class="resp-item"><div class="resp-num">6</div><div>
+          <div class="resp-title">Controle de custos, estoque e planejamento de compras</div>
+          <div class="resp-desc">Planejar e controlar o estoque de insumos. Elaborar requisições de compra com antecedência. Monitorar o custo por refeição. Identificar oportunidades de redução de desperdício. Priorizar o uso dos hortifruti da Vitta Rio nos cardápios sempre que tecnicamente adequado — criando uma conexão viva entre a operação e a cozinha.</div>
+        </div></div>
+        <div class="resp-item"><div class="resp-num">7</div><div>
+          <div class="resp-title">Padronização e documentação de processos</div>
+          <div class="resp-desc">Mapear, elaborar e manter atualizados os POPs, fichas técnicas de receitas, checklists de qualidade e procedimentos operacionais da cozinha. Garantir que todos os processos estejam documentados e sendo seguidos. A documentação da cozinha é a base da expansão 24h — sem processos registrados, escalar é impossível.</div>
+        </div></div>
+        <div class="resp-item"><div class="resp-num">8</div><div>
+          <div class="resp-title">Indicadores, relatórios e projeto de expansão 24h</div>
+          <div class="resp-desc">Acompanhar os KPIs da cozinha. Elaborar relatórios mensais. Apresentar resultados e propostas à gerência e diretoria. Liderar o projeto de expansão da cozinha para 24 horas com entregas estruturadas — processos, escala, cardápio noturno, treinamento de equipe e cronograma aprovado pela diretoria.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- COMPETÊNCIAS -->
+    <div class="section" id="sec-comp">
+      <div class="sec-header"><div class="sec-icon">⭐</div><h2>Competências do cargo</h2></div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.65;">Grau de exigência em escala de 1 a 5 (● preenchido = esperado no nível máximo).</p>
+
+      <div class="card">
+        <div class="card-title">Competências comportamentais</div>
+        <div class="comp-grid">
+          <div class="comp-card">
+            <div class="comp-name">Liderança técnica</div>
+            <div class="comp-desc">Liderar a equipe da cozinha com autoridade técnica e proximidade, desenvolvendo competências e sendo referência de excelência.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Visão estratégica operacional</div>
+            <div class="comp-desc">Enxergar a cozinha como setor estratégico, conectando qualidade, custo, bem-estar dos colaboradores e cultura organizacional.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Comunicação assertiva</div>
+            <div class="comp-desc">Comunicar com clareza para equipe operacional e diretoria, apresentando dados de forma acessível e propostas fundamentadas.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Planejamento e organização</div>
+            <div class="comp-desc">Planejar cardápios, escalas, compras e processos com antecedência, garantindo previsibilidade operacional.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Orientação a resultados</div>
+            <div class="comp-desc">Manter foco nos indicadores da cozinha, acompanhar dados mensalmente e propor melhorias baseadas em evidências.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Gestão de conflitos</div>
+            <div class="comp-desc">Mediar conflitos na equipe de cozinha e interfaces com outros setores, mantendo o ambiente produtivo e orientado à qualidade.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Competências organizacionais</div>
+        <div class="comp-grid">
+          <div class="comp-card">
+            <div class="comp-name">Comprometimento</div>
+            <div class="comp-desc">Assumir a cozinha corporativa como responsabilidade total — qualidade, segurança, equipe e satisfação dos colaboradores.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Autogerenciamento</div>
+            <div class="comp-desc">Organizar a própria agenda, equilibrando liderança de equipe, planejamento, controles de qualidade e gestão de custos.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Disciplina operacional</div>
+            <div class="comp-desc">Garantir que padrões e POPs sejam seguidos com rigor — sendo referência de disciplina técnica para toda a equipe.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Equilíbrio emocional</div>
+            <div class="comp-desc">Manter estabilidade em situações de pressão na cozinha sem comprometer a qualidade das refeições ou o clima da equipe.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Agilidade operacional</div>
+            <div class="comp-desc">Resolver imprevistos com rapidez e criatividade, garantindo as refeições mesmo em situações fora do planejado.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star"></div></div>
+          </div>
+          <div class="comp-card">
+            <div class="comp-name">Gestão do tempo</div>
+            <div class="comp-desc">Administrar agenda de gestão e tempos de preparo, garantindo refeições no horário e espaço para atividades estratégicas.</div>
+            <div class="stars"><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div><div class="star on"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Requisitos técnicos do cargo</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Conhecimentos</div>
+            <ul class="check-list">
+              <li>Graduação em Nutrição (CRN ativo)</li>
+              <li>Nutrição em UAN / cozinha corporativa</li>
+              <li>BPF / PPHO / HACCP em cozinhas</li>
+              <li>Legislação sanitária (RDC 216, RDC 275, CVS-5)</li>
+              <li>Elaboração de fichas técnicas e cardápios</li>
+              <li>Controle de custos e gestão de estoque</li>
+              <li>Nutrição para trabalhadores em turno (desejável)</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Habilidades práticas</div>
+            <ul class="check-list">
+              <li>Gestão de equipes em cozinha corporativa</li>
+              <li>Planejamento e execução de cardápios institucionais</li>
+              <li>Condução de auditorias internas de qualidade</li>
+              <li>Elaboração e manutenção de POPs e fichas técnicas</li>
+              <li>Controle de custo por refeição e desperdício</li>
+              <li>Interface com vigilância sanitária</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="section" id="sec-kpi">
+      <div class="sec-header"><div class="sec-icon">📊</div><h2>Indicadores de desempenho (KPIs)</h2></div>
+
+      <div class="hl-green">
+        <div class="hl-title">Como seu desempenho será medido</div>
+        <p>Seu resultado será avaliado em 3 pilares: <strong>qualidade e satisfação com as refeições, conformidade sanitária e eficiência operacional e financeira</strong>. Para o momento atual, foram priorizados os 5 KPIs de maior impacto — diretos, mensuráveis e alinhados com o desafio de estruturar a cozinha corporativa.</p>
+      </div>
+
+      <div class="kpi-item"><div class="kpi-badge">1</div><div>
+        <div class="kpi-label">Índice de satisfação dos colaboradores com as refeições</div>
+        <div class="kpi-meta">Meta: ≥ 85% de satisfação geral medido por pesquisa mensal (qualidade, variedade, temperatura e quantidade das refeições).</div>
+      </div></div>
+      <div class="kpi-item"><div class="kpi-badge">2</div><div>
+        <div class="kpi-label">Taxa de conformidade BPF/PPHO/HACCP em auditoria interna</div>
+        <div class="kpi-meta">Meta: ≥ 90% de conformidade nos itens verificados em auditoria interna mensal da cozinha, com redução progressiva de desvios recorrentes.</div>
+      </div></div>
+      <div class="kpi-item"><div class="kpi-badge">3</div><div>
+        <div class="kpi-label">Cumprimento do cardápio planejado</div>
+        <div class="kpi-meta">Meta: ≥ 95% das refeições entregues conforme cardápio aprovado, com substituições justificadas e documentadas como conformes.</div>
+      </div></div>
+      <div class="kpi-item"><div class="kpi-badge">4</div><div>
+        <div class="kpi-label">Controle de custo por refeição</div>
+        <div class="kpi-meta">Meta: custo médio por refeição dentro do orçamento definido pela gestão, com variação máxima de ±10% mensal e relatório consolidado.</div>
+      </div></div>
+      <div class="kpi-item"><div class="kpi-badge">5</div><div>
+        <div class="kpi-label">Pontualidade das refeições</div>
+        <div class="kpi-meta">Meta: ≥ 95% das refeições (café da manhã, almoço e jantar) servidas dentro da janela de horário planejada.</div>
+      </div></div>
+
+      <div class="card" style="margin-top:1rem;">
+        <div class="card-title">Indicadores de gestão — complementares</div>
+        <ul class="check-list">
+          <li>Índice de desperdício alimentar (sobra limpa) ≤ 10% do total preparado</li>
+          <li>Entregas do plano de expansão 24h dentro dos prazos acordados com a diretoria</li>
+          <li>1 feedback estruturado por colaborador da equipe de cozinha por mês, com registro no RH</li>
+          <li>Zero não conformidades críticas em inspeção da vigilância sanitária</li>
+        </ul>
+      </div>
+
+      <div class="hl-orange">
+        <div class="hl-title">Avaliação de desempenho</div>
+        <p>Você terá acesso ao <strong>Painel de Avaliação da Nutricionista Senior</strong>, onde ficará registrada a apuração mensal de cada indicador. A avaliação acontece mensalmente e os resultados são discutidos com o Gerente Operacional e o RH.</p>
+      </div>
+    </div>
+
+    <!-- PLANO 30/60/90 -->
+    <div class="section" id="sec-plan">
+      <div class="sec-header"><div class="sec-icon">📅</div><h2>Plano de imersão — primeiros 90 dias</h2></div>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem;">Cada fase tem um foco diferente: <strong>diagnosticar → estruturar → construir o futuro</strong>. Ao final dos 90 dias, você apresentará o plano de expansão da cozinha para 24 horas à diretoria.</p>
+
+      <div class="plan-grid">
+        <div class="plan-phase">
+          <div class="plan-header p1"><strong>Fase 1 — Diagnóstico</strong><small>Dias 1 a 30</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Apresentação à gerência, RH, equipe da cozinha e subsetor de qualidade</div>
+            <div class="plan-task">Imersão completa na cozinha: acompanhar os três turnos de refeição e mapear o funcionamento atual</div>
+            <div class="plan-task">Auditoria diagnóstica de BPF/PPHO na cozinha — levantamento de todos os desvios existentes</div>
+            <div class="plan-task">Análise dos cardápios, fichas técnicas e POPs existentes — identificar o que existe e o que falta</div>
+            <div class="plan-task">Entrevista com cada membro da equipe de cozinha para entender perfil, dificuldades e sugestões</div>
+            <div class="plan-task">Levantamento de custos atuais por refeição e análise de desperdício</div>
+            <div class="plan-task">1ª reunião de alinhamento com a gerência: expectativas, orçamento e prioridades do cargo</div>
+          </div>
+        </div>
+        <div class="plan-phase">
+          <div class="plan-header p2"><strong>Fase 2 — Estruturação</strong><small>Dias 31 a 60</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Elaboração e implantação dos POPs e checklists de qualidade da cozinha</div>
+            <div class="plan-task">1º cardápio mensal planejado, aprovado e sendo cumprido pela equipe</div>
+            <div class="plan-task">Implantação da rotina de auditorias internas mensais de BPF/PPHO</div>
+            <div class="plan-task">1ª pesquisa de satisfação aplicada aos colaboradores sobre as refeições</div>
+            <div class="plan-task">Controle de custos e desperdício estruturado e sendo monitorado</div>
+            <div class="plan-task">1ª rodada de feedbacks estruturados com toda a equipe de cozinha</div>
+            <div class="plan-task">Esboço do plano de expansão da cozinha para funcionamento 24h</div>
+          </div>
+        </div>
+        <div class="plan-phase">
+          <div class="plan-header p3"><strong>Fase 3 — Construção</strong><small>Dias 61 a 90</small></div>
+          <div class="plan-body">
+            <div class="plan-task orange">KPIs dos primeiros 3 meses apurados e apresentados à gerência</div>
+            <div class="plan-task orange">Plano formal de expansão 24h pronto para apresentação à diretoria</div>
+            <div class="plan-task orange">Cozinha operando com POPs documentados, cardápio cumprido e qualidade auditada</div>
+            <div class="plan-task orange">Equipe com feedbacks formais e planos de desenvolvimento individuais ativos</div>
+            <div class="plan-task orange">Interface com subsetor de qualidade estabelecida e funcionando de forma proativa</div>
+            <div class="plan-task orange">Índice de satisfação das refeições medido e com ações de melhoria em curso</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hl-orange">
+        <div class="hl-title">Entrega esperada ao fim dos 90 dias</div>
+        <p>Uma <strong>cozinha estruturada, documentada e mensurável</strong>: cardápios planejados, processos padronizados, qualidade auditada, equipe com feedbacks formais e um plano de expansão 24h consolidado e pronto para aprovação da diretoria.</p>
+      </div>
+    </div>
+
+    <!-- O QUE ESPERAMOS -->
+    <div class="section" id="sec-esp">
+      <div class="sec-header"><div class="sec-icon">🎯</div><h2>O que a Vitta Rio espera de você</h2></div>
+
+      <div class="card">
+        <div class="expect-item"><div class="expect-icon">🍽️</div><div>
+          <div class="expect-title">Refeições que fazem diferença — não apenas que alimentam</div>
+          <div class="expect-desc">Trabalhador de turno e plantão tem necessidades nutricionais específicas. Esperamos que você planeje cardápios que realmente apoiem o desempenho, a energia e a saúde dos colaboradores — não apenas cardápios que cumpram a tabela. Nutrição que impacta a operação de verdade.</div>
+        </div></div>
+        <div class="expect-item"><div class="expect-icon">📋</div><div>
+          <div class="expect-title">Processos documentados antes de expansão</div>
+          <div class="expect-desc">A cozinha 24h só será possível se os processos existentes estiverem documentados, testados e funcionando. Esperamos que você estruture a base antes de avançar — POPs, fichas técnicas, escalas, controles — porque escalar uma cozinha sem processos documentados gera caos, não crescimento.</div>
+        </div></div>
+        <div class="expect-item"><div class="expect-icon">🔗</div><div>
+          <div class="expect-title">Interface real com o subsetor de qualidade</div>
+          <div class="expect-desc">Você não gerencia a qualidade da distribuição — mas faz parte dela. Esperamos que você atue proativamente na interface com o subsetor de qualidade: alinhando padrões, participando de auditorias cruzadas e fortalecendo a cultura de segurança alimentar em toda a operação.</div>
+        </div></div>
+        <div class="expect-item"><div class="expect-icon">💰</div><div>
+          <div class="expect-title">Gestão de custos com responsabilidade</div>
+          <div class="expect-desc">Qualidade e custo não são opostos — são responsabilidades simultâneas. Esperamos que você entregue refeições de qualidade dentro do orçamento, reduza o desperdício e use estrategicamente os hortifruti da própria Vitta Rio — mostrando à empresa que a cozinha é eficiente além de boa.</div>
+        </div></div>
+        <div class="expect-item"><div class="expect-icon">👥</div><div>
+          <div class="expect-title">Liderança de equipe com desenvolvimento real</div>
+          <div class="expect-desc">A equipe de cozinha precisa de direção técnica, feedbacks claros e desenvolvimento contínuo. Esperamos que você seja uma liderança presente — que orienta, corrige, reconhece e desenvolve — e não apenas uma gestora que cobra resultados. Uma equipe desenvolvida entrega mais e depende menos de você.</div>
+        </div></div>
+        <div class="expect-item"><div class="expect-icon">📈</div><div>
+          <div class="expect-title">Plano de expansão 24h com cronograma real</div>
+          <div class="expect-desc">A expansão da cozinha para 24 horas é uma meta estratégica da empresa. Esperamos que você a trate como projeto — com diagnóstico, cronograma, etapas, recursos necessários e entrega formal à diretoria. Não como uma ideia futura, mas como uma construção com prazo e responsável.</div>
+        </div></div>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Uma mensagem direta</div>
+        <p>Você entra em um cargo que tem tudo para ser transformador — tanto para os colaboradores que serão bem alimentados quanto para a operação que se fortalece com uma cozinha estruturada. A Vitta Rio acredita que uma cozinha corporativa de referência é parte da identidade de uma empresa que cuida das pessoas. A gerência e o RH serão seus parceiros nessa construção. Seja bem-vinda.</p>
+      </div>
+
+      <div class="card" style="text-align:center;padding:2rem;">
+        <div style="font-size:32px;margin-bottom:0.75rem;">🌿</div>
+        <div style="font-size:16px;font-weight:700;color:var(--vr-green);margin-bottom:8px;">Vitta Rio — Distribuidora de Hortifruti</div>
+        <div style="font-size:13px;color:var(--text-muted);">Qualidade, compromisso e resultado em cada entrega.</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="footer"><strong>Vitta Rio Distribuidora de Hortifruti</strong> · Documento interno de uso exclusivo do colaborador e do RH · Revisão 00 · 27/05/2026</footer>
+
+<script>
+const sections = ['bv','resp','comp','kpi','plan','esp'];
+function goTo(id, el) {
+  sections.forEach(s => { document.getElementById('sec-' + s).classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

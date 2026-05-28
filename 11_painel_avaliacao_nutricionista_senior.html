@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação — Nutricionista Senior | VittaRio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+.topbar{background:#2E7D32;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left .logo{font-size:17px;font-weight:700;color:#fff}
+.topbar-left .sub{font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px}
+.topbar-badge{background:rgba(255,255,255,0.15);border-radius:100px;padding:4px 10px;font-size:11px;color:#fff;white-space:nowrap}
+.container{max-width:480px;margin:0 auto;padding:20px 16px 40px}
+.tab-bar{display:flex;background:#fff;border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.tab-btn{flex:1;padding:10px;border:none;background:transparent;border-radius:9px;font-size:13px;font-family:inherit;font-weight:500;color:#888;cursor:pointer;transition:all .15s}
+.tab-btn.active{background:#2E7D32;color:#fff}
+.intro-card{border-left:3px solid #2E7D32;padding:12px 14px;margin-bottom:24px;background:#fff;border-radius:0 10px 10px 0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.intro-card p{font-size:14px;color:#555;line-height:1.55}
+.intro-card strong{color:#2E7D32;font-weight:600}
+.nome-field{margin-bottom:16px}
+.nome-field label{font-size:13px;color:#666;display:block;margin-bottom:6px}
+.nome-field input{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:#1a1a1a;background:#fff}
+.nome-field input:focus{outline:none;border-color:#2E7D32}
+.periodo-field{margin-bottom:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.periodo-field label{font-size:13px;color:#666;display:block;margin-bottom:6px}
+.periodo-field select{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;color:#1a1a1a;background:#fff}
+.periodo-field select:focus{outline:none;border-color:#2E7D32}
+.section-label{font-size:11px;font-weight:600;color:#999;letter-spacing:.07em;text-transform:uppercase;margin:0 0 12px}
+.kpi-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.kpi-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.kpi-num{width:28px;height:28px;border-radius:50%;background:#EAF3DE;color:#3B6D11;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.kpi-body{flex:1}
+.kpi-title{font-size:15px;font-weight:600;color:#1a1a1a;line-height:1.3}
+.kpi-desc{font-size:13px;color:#666;margin-top:3px;line-height:1.45}
+.kpi-meta{font-size:12px;color:#888;background:#f5f5f3;border-radius:8px;padding:7px 10px;margin-top:10px;line-height:1.4}
+.kpi-meta span{font-weight:600;color:#2E7D32}
+.kpi-contexto{font-size:11px;color:#aaa;background:#fafaf8;border-radius:8px;padding:6px 10px;margin-top:6px;line-height:1.4;font-style:italic}
+.rating-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.rating-btn{border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 6px;background:#fff;cursor:pointer;font-size:12px;font-family:inherit;color:#555;text-align:center;transition:all .15s;line-height:1.3}
+.rating-btn:active{transform:scale(.97)}
+.rating-btn.sel-green{background:#EAF3DE;border-color:#639922;color:#3B6D11;font-weight:600}
+.rating-btn.sel-amber{background:#FFF8EC;border-color:#BA7517;color:#854F0B;font-weight:600}
+.rating-btn.sel-red{background:#FFF0F0;border-color:#A32D2D;color:#791F1F;font-weight:600}
+.resumo-card{background:#fff;border-radius:14px;padding:18px;margin-top:20px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:none}
+.resumo-titulo{font-size:13px;font-weight:600;color:#999;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+.resumo-info{font-size:12px;color:#888;margin-bottom:12px}
+.resumo-linha{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f0f0ee}
+.resumo-linha:last-of-type{border-bottom:none}
+.resumo-nome{font-size:13px;color:#444;max-width:65%;line-height:1.3}
+.badge{font-size:11px;font-weight:600;padding:4px 11px;border-radius:100px;white-space:nowrap}
+.badge-green{background:#EAF3DE;color:#3B6D11}
+.badge-amber{background:#FFF8EC;color:#854F0B}
+.badge-red{background:#FFF0F0;color:#791F1F}
+.badge-gray{background:#f0f0ee;color:#888}
+.resultado-final{margin-top:14px;padding-top:14px;border-top:2px solid #f0f0ee;display:flex;justify-content:space-between;align-items:center}
+.resultado-label{font-size:15px;font-weight:600;color:#1a1a1a}
+.plano-section{margin-top:16px}
+.plano-section label{font-size:13px;color:#666;display:block;margin-bottom:6px;font-weight:500}
+.plano-section textarea{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;color:#1a1a1a;resize:none;min-height:70px;background:#fafafa}
+.plano-section textarea:focus{outline:none;border-color:#2E7D32;background:#fff}
+.btn-salvar{width:100%;padding:14px;background:#2E7D32;border:none;border-radius:12px;font-size:15px;font-family:inherit;font-weight:600;color:#fff;cursor:pointer;margin-top:14px}
+.btn-salvar:active{background:#1B5E20}
+.btn-reiniciar{width:100%;padding:12px;background:transparent;border:1.5px solid #e0e0e0;border-radius:12px;font-size:14px;font-family:inherit;color:#888;cursor:pointer;margin-top:10px}
+.hist-card{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.hist-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.hist-meta{flex:1}
+.hist-nome{font-size:13px;font-weight:600;color:#1a1a1a}
+.hist-data{font-size:11px;color:#999;margin-top:2px}
+.hist-itens{font-size:12px;color:#666;line-height:1.8}
+.hist-obs{margin-top:8px;font-size:12px;color:#888;font-style:italic}
+.hist-plano{margin-top:8px;background:#EAF3DE;border-radius:8px;padding:8px 10px;font-size:12px;color:#3B6D11;line-height:1.4}
+.empty-hist{text-align:center;padding:32px 16px;color:#bbb;font-size:13px}
+.evolucao-wrap{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:none}
+.evolucao-wrap.visible{display:block}
+.evolucao-title{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
+.evolucao-bar-wrap{margin-bottom:8px}
+.evolucao-bar-label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:4px}
+.evolucao-bar-bg{background:#f0f0ee;border-radius:100px;height:8px;overflow:hidden}
+.evolucao-bar-fill{height:100%;border-radius:100px;transition:width .4s}
+.fill-green{background:#639922}.fill-amber{background:#BA7517}.fill-red{background:#A32D2D}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">VittaRio · Avaliação</div>
+    <div class="sub">Nutricionista de Planejamento Senior</div>
+  </div>
+  <div class="topbar-badge">Cozinha Corporativa</div>
+</div>
+
+<div class="container">
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('avaliacao',this)">Avaliar</button>
+    <button class="tab-btn" onclick="showTab('historico',this)">Histórico</button>
+    <button class="tab-btn" onclick="showTab('evolucao',this)">Evolução</button>
+  </div>
+
+  <div id="tab-avaliacao">
+    <div class="intro-card">
+      <p>Avaliação mensal de desempenho da <strong>Nutricionista de Planejamento Senior</strong>. Registre os resultados dos 5 KPIs prioritários e o plano de ação para o próximo período.</p>
+    </div>
+
+    <div class="nome-field">
+      <label>Nome do colaborador</label>
+      <input type="text" id="input-nome" placeholder="Digite o nome completo">
+    </div>
+    <div class="periodo-field">
+      <div>
+        <label>Mês de referência</label>
+        <select id="sel-mes">
+          <option value="">Selecionar</option>
+          <option>Janeiro</option><option>Fevereiro</option><option>Março</option>
+          <option>Abril</option><option>Maio</option><option>Junho</option>
+          <option>Julho</option><option>Agosto</option><option>Setembro</option>
+          <option>Outubro</option><option>Novembro</option><option>Dezembro</option>
+        </select>
+      </div>
+      <div>
+        <label>Ano</label>
+        <select id="sel-ano"><option>2026</option><option>2027</option><option>2028</option></select>
+      </div>
+    </div>
+
+    <div class="section-label">Indicadores de Desempenho (KPIs)</div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">1</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Índice de satisfação dos colaboradores</div>
+          <div class="kpi-desc">Satisfação geral com as refeições medida por pesquisa mensal (qualidade, variedade, temperatura e quantidade).</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: <span>≥ 85%</span> de satisfação geral na pesquisa mensal</div>
+      <div class="kpi-contexto">Pesquisa mensal aplicada aos colaboradores que utilizam a cozinha corporativa — consolidar resultado antes da avaliação</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi1','green')">✅ Atingiu<br><small>≥ 85%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi1','amber')">⚠️ Parcial<br><small>70–84%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi1','red')">❌ Abaixo<br><small>< 70%</small></button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">2</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Conformidade BPF/PPHO/HACCP em auditoria</div>
+          <div class="kpi-desc">% de conformidade nos itens verificados em auditoria interna mensal da cozinha corporativa.</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: <span>≥ 90%</span> de conformidade em auditoria interna mensal da cozinha</div>
+      <div class="kpi-contexto">Resultado da auditoria interna conduzida pela própria nutricionista ou pelo subsetor de qualidade — relatório consolidado</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi2','green')">✅ Atingiu<br><small>≥ 90%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi2','amber')">⚠️ Parcial<br><small>75–89%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi2','red')">❌ Abaixo<br><small>< 75%</small></button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">3</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Cumprimento do cardápio planejado</div>
+          <div class="kpi-desc">% das refeições entregues conforme cardápio aprovado no período, com substituições documentadas como conformes.</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: <span>≥ 95%</span> das refeições conforme cardápio planejado e aprovado</div>
+      <div class="kpi-contexto">Conferir registros de execução do cardápio — substituições justificadas e documentadas são aceitas como conformes</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi3','green')">✅ Atingiu<br><small>≥ 95%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi3','amber')">⚠️ Parcial<br><small>80–94%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi3','red')">❌ Abaixo<br><small>< 80%</small></button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">4</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Controle de custo por refeição</div>
+          <div class="kpi-desc">Custo médio por refeição dentro do orçamento definido pela gestão, com variação máxima de ±10% mensal.</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: <span>custo dentro do orçamento</span> com variação máxima de ±10% mensal</div>
+      <div class="kpi-contexto">Verificar relatório de custos consolidado do período — comparar com orçamento aprovado pela gerência</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi4','green')">✅ Dentro<br><small>Variação ≤ 10%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi4','amber')">⚠️ Atenção<br><small>10–20% acima</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi4','red')">❌ Acima<br><small>> 20% acima</small></button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">5</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Pontualidade das refeições</div>
+          <div class="kpi-desc">% das refeições (café, almoço e jantar) servidas dentro da janela de horário planejada no período.</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: <span>≥ 95%</span> das refeições servidas no horário planejado</div>
+      <div class="kpi-contexto">Verificar registros de abertura e encerramento de cada refeição — cruzar com janela de horário prevista no planejamento</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi5','green')">✅ Atingiu<br><small>≥ 95%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi5','amber')">⚠️ Parcial<br><small>80–94%</small></button>
+        <button class="rating-btn" onclick="rate(this,'kpi5','red')">❌ Abaixo<br><small>< 80%</small></button>
+      </div>
+    </div>
+
+    <div class="resumo-card" id="resumo-card">
+      <div class="resumo-titulo">Resumo da Avaliação</div>
+      <div class="resumo-info" id="resumo-info"></div>
+      <div id="resumo-linhas"></div>
+      <div class="resultado-final">
+        <div class="resultado-label">Resultado geral</div>
+        <div id="resultado-badge"></div>
+      </div>
+    </div>
+
+    <div class="plano-section" id="plano-section" style="display:none;">
+      <label>Observações e pontos de atenção do período</label>
+      <textarea id="input-obs" placeholder="Contexto, justificativas ou situações relevantes da cozinha corporativa neste período..."></textarea>
+      <label style="margin-top:12px;">Plano de ação para o próximo período</label>
+      <textarea id="input-plano" placeholder="Ações concretas para manter ou melhorar os resultados — cardápio, qualidade, equipe, custo, projeto 24h..."></textarea>
+    </div>
+
+    <button class="btn-salvar" id="btn-salvar" style="display:none;" onclick="salvarAvaliacao()">Salvar avaliação</button>
+    <button class="btn-reiniciar" onclick="reiniciar()">Limpar formulário</button>
+  </div>
+
+  <div id="tab-historico" style="display:none;">
+    <div class="section-label">Avaliações registradas</div>
+    <div id="historico-lista"><div class="empty-hist">Nenhuma avaliação registrada ainda.</div></div>
+  </div>
+
+  <div id="tab-evolucao" style="display:none;">
+    <div class="section-label">Evolução por indicador</div>
+    <div id="evolucao-content"><div class="empty-hist">Registre pelo menos uma avaliação para visualizar a evolução.</div></div>
+  </div>
+
+</div>
+
+<script>
+const ratings = {kpi1:null,kpi2:null,kpi3:null,kpi4:null,kpi5:null};
+const kpiLabels = {
+  kpi1:'Satisfação dos colaboradores',
+  kpi2:'Conformidade BPF/PPHO',
+  kpi3:'Cumprimento do cardápio',
+  kpi4:'Controle de custo',
+  kpi5:'Pontualidade das refeições'
+};
+
+function rate(btn, kpi, color) {
+  btn.closest('.rating-row').querySelectorAll('.rating-btn').forEach(b => b.className = 'rating-btn');
+  btn.classList.add('sel-' + color);
+  ratings[kpi] = color;
+  updateResumo();
+}
+
+function updateResumo() {
+  if (!Object.values(ratings).some(v => v !== null)) return;
+  document.getElementById('resumo-card').style.display = 'block';
+  document.getElementById('plano-section').style.display = 'block';
+  document.getElementById('btn-salvar').style.display = 'block';
+  const nome = document.getElementById('input-nome').value || 'Colaborador';
+  const mes = document.getElementById('sel-mes').value || '—';
+  const ano = document.getElementById('sel-ano').value;
+  document.getElementById('resumo-info').textContent = nome + ' · ' + mes + '/' + ano;
+  let html = ''; let greens = 0, reds = 0;
+  for (const [k,v] of Object.entries(ratings)) {
+    if (!v) continue;
+    const cls = v==='green'?'badge-green':v==='amber'?'badge-amber':'badge-red';
+    const lbl = v==='green'?'Atingiu':v==='amber'?'Parcial':'Abaixo';
+    html += `<div class="resumo-linha"><span class="resumo-nome">${kpiLabels[k]}</span><span class="badge ${cls}">${lbl}</span></div>`;
+    if (v==='green') greens++; else if (v==='red') reds++;
+  }
+  document.getElementById('resumo-linhas').innerHTML = html;
+  let res, cls;
+  if (greens >= 4) { res='🟢 Acima do esperado'; cls='badge-green'; }
+  else if (greens >= 3 && reds === 0) { res='🟢 Dentro do esperado'; cls='badge-green'; }
+  else if (reds >= 3) { res='🔴 Abaixo do esperado'; cls='badge-red'; }
+  else { res='🟡 Em desenvolvimento'; cls='badge-amber'; }
+  document.getElementById('resultado-badge').innerHTML = `<span class="badge ${cls}">${res}</span>`;
+}
+
+function salvarAvaliacao() {
+  const nome = document.getElementById('input-nome').value;
+  const mes = document.getElementById('sel-mes').value;
+  if (!nome || !mes) { alert('Preencha o nome e o mês antes de salvar.'); return; }
+  if (Object.values(ratings).filter(v=>v).length < 5) { alert('Avalie todos os 5 indicadores antes de salvar.'); return; }
+  const av = { id:Date.now(), nome, mes, ano:document.getElementById('sel-ano').value, data:new Date().toLocaleDateString('pt-BR'), ratings:{...ratings}, obs:document.getElementById('input-obs').value, plano:document.getElementById('input-plano').value };
+  const hist = JSON.parse(localStorage.getItem('vr_nut_senior_hist') || '[]');
+  hist.unshift(av);
+  localStorage.setItem('vr_nut_senior_hist', JSON.stringify(hist));
+  alert('Avaliação salva com sucesso!');
+  reiniciar(); renderHistorico();
+}
+
+function reiniciar() {
+  for (const k in ratings) ratings[k] = null;
+  document.querySelectorAll('.rating-btn').forEach(b => b.className = 'rating-btn');
+  ['input-nome','input-obs','input-plano'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('sel-mes').value = '';
+  document.getElementById('resumo-card').style.display = 'none';
+  document.getElementById('plano-section').style.display = 'none';
+  document.getElementById('btn-salvar').style.display = 'none';
+}
+
+function renderHistorico() {
+  const hist = JSON.parse(localStorage.getItem('vr_nut_senior_hist') || '[]');
+  const el = document.getElementById('historico-lista');
+  if (!hist.length) { el.innerHTML='<div class="empty-hist">Nenhuma avaliação registrada ainda.</div>'; return; }
+  el.innerHTML = hist.map(av => {
+    const g = Object.values(av.ratings).filter(v=>v==='green').length;
+    const r = Object.values(av.ratings).filter(v=>v==='red').length;
+    let rCls, rLbl;
+    if (g>=4){rCls='badge-green';rLbl='Acima do esperado';}
+    else if(g>=3&&r===0){rCls='badge-green';rLbl='Dentro do esperado';}
+    else if(r>=3){rCls='badge-red';rLbl='Abaixo do esperado';}
+    else{rCls='badge-amber';rLbl='Em desenvolvimento';}
+    const itens = Object.entries(av.ratings).map(([k,v])=>`${v==='green'?'✅':v==='amber'?'⚠️':'❌'} ${kpiLabels[k]}`).join('<br>');
+    return `<div class="hist-card"><div class="hist-header"><div class="hist-meta"><div class="hist-nome">${av.nome}</div><div class="hist-data">${av.mes}/${av.ano} · Salvo em ${av.data}</div></div><span class="badge ${rCls}">${rLbl}</span></div><div class="hist-itens">${itens}</div>${av.obs?`<div class="hist-obs">"${av.obs}"</div>`:''}${av.plano?`<div class="hist-plano">📌 Plano: ${av.plano}</div>`:''}</div>`;
+  }).join('');
+}
+
+function renderEvolucao() {
+  const hist = JSON.parse(localStorage.getItem('vr_nut_senior_hist') || '[]');
+  const el = document.getElementById('evolucao-content');
+  if (!hist.length) { el.innerHTML='<div class="empty-hist">Registre pelo menos uma avaliação para visualizar.</div>'; return; }
+  el.innerHTML = ['kpi1','kpi2','kpi3','kpi4','kpi5'].map(k => {
+    const t={g:0,a:0,r:0,n:0};
+    hist.forEach(av=>{if(av.ratings[k]){t[av.ratings[k][0]]++;t.n++;}});
+    const gP=t.n?Math.round(t.g/t.n*100):0, aP=t.n?Math.round(t.a/t.n*100):0, rP=t.n?Math.round(t.r/t.n*100):0;
+    return `<div class="evolucao-wrap visible"><div class="evolucao-title">${kpiLabels[k]}</div><div class="evolucao-bar-wrap"><div class="evolucao-bar-label"><span>✅ Atingiu</span><span>${gP}%</span></div><div class="evolucao-bar-bg"><div class="evolucao-bar-fill fill-green" style="width:${gP}%"></div></div></div><div class="evolucao-bar-wrap"><div class="evolucao-bar-label"><span>⚠️ Parcial</span><span>${aP}%</span></div><div class="evolucao-bar-bg"><div class="evolucao-bar-fill fill-amber" style="width:${aP}%"></div></div></div><div class="evolucao-bar-wrap"><div class="evolucao-bar-label"><span>❌ Abaixo</span><span>${rP}%</span></div><div class="evolucao-bar-bg"><div class="evolucao-bar-fill fill-red" style="width:${rP}%"></div></div></div></div>`;
+  }).join('');
+}
+
+function showTab(id, btn) {
+  ['avaliacao','historico','evolucao'].forEach(t => { document.getElementById('tab-'+t).style.display=t===id?'':'none'; });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (id==='historico') renderHistorico();
+  if (id==='evolucao') renderEvolucao();
+}
+renderHistorico();
+</script>
+</body>
+</html>
