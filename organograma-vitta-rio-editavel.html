@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organograma — Vitta Rio (Editável)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #00875A;
+  --green-dark: #006644;
+  --green-light: #E3FCEF;
+  --white: #ffffff;
+  --gray-50: #F8FAFC;
+  --gray-100: #EEF2F7;
+  --gray-200: #E2E8F0;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-700: #334155;
+  --gray-900: #0F172A;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.06);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --panel-w: 360px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(145deg, #F0F7F4 0%, #EEF2F7 60%, #F5F0FF 100%);
+  min-height: 100vh;
+  color: var(--gray-900);
+  padding: 36px 20px 90px;
+  transition: padding-right 0.3s ease;
+}
+body.panel-open { padding-right: calc(var(--panel-w) + 20px); }
+
+/* ─── HEADER ─────────────────────────────────────────── */
+.header { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 44px; }
+.logo-wrap {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--white); border-radius: 16px; padding: 14px 24px;
+  box-shadow: var(--shadow); border: 1px solid rgba(0,135,90,0.1);
+}
+.logo-mark { width: 40px; height: 40px; background: var(--green); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.logo-mark svg { width: 22px; height: 22px; }
+.logo-name { font-size: 24px; font-weight: 800; color: var(--gray-900); letter-spacing: -0.8px; }
+.logo-name span { color: var(--green); }
+.header-sub { font-size: 12.5px; color: var(--gray-500); letter-spacing: 0.3px; }
+.edit-mode-badge {
+  display: none; font-size: 11px; font-weight: 600;
+  background: #FEF3C7; color: #92400E;
+  padding: 4px 10px; border-radius: 20px; border: 1px solid #FDE68A;
+}
+.edit-mode-badge.visible { display: inline-block; }
+
+/* ─── TREE ───────────────────────────────────────────── */
+.tree { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+/* ─── DIRECTORS ──────────────────────────────────────── */
+.directors-row {
+  display: flex; align-items: stretch; gap: 0;
+  background: var(--green); border-radius: var(--radius);
+  box-shadow: var(--shadow-lg), 0 0 0 4px rgba(0,135,90,0.15);
+  overflow: hidden; min-width: 360px;
+}
+.director-card { flex: 1; padding: 18px 28px; text-align: center; color: white; position: relative; }
+.director-card + .director-card::before {
+  content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 1px; background: rgba(255,255,255,0.25);
+}
+.director-card .ceo-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 20px;
+  letter-spacing: 0.8px; margin-bottom: 6px; text-transform: uppercase;
+}
+.node-name { font-size: 16px; font-weight: 700; line-height: 1.3; }
+.node-role { font-size: 12px; opacity: 0.85; margin-top: 3px; font-weight: 500; }
+
+/* ─── CONNECTORS ─────────────────────────────────────── */
+.v-line { width: 2px; height: 30px; background: var(--gray-200); flex-shrink: 0; }
+.connector-row {
+  display: flex; align-items: flex-start; justify-content: center;
+  position: relative; width: 100%; max-width: 1320px;
+}
+.connector-row::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  height: 2px; background: var(--gray-200); width: var(--bar-width, 80%);
+}
+
+/* ─── DEPT COLUMNS ───────────────────────────────────── */
+.dept-col { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 148px; max-width: 185px; padding: 0 5px; }
+.dept-v-top { width: 2px; height: 28px; background: var(--gray-200); }
+
+/* ─── DEPT NODE ──────────────────────────────────────── */
+.dept-node {
+  width: 100%; border-radius: var(--radius); padding: 13px 12px 11px; text-align: center;
+  box-shadow: var(--shadow); transition: all 0.18s ease;
+  border: 1.5px solid transparent; user-select: none; position: relative;
+}
+.dept-node:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.dept-node.expanded { border-color: var(--dept-color); box-shadow: 0 0 0 3px var(--dept-glow), var(--shadow); transform: translateY(-2px); }
+.dept-node.editing-target { outline: 2px dashed #F59E0B; outline-offset: 3px; }
+.dept-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 15px; }
+.dept-name { font-size: 12px; font-weight: 700; color: var(--gray-900); line-height: 1.3; margin-bottom: 4px; }
+.dept-role { font-size: 10.5px; color: var(--gray-500); font-weight: 500; margin-bottom: 5px; }
+.dept-person { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+.expand-btn {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
+  margin-top: 4px; transition: all 0.15s; opacity: 0.75;
+}
+.edit-node-btn {
+  position: absolute; top: 6px; right: 6px;
+  width: 20px; height: 20px; border-radius: 6px;
+  background: rgba(255,255,255,0.8); border: 1px solid var(--gray-200);
+  cursor: pointer; display: none; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--gray-500); transition: all 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.edit-node-btn:hover { background: white; color: var(--green); border-color: var(--green); }
+.editing-active .dept-node .edit-node-btn { display: flex; }
+
+/* ─── CHILDREN PANEL ─────────────────────────────────── */
+.dept-v-bottom { width: 2px; height: 0; background: var(--dept-color); transition: height 0.25s ease; flex-shrink: 0; }
+.dept-node.expanded ~ .dept-v-bottom { height: 20px; }
+.children-panel { width: 100%; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.children-panel.open { max-height: 800px; }
+
+.child-card {
+  background: var(--white); border-radius: var(--radius-sm); padding: 8px 11px;
+  margin: 3px 0; box-shadow: var(--shadow-sm); border-left: 3px solid var(--dept-color);
+  transition: all 0.15s; position: relative;
+}
+.child-card:hover { box-shadow: var(--shadow); }
+.child-name { font-size: 11.5px; font-weight: 600; color: var(--gray-900); }
+.child-role { font-size: 10.5px; color: var(--gray-500); margin-top: 1px; }
+.child-card.vaga { background: #FAFAFA; border-left-color: #CBD5E1; opacity: 0.75; }
+.child-card.vaga .child-name { color: #94A3B8; font-style: italic; }
+.child-card.vaga .child-role { color: #CBD5E1; }
+.child-card.grupo { background: linear-gradient(90deg, #F0F9FF, #FAFAFA); border-left-style: dashed; }
+.child-card.grupo .child-name { color: var(--gray-700); }
+.vaga-tag { display: inline-block; font-size: 9px; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 1px 5px; border-radius: 6px; margin-left: 4px; vertical-align: middle; }
+.grupo-tag { display: inline-block; font-size: 9px; font-weight: 700; background: #DBEAFE; color: #1D4ED8; padding: 1px 5px; border-radius: 6px; margin-left: 4px; vertical-align: middle; }
+
+.child-edit-btn {
+  position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+  width: 18px; height: 18px; border-radius: 5px;
+  background: var(--gray-100); border: 1px solid var(--gray-200);
+  cursor: pointer; display: none; align-items: center; justify-content: center;
+  font-size: 9px; color: var(--gray-500); transition: all 0.15s;
+}
+.child-edit-btn:hover { background: var(--green-light); color: var(--green); border-color: var(--green); }
+.editing-active .child-card .child-edit-btn { display: flex; }
+
+/* ─── SUBDEPT ─────────────────────────────────────────── */
+.subdept-section { width: 100%; background: var(--white); border-radius: var(--radius-sm); margin: 3px 0; overflow: hidden; box-shadow: var(--shadow-sm); border-left: 3px solid var(--subdept-color); position: relative; }
+.subdept-header { padding: 8px 11px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: background 0.12s; }
+.subdept-header:hover { background: var(--gray-50); }
+.subdept-title { font-size: 11.5px; font-weight: 700; color: var(--gray-900); }
+.subdept-role { font-size: 10px; color: var(--gray-500); }
+.subdept-arrow { font-size: 9px; opacity: 0.5; transition: transform 0.2s; }
+.subdept-section.open .subdept-arrow { transform: rotate(180deg); }
+.subdept-children { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; border-top: 1px solid var(--gray-100); }
+.subdept-section.open .subdept-children { max-height: 400px; }
+.subdept-child { padding: 6px 11px 6px 16px; font-size: 10.5px; border-bottom: 1px solid var(--gray-100); position: relative; }
+.subdept-child:last-child { border-bottom: none; }
+.subdept-child-name { font-weight: 600; color: var(--gray-700); }
+.subdept-child-role { color: var(--gray-400); font-size: 10px; }
+.subdept-edit-btn {
+  position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+  width: 18px; height: 18px; border-radius: 5px;
+  background: var(--gray-100); border: 1px solid var(--gray-200);
+  cursor: pointer; display: none; align-items: center; justify-content: center;
+  font-size: 9px; color: var(--gray-500); transition: all 0.15s;
+}
+.subdept-edit-btn:hover { background: var(--green-light); color: var(--green); border-color: var(--green); }
+.editing-active .subdept-child .subdept-edit-btn { display: flex; }
+
+/* ─── EDIT PANEL (lateral) ───────────────────────────── */
+.edit-panel {
+  position: fixed; top: 0; right: calc(-1 * var(--panel-w) - 10px);
+  width: var(--panel-w); height: 100vh;
+  background: var(--white); border-left: 1px solid var(--gray-200);
+  box-shadow: -8px 0 30px rgba(0,0,0,0.1);
+  display: flex; flex-direction: column;
+  transition: right 0.3s ease;
+  z-index: 200; overflow: hidden;
+}
+.edit-panel.open { right: 0; }
+.panel-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--gray-100);
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+  color: white;
+}
+.panel-header h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.panel-header p { font-size: 11px; opacity: 0.8; }
+.panel-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(255,255,255,0.2); border: none; color: white;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: background 0.15s;
+}
+.panel-close:hover { background: rgba(255,255,255,0.35); }
+.panel-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.panel-section { font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; margin-top: 4px; }
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-group label { font-size: 11px; font-weight: 600; color: var(--gray-500); }
+.field-group input, .field-group select, .field-group textarea {
+  font-family: inherit; font-size: 12px; color: var(--gray-900);
+  border: 1.5px solid var(--gray-200); border-radius: 8px;
+  padding: 7px 10px; background: var(--gray-50);
+  transition: border-color 0.15s; width: 100%;
+}
+.field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+  outline: none; border-color: var(--green); background: white;
+}
+.field-group textarea { resize: none; height: 52px; }
+
+/* Person list in panel */
+.person-list { display: flex; flex-direction: column; gap: 6px; }
+.person-item {
+  background: var(--gray-50); border: 1.5px solid var(--gray-200);
+  border-radius: 8px; padding: 8px 10px; position: relative;
+}
+.person-item-fields { display: flex; flex-direction: column; gap: 4px; }
+.person-item input {
+  font-family: inherit; font-size: 11.5px; color: var(--gray-900);
+  border: 1px solid var(--gray-200); border-radius: 6px;
+  padding: 5px 8px; background: white; width: 100%; transition: border-color 0.15s;
+}
+.person-item input:focus { outline: none; border-color: var(--green); }
+.person-item input::placeholder { color: var(--gray-400); }
+.person-item-del {
+  position: absolute; top: 6px; right: 6px;
+  width: 18px; height: 18px; border-radius: 5px;
+  background: #FEE2E2; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: #DC2626; transition: background 0.15s;
+}
+.person-item-del:hover { background: #FECACA; }
+.add-person-btn {
+  font-family: inherit; font-size: 11px; font-weight: 600;
+  background: var(--green-light); color: var(--green-dark);
+  border: 1.5px dashed var(--green); border-radius: 8px;
+  padding: 7px 12px; cursor: pointer; transition: all 0.15s;
+  width: 100%;
+}
+.add-person-btn:hover { background: #c5f0db; }
+
+.panel-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--gray-100);
+  display: flex; gap: 8px;
+}
+.btn-save-changes {
+  flex: 1; font-family: inherit; font-size: 13px; font-weight: 600;
+  background: var(--green); color: white; border: none;
+  border-radius: 10px; padding: 10px; cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-save-changes:hover { background: var(--green-dark); }
+.btn-discard {
+  font-family: inherit; font-size: 12px; font-weight: 600;
+  background: var(--gray-100); color: var(--gray-600); border: none;
+  border-radius: 10px; padding: 10px 14px; cursor: pointer; transition: all 0.15s;
+}
+.btn-discard:hover { background: var(--gray-200); }
+
+/* ─── SECTION HEADER (Diretores) edit ───────────────── */
+.directors-section-panel { display: flex; flex-direction: column; gap: 8px; }
+.director-edit-row {
+  background: var(--green-light); border: 1.5px solid rgba(0,135,90,0.3);
+  border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px;
+}
+.director-edit-row input {
+  font-family: inherit; font-size: 12px; color: var(--gray-900);
+  border: 1px solid rgba(0,135,90,0.3); border-radius: 6px;
+  padding: 5px 8px; background: white; width: 100%; transition: border-color 0.15s;
+}
+.director-edit-row input:focus { outline: none; border-color: var(--green); }
+.director-label { font-size: 10px; font-weight: 700; color: var(--green-dark); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+
+/* ─── BOTTOM BAR ─────────────────────────────────────── */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--white); border-top: 1px solid var(--gray-200);
+  padding: 12px 20px; display: flex; align-items: center; justify-content: center;
+  gap: 10px; z-index: 100; box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  padding: 9px 18px; border-radius: 10px; border: none;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-primary { background: var(--green); color: white; }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-secondary { background: var(--gray-100); color: var(--gray-700); }
+.btn-secondary:hover { background: var(--gray-200); }
+.btn-outline { background: white; color: var(--green); border: 1.5px solid var(--green); }
+.btn-outline:hover { background: var(--green-light); }
+.btn-danger { background: #FEE2E2; color: #DC2626; }
+.btn-danger:hover { background: #FECACA; }
+
+/* Saved toast */
+.toast {
+  position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--gray-900); color: white; font-size: 12px; font-weight: 600;
+  padding: 8px 16px; border-radius: 20px; opacity: 0;
+  transition: all 0.3s; pointer-events: none; z-index: 300; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─── COLOR PICKER ───────────────────────────────────── */
+.color-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.color-swatch {
+  width: 24px; height: 24px; border-radius: 6px; border: 2px solid transparent;
+  cursor: pointer; transition: all 0.12s;
+}
+.color-swatch.selected { border-color: var(--gray-900); transform: scale(1.15); }
+
+/* ─── PRINT ──────────────────────────────────────────── */
+@media print {
+  body { background: white; padding: 10px; }
+  .bottom-bar, .edit-panel { display: none; }
+  .children-panel { max-height: none !important; display: block !important; }
+  .subdept-children { max-height: none !important; }
+}
+@media (max-width: 900px) { .dept-col { min-width: 130px; } }
+@media (max-width: 700px) {
+  .connector-row { flex-wrap: wrap; gap: 12px; }
+  .connector-row::before { display: none; }
+  .dept-col { min-width: 140px; max-width: 160px; }
+  .dept-v-top { display: none; }
+  :root { --panel-w: 300px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-wrap">
+    <div class="logo-mark">
+      <svg fill="none" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="white"/></svg>
+    </div>
+    <span class="logo-name">Vitta<span> Rio</span></span>
+  </div>
+  <div class="header-sub" id="headerSub">Organograma · Estrutura Organizacional 2025 · 130 colaboradores</div>
+  <div class="edit-mode-badge" id="editBadge">✏️ Modo de edição ativo — clique no ✏️ para editar qualquer item</div>
+</div>
+
+<div class="tree" id="tree"></div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="btn btn-secondary" onclick="expandAll()">⊞ Expandir tudo</button>
+  <button class="btn btn-secondary" onclick="collapseAll()">⊟ Recolher tudo</button>
+  <button class="btn btn-outline" id="editBtn" onclick="toggleEdit()">✏️ Modo Edição</button>
+  <button class="btn btn-secondary" onclick="openDiretoresPanel()">👑 Editar Diretoria</button>
+  <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir / PDF</button>
+</div>
+
+<!-- EDIT PANEL -->
+<div class="edit-panel" id="editPanel">
+  <div class="panel-header">
+    <h3 id="panelTitle">Editar</h3>
+    <p id="panelSubtitle">Altere os dados e clique em Salvar</p>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+  <div class="panel-footer">
+    <button class="btn-discard" onclick="closePanel()">Cancelar</button>
+    <button class="btn-save-changes" id="btnSave" onclick="savePanel()">✓ Salvar alterações</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────
+let data = {
+  diretores: [
+    { nome: "Fabiane", cargo: "Diretora Geral" },
+    { nome: "Adriano", cargo: "Diretor Geral" },
+  ],
+  setores: [
+    {
+      id: "adm", setor: "Adm. / Financeiro",
+      coordNome: "Nome do(a) Coord.", coordCargo: "Gerência Administrativo-Financeiro",
+      icon: "💰", color: "#D97706", glow: "rgba(217,119,6,0.12)", bg: "#FFFBEB", iconBg: "#FEF3C7",
+      cargos: [
+        { nome: "Nome", cargo: "Analista Financeiro Sênior" },
+        { nome: "Nome", cargo: "Analista de Faturamento" },
+        { nome: "Nome", cargo: "Assistente Administrativo" },
+        { nome: "Nome", cargo: "Assistente Financeiro" },
+        { nome: "Nome", cargo: "Auxiliar Administrativo" },
+      ]
+    },
+    {
+      id: "rh", setor: "RH / Gest. Pessoas",
+      coordNome: "Nome do(a) Coord.", coordCargo: "Gerência de RH / DP",
+      icon: "👥", color: "#7C3AED", glow: "rgba(124,58,237,0.12)", bg: "#F5F3FF", iconBg: "#EDE9FE",
+      cargos: [
+        { nome: "Nome", cargo: "Analista de RH" },
+        { nome: "Nome", cargo: "Analista de DP" },
+        { nome: "Nome", cargo: "Assistente de RH" },
+        { nome: "Nome", cargo: "Auxiliar de RH" },
+      ]
+    },
+    {
+      id: "ti", setor: "TI",
+      coordNome: "Fábio", coordCargo: "Gerente de TI",
+      icon: "💻", color: "#1D4ED8", glow: "rgba(29,78,216,0.12)", bg: "#EFF6FF", iconBg: "#DBEAFE",
+      cargos: [
+        { nome: "Leandro", cargo: "Assistente de TI" },
+      ]
+    },
+    {
+      id: "transp", setor: "Transporte",
+      coordNome: "Andrea", coordCargo: "Consultora / Gerência",
+      icon: "🚚", color: "#059669", glow: "rgba(5,150,105,0.12)", bg: "#ECFDF5", iconBg: "#D1FAE5",
+      cargos: [
+        { nome: "Frank", cargo: "Supervisor de Transporte" },
+        { nome: "Elaine", cargo: "Assistente Adm II" },
+        { nome: "Yuri", cargo: "Assistente Adm I" },
+        { nome: "— Vaga em aberto —", cargo: "Assistente Adm I", vaga: true },
+        { nome: "Júnior", cargo: "Analista de Logística II" },
+      ]
+    },
+    {
+      id: "compras", setor: "Compras",
+      coordNome: "Eduardo", coordCargo: "Gerente de Compras",
+      icon: "🛒", color: "#EA580C", glow: "rgba(234,88,12,0.12)", bg: "#FFF7ED", iconBg: "#FFEDD5",
+      cargos: [
+        { nome: "Alan", cargo: "Comprador" },
+        { nome: "Ana Paula", cargo: "Compradora" },
+        { nome: "Ana Maria", cargo: "Compradora" },
+        { nome: "Eduarda", cargo: "Assistente de Compras III" },
+        { nome: "Jairo", cargo: "Assistente de Compras I" },
+        { nome: "Leonardo", cargo: "Assistente de Compras I" },
+        { nome: "Mercillo", cargo: "Ajudante de Caminhão" },
+      ]
+    },
+    {
+      id: "comercial", setor: "Comercial / Televendas",
+      coordNome: "Fábio", coordCargo: "Gerente Comercial",
+      icon: "📞", color: "#0891B2", glow: "rgba(8,145,178,0.12)", bg: "#ECFEFF", iconBg: "#CFFAFE",
+      cargos: [
+        { nome: "Paulo", cargo: "Líder de Atendimento (Televendas)" },
+        { nome: "Letícia", cargo: "Operadora de Telemarketing Ativo" },
+        { nome: "Carol", cargo: "Auxiliar Administrativo" },
+        { nome: "Patrícia", cargo: "Assistente de Faturamento" },
+        { nome: "Inaise", cargo: "Assistente de Faturamento" },
+        { nome: "Oziel", cargo: "Auxiliar de Logística" },
+        { nome: "Representantes Externos", cargo: "Equipe externa de vendas", grupo: true },
+      ]
+    },
+    {
+      id: "operacional", setor: "Operacional",
+      coordNome: "Nome do(a) Coord.", coordCargo: "Coord. Operacional",
+      icon: "⚙️", color: "#DC2626", glow: "rgba(220,38,38,0.12)", bg: "#FEF2F2", iconBg: "#FEE2E2",
+      subSetores: [
+        {
+          nome: "Expedição", cor: "#DC2626",
+          supNome: "Nome do(a) Sup.", supCargo: "Supervisor(a) de Expedição",
+          cargos: [
+            { nome: "Nome", cargo: "Conferente Sênior" },
+            { nome: "Nome", cargo: "Auxiliar de Expedição" },
+            { nome: "Nome", cargo: "Conferente" },
+          ]
+        },
+        {
+          nome: "Logística / Rotas", cor: "#B45309",
+          supNome: "Nome do(a) Sup.", supCargo: "Supervisor(a) de Logística",
+          cargos: [
+            { nome: "Nome", cargo: "Analista de Logística" },
+            { nome: "Nome", cargo: "Roteirizador(a)" },
+            { nome: "Nome", cargo: "Auxiliar de Logística" },
+          ]
+        },
+        {
+          nome: "Qualidade", cor: "#6D28D9",
+          supNome: "Nome do(a) Sup.", supCargo: "Supervisor(a) de Qualidade",
+          cargos: [
+            { nome: "Nome", cargo: "Analista de Qualidade" },
+            { nome: "Nome", cargo: "Inspetor(a) de Qualidade" },
+            { nome: "Nome", cargo: "Auxiliar de Qualidade" },
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// Load from localStorage if available
+const saved = localStorage.getItem('vittaRioOrg');
+if (saved) { try { data = JSON.parse(saved); } catch(e) {} }
+
+let editMode = false;
+let currentPanelContext = null; // { type, setorIdx, itemIdx, subIdx }
+
+const PRESET_COLORS = [
+  { color: "#D97706", bg: "#FFFBEB", iconBg: "#FEF3C7", glow: "rgba(217,119,6,0.12)" },
+  { color: "#7C3AED", bg: "#F5F3FF", iconBg: "#EDE9FE", glow: "rgba(124,58,237,0.12)" },
+  { color: "#1D4ED8", bg: "#EFF6FF", iconBg: "#DBEAFE", glow: "rgba(29,78,216,0.12)" },
+  { color: "#059669", bg: "#ECFDF5", iconBg: "#D1FAE5", glow: "rgba(5,150,105,0.12)" },
+  { color: "#EA580C", bg: "#FFF7ED", iconBg: "#FFEDD5", glow: "rgba(234,88,12,0.12)" },
+  { color: "#0891B2", bg: "#ECFEFF", iconBg: "#CFFAFE", glow: "rgba(8,145,178,0.12)" },
+  { color: "#DC2626", bg: "#FEF2F2", iconBg: "#FEE2E2", glow: "rgba(220,38,38,0.12)" },
+  { color: "#BE185D", bg: "#FDF2F8", iconBg: "#FCE7F3", glow: "rgba(190,24,93,0.12)" },
+  { color: "#0D9488", bg: "#F0FDFA", iconBg: "#CCFBF1", glow: "rgba(13,148,136,0.12)" },
+  { color: "#475569", bg: "#F8FAFC", iconBg: "#E2E8F0", glow: "rgba(71,85,105,0.12)" },
+];
+
+// ─── BUILD ────────────────────────────────────────────────
+function build() {
+  const tree = document.getElementById('tree');
+  tree.innerHTML = '';
+
+  // Directors row
+  const dirRow = document.createElement('div');
+  dirRow.className = 'directors-row';
+  data.diretores.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'director-card';
+    card.innerHTML = `
+      <div class="ceo-tag">DIREÇÃO</div>
+      <div class="node-name">${d.nome}</div>
+      <div class="node-role">${d.cargo}</div>
+    `;
+    dirRow.appendChild(card);
+  });
+  tree.appendChild(dirRow);
+
+  const vl = document.createElement('div');
+  vl.className = 'v-line';
+  tree.appendChild(vl);
+
+  const cr = document.createElement('div');
+  cr.className = 'connector-row';
+
+  data.setores.forEach((s, si) => {
+    const col = document.createElement('div');
+    col.className = 'dept-col';
+
+    const vTop = document.createElement('div');
+    vTop.className = 'dept-v-top';
+    col.appendChild(vTop);
+
+    const node = document.createElement('div');
+    node.className = 'dept-node';
+    node.id = 'dept-' + s.id;
+    node.style.background = s.bg;
+    node.style.setProperty('--dept-color', s.color);
+    node.style.setProperty('--dept-glow', s.glow);
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'edit-node-btn';
+    editBtn.title = 'Editar setor';
+    editBtn.innerHTML = '✏️';
+    editBtn.onclick = (e) => { e.stopPropagation(); openSetorPanel(si); };
+    node.appendChild(editBtn);
+
+    const inner = document.createElement('div');
+    inner.innerHTML = `
+      <div class="dept-icon" style="background:${s.iconBg}">${s.icon}</div>
+      <div class="dept-name" style="color:${s.color}">${s.setor}</div>
+      <div class="dept-person" style="color:${s.color}">${s.coordNome}</div>
+      <div class="dept-role">${s.coordCargo}</div>
+      <div class="expand-btn" style="background:${s.iconBg};color:${s.color}" id="btn-${s.id}">
+        <span>▼</span> ver equipe
+      </div>
+    `;
+    node.appendChild(inner);
+    col.appendChild(node);
+
+    const vBot = document.createElement('div');
+    vBot.className = 'dept-v-bottom';
+    vBot.style.background = s.color;
+    vBot.id = 'vbot-' + s.id;
+    col.appendChild(vBot);
+
+    const panel = document.createElement('div');
+    panel.className = 'children-panel';
+    panel.id = 'panel-' + s.id;
+    panel.style.setProperty('--dept-color', s.color);
+
+    if (s.subSetores) {
+      s.subSetores.forEach((sub, subIdx) => {
+        const section = document.createElement('div');
+        section.className = 'subdept-section';
+        section.style.setProperty('--subdept-color', sub.cor);
+        section.style.borderLeftColor = sub.cor;
+
+        section.innerHTML = `
+          <div class="subdept-header">
+            <div>
+              <div class="subdept-title" style="color:${sub.cor}">${sub.nome}</div>
+              <div class="subdept-role">${sub.supNome} · ${sub.supCargo}</div>
+            </div>
+            <span class="subdept-arrow">▼</span>
+          </div>
+          <div class="subdept-children">
+            ${sub.cargos.map((c, ci) => `
+              <div class="subdept-child">
+                <div class="subdept-child-name">${c.nome}</div>
+                <div class="subdept-child-role">${c.cargo}</div>
+                <button class="subdept-edit-btn" onclick="openSubChildPanel(${si}, ${subIdx}, ${ci})" title="Editar">✏️</button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+
+        section.querySelector('.subdept-header').addEventListener('click', () => {
+          section.classList.toggle('open');
+        });
+
+        panel.appendChild(section);
+      });
+    } else {
+      s.cargos.forEach((c, ci) => {
+        const card = document.createElement('div');
+        card.className = 'child-card' + (c.vaga ? ' vaga' : '') + (c.grupo ? ' grupo' : '');
+        card.style.borderLeftColor = c.vaga ? '#CBD5E1' : s.color;
+        const extraTag = c.vaga ? '<span class="vaga-tag">VAGA</span>' : c.grupo ? '<span class="grupo-tag">GRUPO</span>' : '';
+        card.innerHTML = `
+          <div class="child-name">${c.nome}${extraTag}</div>
+          <div class="child-role">${c.cargo}</div>
+          <button class="child-edit-btn" onclick="openChildPanel(${si}, ${ci})" title="Editar">✏️</button>
+        `;
+        panel.appendChild(card);
+      });
+    }
+
+    col.appendChild(panel);
+
+    node.addEventListener('click', (e) => {
+      if (e.target.closest('.edit-node-btn')) return;
+      const isOpen = panel.classList.contains('open');
+      if (isOpen) {
+        panel.classList.remove('open');
+        node.classList.remove('expanded');
+        document.getElementById('btn-' + s.id).innerHTML = '<span>▼</span> ver equipe';
+        vBot.style.height = '0';
+      } else {
+        panel.classList.add('open');
+        node.classList.add('expanded');
+        document.getElementById('btn-' + s.id).innerHTML = '<span>▲</span> recolher';
+        vBot.style.height = '20px';
+      }
+    });
+
+    cr.appendChild(col);
+  });
+
+  tree.appendChild(cr);
+}
+
+// ─── EXPAND / COLLAPSE ───────────────────────────────────
+function expandAll() {
+  data.setores.forEach(s => {
+    const panel = document.getElementById('panel-' + s.id);
+    const node = document.getElementById('dept-' + s.id);
+    const vBot = document.getElementById('vbot-' + s.id);
+    const btn = document.getElementById('btn-' + s.id);
+    if (panel) {
+      panel.classList.add('open'); node.classList.add('expanded');
+      btn.innerHTML = '<span>▲</span> recolher'; vBot.style.height = '20px';
+    }
+  });
+  document.querySelectorAll('.subdept-section').forEach(s => s.classList.add('open'));
+}
+function collapseAll() {
+  data.setores.forEach(s => {
+    const panel = document.getElementById('panel-' + s.id);
+    const node = document.getElementById('dept-' + s.id);
+    const vBot = document.getElementById('vbot-' + s.id);
+    const btn = document.getElementById('btn-' + s.id);
+    if (panel) {
+      panel.classList.remove('open'); node.classList.remove('expanded');
+      btn.innerHTML = '<span>▼</span> ver equipe'; vBot.style.height = '0';
+    }
+  });
+  document.querySelectorAll('.subdept-section').forEach(s => s.classList.remove('open'));
+}
+
+// ─── EDIT MODE ────────────────────────────────────────────
+function toggleEdit() {
+  editMode = !editMode;
+  const btn = document.getElementById('editBtn');
+  const badge = document.getElementById('editBadge');
+  document.body.classList.toggle('editing-active', editMode);
+  if (editMode) {
+    btn.textContent = '✅ Sair da Edição';
+    btn.className = 'btn btn-primary';
+    badge.classList.add('visible');
+    expandAll();
+  } else {
+    btn.textContent = '✏️ Modo Edição';
+    btn.className = 'btn btn-outline';
+    badge.classList.remove('visible');
+    closePanel();
+  }
+}
+
+// ─── PANEL OPEN / CLOSE ───────────────────────────────────
+function openPanel(title, subtitle) {
+  document.getElementById('panelTitle').textContent = title;
+  document.getElementById('panelSubtitle').textContent = subtitle;
+  document.getElementById('editPanel').classList.add('open');
+  document.body.classList.add('panel-open');
+}
+function closePanel() {
+  document.getElementById('editPanel').classList.remove('open');
+  document.body.classList.remove('panel-open');
+  currentPanelContext = null;
+}
+
+// ─── SETOR PANEL ─────────────────────────────────────────
+function openSetorPanel(si) {
+  const s = data.setores[si];
+  currentPanelContext = { type: 'setor', si };
+  openPanel('Editar Setor', s.setor);
+
+  const body = document.getElementById('panelBody');
+  body.innerHTML = '';
+
+  // Setor info
+  body.innerHTML += `<div class="panel-section">Informações do Setor</div>`;
+  body.innerHTML += field('setor-nome', 'Nome do Setor', s.setor);
+  body.innerHTML += field('setor-icon', 'Ícone (emoji)', s.icon);
+  body.innerHTML += field('setor-coord', 'Nome do Responsável', s.coordNome);
+  body.innerHTML += field('setor-cargo', 'Cargo do Responsável', s.coordCargo);
+
+  // Color
+  body.innerHTML += `<div class="panel-section">Cor do Setor</div>`;
+  const colorDiv = document.createElement('div');
+  colorDiv.className = 'color-row';
+  PRESET_COLORS.forEach((c, ci) => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch' + (c.color === s.color ? ' selected' : '');
+    sw.style.background = c.color;
+    sw.dataset.ci = ci;
+    sw.onclick = () => {
+      document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('selected'));
+      sw.classList.add('selected');
+    };
+    colorDiv.appendChild(sw);
+  });
+  body.appendChild(colorDiv);
+
+  // Team
+  if (!s.subSetores) {
+    body.innerHTML += `<div class="panel-section">Equipe</div>`;
+    const list = document.createElement('div');
+    list.className = 'person-list';
+    list.id = 'person-list';
+    s.cargos.forEach((c, ci) => {
+      list.appendChild(personItem(ci, c.nome, c.cargo, c.vaga, c.grupo));
+    });
+    body.appendChild(list);
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-person-btn';
+    addBtn.textContent = '+ Adicionar pessoa';
+    addBtn.onclick = () => {
+      const list = document.getElementById('person-list');
+      const idx = list.children.length;
+      list.appendChild(personItem(idx, '', '', false, false));
+    };
+    body.appendChild(addBtn);
+  } else {
+    body.innerHTML += `<div class="panel-section">Subsetores (edite clicando no ✏️ de cada membro)</div>`;
+    s.subSetores.forEach((sub, subIdx) => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:8px;padding:10px;margin-bottom:6px;';
+      card.innerHTML = `
+        <div style="font-size:11px;font-weight:700;color:${sub.cor};margin-bottom:6px;">${sub.nome}</div>
+        ${field(`sub-${subIdx}-nome`, 'Nome do Subsetor', sub.nome)}
+        ${field(`sub-${subIdx}-sup`, 'Supervisor(a)', sub.supNome)}
+        ${field(`sub-${subIdx}-supcargo`, 'Cargo do Supervisor(a)', sub.supCargo)}
+      `;
+      body.appendChild(card);
+    });
+  }
+}
+
+function personItem(idx, nome, cargo, vaga, grupo) {
+  const div = document.createElement('div');
+  div.className = 'person-item';
+  div.dataset.idx = idx;
+  div.innerHTML = `
+    <div class="person-item-fields">
+      <input placeholder="Nome" value="${nome}" data-field="nome">
+      <input placeholder="Cargo" value="${cargo}" data-field="cargo">
+    </div>
+    <button class="person-item-del" onclick="this.closest('.person-item').remove()" title="Remover">✕</button>
+  `;
+  return div;
+}
+
+function field(id, label, value) {
+  return `<div class="field-group"><label>${label}</label><input id="${id}" value="${escHtml(value)}"></div>`;
+}
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+// ─── CHILD PANEL ─────────────────────────────────────────
+function openChildPanel(si, ci) {
+  const s = data.setores[si];
+  const c = s.cargos[ci];
+  currentPanelContext = { type: 'child', si, ci };
+  openPanel('Editar Colaborador', s.setor);
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div class="panel-section">Dados do Colaborador</div>
+    ${field('child-nome', 'Nome', c.nome)}
+    ${field('child-cargo', 'Cargo', c.cargo)}
+    <div class="panel-section">Tipo de entrada</div>
+    <div class="field-group">
+      <label>Tipo</label>
+      <select id="child-tipo">
+        <option value="normal" ${!c.vaga && !c.grupo ? 'selected' : ''}>Normal</option>
+        <option value="vaga" ${c.vaga ? 'selected' : ''}>Vaga em aberto</option>
+        <option value="grupo" ${c.grupo ? 'selected' : ''}>Grupo / Externo</option>
+      </select>
+    </div>
+    <div style="margin-top:8px">
+      <button class="btn btn-danger" style="font-size:12px;padding:8px 14px;border-radius:8px;width:100%" onclick="deleteChild(${si},${ci})">🗑 Remover este colaborador</button>
+    </div>
+  `;
+}
+
+function deleteChild(si, ci) {
+  if (!confirm('Remover este colaborador?')) return;
+  data.setores[si].cargos.splice(ci, 1);
+  saveData();
+  closePanel();
+  toast('Colaborador removido');
+}
+
+// ─── SUB-CHILD PANEL ──────────────────────────────────────
+function openSubChildPanel(si, subIdx, ci) {
+  const sub = data.setores[si].subSetores[subIdx];
+  const c = sub.cargos[ci];
+  currentPanelContext = { type: 'subchild', si, subIdx, ci };
+  openPanel('Editar Colaborador', sub.nome);
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `
+    <div class="panel-section">Dados do Colaborador</div>
+    ${field('sub-child-nome', 'Nome', c.nome)}
+    ${field('sub-child-cargo', 'Cargo', c.cargo)}
+    <div style="margin-top:8px">
+      <button class="btn btn-danger" style="font-size:12px;padding:8px 14px;border-radius:8px;width:100%" onclick="deleteSubChild(${si},${subIdx},${ci})">🗑 Remover este colaborador</button>
+    </div>
+  `;
+}
+
+function deleteSubChild(si, subIdx, ci) {
+  if (!confirm('Remover este colaborador?')) return;
+  data.setores[si].subSetores[subIdx].cargos.splice(ci, 1);
+  saveData();
+  closePanel();
+  toast('Colaborador removido');
+}
+
+// ─── DIRETORES PANEL ──────────────────────────────────────
+function openDiretoresPanel() {
+  currentPanelContext = { type: 'diretores' };
+  openPanel('Editar Diretoria', 'Altere nomes e cargos dos diretores');
+  const body = document.getElementById('panelBody');
+  body.innerHTML = `<div class="panel-section">Diretores</div>`;
+  const section = document.createElement('div');
+  section.className = 'directors-section-panel';
+  data.diretores.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.className = 'director-edit-row';
+    row.innerHTML = `
+      <div class="director-label">Diretor(a) ${i+1}</div>
+      <input id="dir-nome-${i}" value="${escHtml(d.nome)}" placeholder="Nome">
+      <input id="dir-cargo-${i}" value="${escHtml(d.cargo)}" placeholder="Cargo">
+    `;
+    section.appendChild(row);
+  });
+  body.appendChild(section);
+
+  body.innerHTML += `<div class="panel-section" style="margin-top:12px">Legenda do cabeçalho</div>`;
+  body.innerHTML += field('header-sub', 'Texto do subtítulo', document.getElementById('headerSub').textContent);
+}
+
+// ─── SAVE PANEL ───────────────────────────────────────────
+function savePanel() {
+  const ctx = currentPanelContext;
+  if (!ctx) return;
+
+  if (ctx.type === 'setor') {
+    const s = data.setores[ctx.si];
+    s.setor = v('setor-nome') || s.setor;
+    s.icon = v('setor-icon') || s.icon;
+    s.coordNome = v('setor-coord');
+    s.coordCargo = v('setor-cargo');
+
+    // Color
+    const sel = document.querySelector('.color-swatch.selected');
+    if (sel) {
+      const c = PRESET_COLORS[+sel.dataset.ci];
+      s.color = c.color; s.bg = c.bg; s.iconBg = c.iconBg; s.glow = c.glow;
+    }
+
+    // People
+    if (!s.subSetores) {
+      const items = document.querySelectorAll('.person-item');
+      s.cargos = Array.from(items).map(item => ({
+        nome: item.querySelector('[data-field="nome"]').value || 'Nome',
+        cargo: item.querySelector('[data-field="cargo"]').value || 'Cargo',
+      })).filter(c => c.nome || c.cargo);
+    } else {
+      s.subSetores.forEach((sub, subIdx) => {
+        sub.nome = v(`sub-${subIdx}-nome`) || sub.nome;
+        sub.supNome = v(`sub-${subIdx}-sup`) || sub.supNome;
+        sub.supCargo = v(`sub-${subIdx}-supcargo`) || sub.supCargo;
+      });
+    }
+
+  } else if (ctx.type === 'child') {
+    const c = data.setores[ctx.si].cargos[ctx.ci];
+    c.nome = v('child-nome');
+    c.cargo = v('child-cargo');
+    const tipo = document.getElementById('child-tipo').value;
+    c.vaga = tipo === 'vaga'; c.grupo = tipo === 'grupo';
+
+  } else if (ctx.type === 'subchild') {
+    const c = data.setores[ctx.si].subSetores[ctx.subIdx].cargos[ctx.ci];
+    c.nome = v('sub-child-nome');
+    c.cargo = v('sub-child-cargo');
+
+  } else if (ctx.type === 'diretores') {
+    data.diretores.forEach((d, i) => {
+      d.nome = v(`dir-nome-${i}`) || d.nome;
+      d.cargo = v(`dir-cargo-${i}`) || d.cargo;
+    });
+    const sub = v('header-sub');
+    if (sub) document.getElementById('headerSub').textContent = sub;
+  }
+
+  saveData();
+  closePanel();
+  toast('✓ Alterações salvas!');
+}
+
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+
+function saveData() {
+  localStorage.setItem('vittaRioOrg', JSON.stringify(data));
+  build();
+  if (editMode) {
+    document.body.classList.add('editing-active');
+    expandAll();
+  }
+}
+
+// ─── EXPORT / IMPORT ─────────────────────────────────────
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'organograma-vitta-rio.json';
+  a.click();
+  toast('📥 JSON exportado!');
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        data = JSON.parse(ev.target.result);
+        saveData();
+        toast('✓ Organograma importado!');
+      } catch { alert('Arquivo JSON inválido.'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function resetData() {
+  if (!confirm('Restaurar dados originais? Todas as edições serão perdidas.')) return;
+  localStorage.removeItem('vittaRioOrg');
+  location.reload();
+}
+
+// ─── TOAST ────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ─── ADD SETOR ────────────────────────────────────────────
+function addSetor() {
+  const nome = prompt('Nome do novo setor:');
+  if (!nome) return;
+  const id = 'setor_' + Date.now();
+  data.setores.push({
+    id, setor: nome,
+    coordNome: 'Nome do(a) Coord.', coordCargo: 'Gerência',
+    icon: '📋', color: '#475569', glow: 'rgba(71,85,105,0.12)', bg: '#F8FAFC', iconBg: '#E2E8F0',
+    cargos: []
+  });
+  saveData();
+  toast('✓ Setor "' + nome + '" adicionado!');
+}
+
+build();
+</script>
+
+<!-- Extra bottom bar actions -->
+<script>
+// Append extra buttons after DOM loads
+window.addEventListener('DOMContentLoaded', () => {
+  const bar = document.querySelector('.bottom-bar');
+  const extraBtns = `
+    <button class="btn btn-secondary" onclick="addSetor()" title="Adicionar novo setor ao organograma">＋ Setor</button>
+    <button class="btn btn-secondary" onclick="exportJSON()" title="Exportar dados em JSON para backup">⬇ Exportar</button>
+    <button class="btn btn-secondary" onclick="importJSON()" title="Importar dados de um JSON salvo">⬆ Importar</button>
+    <button class="btn btn-secondary" onclick="resetData()" title="Restaurar dados originais" style="color:#DC2626">↺ Resetar</button>
+  `;
+  bar.insertAdjacentHTML('beforeend', extraBtns);
+});
+</script>
+
+</body>
+</html>
