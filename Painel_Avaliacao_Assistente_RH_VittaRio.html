@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação — Assistente de RH | VittaRio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+
+.topbar{background:#2E7D32;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left .logo{font-size:17px;font-weight:700;color:#fff}
+.topbar-left .sub{font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px}
+.topbar-badge{background:rgba(255,255,255,0.15);border-radius:100px;padding:4px 10px;font-size:11px;color:#fff;white-space:nowrap}
+
+.container{max-width:480px;margin:0 auto;padding:20px 16px 40px}
+
+.tab-bar{display:flex;background:#fff;border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.tab-btn{flex:1;padding:10px;border:none;background:transparent;border-radius:9px;font-size:13px;font-family:inherit;font-weight:500;color:#888;cursor:pointer;transition:all .15s}
+.tab-btn.active{background:#2E7D32;color:#fff}
+
+.intro-card{border-left:3px solid #2E7D32;padding:12px 14px;margin-bottom:24px;background:#fff;border-radius:0 10px 10px 0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.intro-card p{font-size:14px;color:#555;line-height:1.55}
+.intro-card strong{color:#2E7D32;font-weight:600}
+
+.nome-field{margin-bottom:16px}
+.nome-field label{font-size:13px;color:#666;display:block;margin-bottom:6px}
+.nome-field input{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:#1a1a1a;background:#fff}
+.nome-field input:focus{outline:none;border-color:#2E7D32}
+
+.periodo-field{margin-bottom:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.periodo-field label{font-size:13px;color:#666;display:block;margin-bottom:6px}
+.periodo-field select{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;color:#1a1a1a;background:#fff}
+.periodo-field select:focus{outline:none;border-color:#2E7D32}
+
+.section-label{font-size:11px;font-weight:600;color:#999;letter-spacing:.07em;text-transform:uppercase;margin:0 0 12px}
+
+.kpi-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.kpi-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.kpi-num{width:28px;height:28px;border-radius:50%;background:#EAF3DE;color:#3B6D11;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.kpi-body{flex:1}
+.kpi-title{font-size:15px;font-weight:600;color:#1a1a1a;line-height:1.3}
+.kpi-desc{font-size:13px;color:#666;margin-top:3px;line-height:1.45}
+.kpi-meta{font-size:12px;color:#888;background:#f5f5f3;border-radius:8px;padding:7px 10px;margin-top:10px;line-height:1.4}
+.kpi-meta span{font-weight:600;color:#2E7D32}
+.kpi-contexto{font-size:11px;color:#aaa;background:#fafaf8;border-radius:8px;padding:6px 10px;margin-top:6px;line-height:1.4;font-style:italic}
+
+.rating-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.rating-btn{border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 6px;background:#fff;cursor:pointer;font-size:12px;font-family:inherit;color:#555;text-align:center;transition:all .15s;line-height:1.3}
+.rating-btn:active{transform:scale(.97)}
+.rating-btn.sel-green{background:#EAF3DE;border-color:#639922;color:#3B6D11;font-weight:600}
+.rating-btn.sel-amber{background:#FFF8EC;border-color:#BA7517;color:#854F0B;font-weight:600}
+.rating-btn.sel-red{background:#FFF0F0;border-color:#A32D2D;color:#791F1F;font-weight:600}
+
+.resumo-card{background:#fff;border-radius:14px;padding:18px;margin-top:20px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:none}
+.resumo-titulo{font-size:13px;font-weight:600;color:#999;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+.resumo-info{font-size:12px;color:#888;margin-bottom:12px}
+.resumo-linha{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f0f0ee}
+.resumo-linha:last-of-type{border-bottom:none}
+.resumo-nome{font-size:13px;color:#444;max-width:65%;line-height:1.3}
+.badge{font-size:11px;font-weight:600;padding:4px 11px;border-radius:100px;white-space:nowrap}
+.badge-green{background:#EAF3DE;color:#3B6D11}
+.badge-amber{background:#FFF8EC;color:#854F0B}
+.badge-red{background:#FFF0F0;color:#791F1F}
+.badge-gray{background:#f0f0ee;color:#888}
+
+.resultado-final{margin-top:14px;padding-top:14px;border-top:2px solid #f0f0ee;display:flex;justify-content:space-between;align-items:center}
+.resultado-label{font-size:15px;font-weight:600;color:#1a1a1a}
+
+.plano-section{margin-top:16px}
+.plano-section label{font-size:13px;color:#666;display:block;margin-bottom:6px;font-weight:500}
+.plano-section textarea{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;color:#1a1a1a;resize:none;min-height:70px;background:#fafafa}
+.plano-section textarea:focus{outline:none;border-color:#2E7D32;background:#fff}
+
+.btn-salvar{width:100%;padding:14px;background:#2E7D32;border:none;border-radius:12px;font-size:15px;font-family:inherit;font-weight:600;color:#fff;cursor:pointer;margin-top:14px}
+.btn-salvar:active{background:#1B5E20}
+.btn-reiniciar{width:100%;padding:12px;background:transparent;border:1.5px solid #e0e0e0;border-radius:12px;font-size:14px;font-family:inherit;color:#888;cursor:pointer;margin-top:10px}
+
+.hist-card{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.hist-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.hist-meta{flex:1}
+.hist-nome{font-size:13px;font-weight:600;color:#1a1a1a}
+.hist-data{font-size:11px;color:#999;margin-top:2px}
+.hist-itens{font-size:12px;color:#666;line-height:1.8}
+.hist-obs{margin-top:8px;font-size:12px;color:#888;font-style:italic}
+.hist-plano{margin-top:8px;background:#EAF3DE;border-radius:8px;padding:8px 10px;font-size:12px;color:#3B6D11;line-height:1.4}
+.empty-hist{text-align:center;padding:32px 16px;color:#bbb;font-size:13px}
+
+.evolucao-wrap{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:none}
+.evolucao-wrap.visible{display:block}
+.evolucao-title{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
+.evolucao-bar-wrap{margin-bottom:8px}
+.evolucao-bar-label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:4px}
+.evolucao-bar-bg{background:#f0f0ee;border-radius:100px;height:8px;overflow:hidden}
+.evolucao-bar-fill{height:100%;border-radius:100px;transition:width .4s}
+.fill-green{background:#639922}
+.fill-amber{background:#BA7517}
+.fill-red{background:#A32D2D}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">VittaRio</div>
+    <div class="sub">Avaliação de Desempenho — RH</div>
+  </div>
+  <div class="topbar-badge">Assistente de RH</div>
+</div>
+
+<div class="container">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('avaliar',this)">Avaliar</button>
+    <button class="tab-btn" onclick="showTab('historico',this)">Histórico</button>
+    <button class="tab-btn" onclick="showTab('evolucao',this)">Evolução</button>
+  </div>
+
+  <!-- ══════════ ABA AVALIAR ══════════ -->
+  <div id="tab-avaliar">
+    <div class="intro-card">
+      <p>Avalie o desempenho da Assistente de RH nos <strong>5 KPIs principais</strong>. Leva menos de 3 minutos.</p>
+    </div>
+
+    <div class="nome-field">
+      <label>Nome da assistente avaliada</label>
+      <input type="text" id="nome-rh" placeholder="Ex: Ana Lima">
+    </div>
+
+    <div class="periodo-field">
+      <div>
+        <label>Mês de referência</label>
+        <select id="mes-ref">
+          <option value="Janeiro">Janeiro</option>
+          <option value="Fevereiro">Fevereiro</option>
+          <option value="Março">Março</option>
+          <option value="Abril">Abril</option>
+          <option value="Maio" selected>Maio</option>
+          <option value="Junho">Junho</option>
+          <option value="Julho">Julho</option>
+          <option value="Agosto">Agosto</option>
+          <option value="Setembro">Setembro</option>
+          <option value="Outubro">Outubro</option>
+          <option value="Novembro">Novembro</option>
+          <option value="Dezembro">Dezembro</option>
+        </select>
+      </div>
+      <div>
+        <label>Ano</label>
+        <select id="ano-ref">
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="section-label">Indicadores de desempenho</p>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">1</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Cumprimento de prazos</div>
+          <div class="kpi-desc">As entregas e rotinas de RH estão sendo feitas dentro do prazo combinado?</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: cumprir no mínimo <span>95%</span> dos prazos das rotinas e entregas de RH</div>
+      <div class="kpi-contexto">Considere: publicação de vagas, agendamentos, envio de materiais, registros e documentos</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(0,'green',this)">✓ Sempre no prazo</button>
+        <button class="rating-btn" onclick="rate(0,'amber',this)">~ Alguns atrasos</button>
+        <button class="rating-btn" onclick="rate(0,'red',this)">✗ Muitos atrasos</button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">2</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Erros e retrabalho</div>
+          <div class="kpi-desc">Tem ocorrido erros que precisam ser corrigidos ou atividades refeitas?</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: índice máximo de <span>3%</span> de retrabalho por erros operacionais no mês</div>
+      <div class="kpi-contexto">Considere: formulários errados, arquivos mal nomeados, informações incorretas, comunicações com erros</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(1,'green',this)">✓ Poucos erros</button>
+        <button class="rating-btn" onclick="rate(1,'amber',this)">~ Alguns erros</button>
+        <button class="rating-btn" onclick="rate(1,'red',this)">✗ Muitos erros</button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">3</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Qualidade do onboarding</div>
+          <div class="kpi-desc">Os novos colaboradores estão passando pelo roteiro completo de integração?</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: <span>100%</span> dos novos colaboradores integrados com registro e evidência de conclusão</div>
+      <div class="kpi-contexto">Considere: checklist concluído, documentos assinados, registro no Drive e feedback do colaborador</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(2,'green',this)">✓ Todos integrados</button>
+        <button class="rating-btn" onclick="rate(2,'amber',this)">~ Integração incompleta</button>
+        <button class="rating-btn" onclick="rate(2,'red',this)">✗ Sem integração</button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">4</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Organização de documentos</div>
+          <div class="kpi-desc">Os arquivos e documentos de RH estão organizados, nomeados e acessíveis no Drive?</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: <span>100%</span> dos documentos organizados, sem pendências acima de <span>48h</span></div>
+      <div class="kpi-contexto">Considere: pastas organizadas, arquivos nomeados corretamente, nenhum documento perdido ou duplicado</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(3,'green',this)">✓ Tudo organizado</button>
+        <button class="rating-btn" onclick="rate(3,'amber',this)">~ Algumas pendências</button>
+        <button class="rating-btn" onclick="rate(3,'red',this)">✗ Desorganizado</button>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-header">
+        <div class="kpi-num">5</div>
+        <div class="kpi-body">
+          <div class="kpi-title">Autonomia operacional</div>
+          <div class="kpi-desc">Ela está conseguindo executar as tarefas do dia a dia sem precisar ser acionada o tempo todo?</div>
+        </div>
+      </div>
+      <div class="kpi-meta">Meta: executar no mínimo <span>80%</span> das demandas sem intervenção direta da liderança</div>
+      <div class="kpi-contexto">Evolução esperada nos primeiros 90 dias — avalie com base no tempo de casa</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(4,'green',this)">✓ Muito autônoma</button>
+        <button class="rating-btn" onclick="rate(4,'amber',this)">~ Precisa de suporte</button>
+        <button class="rating-btn" onclick="rate(4,'red',this)">✗ Depende muito</button>
+      </div>
+    </div>
+
+    <div class="resumo-card" id="resumo">
+      <div class="resumo-titulo">Resultado da avaliação</div>
+      <div class="resumo-info" id="resumo-info"></div>
+      <div id="resumo-itens"></div>
+      <div class="resultado-final">
+        <span class="resultado-label">Situação geral:</span>
+        <span id="badge-final" class="badge"></span>
+      </div>
+
+      <div class="plano-section" style="margin-top:16px">
+        <label>O que ela está indo muito bem</label>
+        <textarea id="obs-positivo" placeholder="Ex: organização do Drive, postura proativa no onboarding..."></textarea>
+      </div>
+      <div class="plano-section">
+        <label>O que precisa melhorar</label>
+        <textarea id="obs-melhoria" placeholder="Ex: precisa reduzir erros em formulários, melhorar agilidade nas respostas..."></textarea>
+      </div>
+      <div class="plano-section">
+        <label>Plano de ação / próximos passos</label>
+        <textarea id="obs-plano" placeholder="Ex: treinar no fluxo de R&S na semana que vem, acompanhar de perto o próximo onboarding..."></textarea>
+      </div>
+
+      <button class="btn-salvar" onclick="salvar()">Salvar avaliação</button>
+      <button class="btn-reiniciar" onclick="reiniciar()">Fazer nova avaliação</button>
+    </div>
+  </div>
+
+  <!-- ══════════ ABA HISTÓRICO ══════════ -->
+  <div id="tab-historico" style="display:none">
+    <p class="section-label">Avaliações salvas</p>
+    <div id="hist-lista"></div>
+  </div>
+
+  <!-- ══════════ ABA EVOLUÇÃO ══════════ -->
+  <div id="tab-evolucao" style="display:none">
+    <p class="section-label">Evolução por indicador</p>
+    <div id="evolucao-container"></div>
+    <div id="evolucao-vazio" class="empty-hist" style="display:none">Nenhuma avaliação salva ainda.<br>Faça a primeira avaliação para ver a evolução.</div>
+  </div>
+</div>
+
+<script>
+const ratings = {};
+const nomes = ['Cumprimento de prazos','Erros e retrabalho','Qualidade do onboarding','Organização de documentos','Autonomia operacional'];
+const labelMap = {green:'Bom',amber:'Atenção',red:'Problema'};
+const classMap = {green:'sel-green',amber:'sel-amber',red:'sel-red'};
+const badgeClass = {green:'badge-green',amber:'badge-amber',red:'badge-red'};
+const STORAGE_KEY = 'vittario_rh_hist';
+
+function rate(idx, cor, btn) {
+  ratings[idx] = cor;
+  btn.parentElement.querySelectorAll('.rating-btn').forEach(b => b.className = 'rating-btn');
+  btn.classList.add(classMap[cor]);
+  if (Object.keys(ratings).length === 5) mostrarResumo();
+}
+
+function mostrarResumo() {
+  const el = document.getElementById('resumo');
+  el.style.display = 'block';
+  const nome = document.getElementById('nome-rh').value.trim();
+  const mes = document.getElementById('mes-ref').value;
+  const ano = document.getElementById('ano-ref').value;
+  document.getElementById('resumo-info').textContent = (nome || 'Assistente') + ' · ' + mes + '/' + ano;
+  const container = document.getElementById('resumo-itens');
+  container.innerHTML = '';
+  let verdes = 0, ambers = 0, vermelhos = 0;
+  for (let i = 0; i < 5; i++) {
+    const cor = ratings[i] || 'gray';
+    if (cor === 'green') verdes++;
+    else if (cor === 'amber') ambers++;
+    else if (cor === 'red') vermelhos++;
+    const div = document.createElement('div');
+    div.className = 'resumo-linha';
+    div.innerHTML = '<span class="resumo-nome">' + nomes[i] + '</span><span class="badge ' + (badgeClass[cor] || 'badge-gray') + '">' + (labelMap[cor] || '-') + '</span>';
+    container.appendChild(div);
+  }
+  const bf = document.getElementById('badge-final');
+  if (vermelhos >= 2) { bf.textContent = 'Precisa de atenção urgente'; bf.className = 'badge badge-red'; }
+  else if (ambers >= 2 || vermelhos === 1) { bf.textContent = 'Alguns pontos a melhorar'; bf.className = 'badge badge-amber'; }
+  else { bf.textContent = 'Desempenho positivo'; bf.className = 'badge badge-green'; }
+  setTimeout(() => el.scrollIntoView({behavior:'smooth',block:'start'}), 100);
+}
+
+function salvar() {
+  const nome = document.getElementById('nome-rh').value.trim() || 'Não informado';
+  const mes = document.getElementById('mes-ref').value;
+  const ano = document.getElementById('ano-ref').value;
+  const positivo = document.getElementById('obs-positivo').value.trim();
+  const melhoria = document.getElementById('obs-melhoria').value.trim();
+  const plano = document.getElementById('obs-plano').value.trim();
+  const resultado = document.getElementById('badge-final').textContent;
+  const badgeCls = document.getElementById('badge-final').className.split(' ').find(c => c.startsWith('badge-')) || 'badge-gray';
+  const itens = Object.keys(ratings).map(i => ({nome: nomes[i], cor: ratings[i]}));
+  const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  hist.unshift({nome, mes, ano, periodo: mes + '/' + ano, resultado, badgeCls, itens, positivo, melhoria, plano, ts: Date.now()});
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(0, 24)));
+  alert('Avaliação salva com sucesso!');
+  reiniciar();
+  showTab('historico', document.querySelectorAll('.tab-btn')[1]);
+}
+
+function reiniciar() {
+  Object.keys(ratings).forEach(k => delete ratings[k]);
+  document.querySelectorAll('.rating-btn').forEach(b => b.className = 'rating-btn');
+  document.getElementById('resumo').style.display = 'none';
+  document.getElementById('obs-positivo').value = '';
+  document.getElementById('obs-melhoria').value = '';
+  document.getElementById('obs-plano').value = '';
+  document.getElementById('nome-rh').value = '';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderHistorico() {
+  const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const el = document.getElementById('hist-lista');
+  if (!hist.length) {
+    el.innerHTML = '<div class="empty-hist">Nenhuma avaliação salva ainda.</div>';
+    return;
+  }
+  el.innerHTML = hist.map(h => {
+    const itensHtml = h.itens.map(item => {
+      const labels = {green:'Bom',amber:'Atenção',red:'Problema'};
+      const bc = {green:'badge-green',amber:'badge-amber',red:'badge-red'};
+      return '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:6px;margin-bottom:4px"><span style="font-size:11px;color:#888">' + item.nome + ':</span><span class="badge ' + (bc[item.cor]||'badge-gray') + '" style="font-size:10px;padding:2px 7px">' + (labels[item.cor]||'-') + '</span></span>';
+    }).join('');
+    return `<div class="hist-card">
+      <div class="hist-header">
+        <div class="hist-meta">
+          <div class="hist-nome">${h.nome}</div>
+          <div class="hist-data">${h.periodo}</div>
+        </div>
+        <span class="badge ${h.badgeCls}">${h.resultado}</span>
+      </div>
+      <div style="margin-bottom:8px">${itensHtml}</div>
+      ${h.positivo ? '<div class="hist-obs">✓ ' + h.positivo + '</div>' : ''}
+      ${h.melhoria ? '<div class="hist-obs">→ ' + h.melhoria + '</div>' : ''}
+      ${h.plano ? '<div class="hist-plano">Plano de ação: ' + h.plano + '</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderEvolucao() {
+  const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const container = document.getElementById('evolucao-container');
+  const vazio = document.getElementById('evolucao-vazio');
+  if (!hist.length) { container.style.display = 'none'; vazio.style.display = 'block'; return; }
+  vazio.style.display = 'none'; container.style.display = 'block';
+  const ultimas = hist.slice(0, 6).reverse();
+  const pontos = {green: 3, amber: 2, red: 1};
+  let html = '';
+  nomes.forEach((nome, idx) => {
+    const scores = ultimas.map(h => {
+      const item = h.itens[idx];
+      return item ? pontos[item.cor] || 0 : 0;
+    });
+    const media = scores.length ? scores.reduce((a,b)=>a+b,0)/scores.length : 0;
+    const pct = Math.round((media/3)*100);
+    const fillCls = pct >= 80 ? 'fill-green' : pct >= 50 ? 'fill-amber' : 'fill-red';
+    const tendencia = scores.length >= 2 ? (scores[scores.length-1] > scores[0] ? ' ↑' : scores[scores.length-1] < scores[0] ? ' ↓' : '') : '';
+    html += `<div class="evolucao-bar-wrap">
+      <div class="evolucao-bar-label">
+        <span>${nome}${tendencia}</span>
+        <span>${pct}%</span>
+      </div>
+      <div class="evolucao-bar-bg"><div class="evolucao-bar-fill ${fillCls}" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+  const periodos = ultimas.map(h => h.mes ? h.mes.slice(0,3) + '/' + (h.ano||'') : h.periodo||'').join(' → ');
+  container.innerHTML = `<div class="kpi-card">
+    <div class="evolucao-title">Média dos últimos ${ultimas.length} ${ultimas.length === 1 ? 'mês' : 'meses'}</div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:14px">${periodos}</div>
+    ${html}
+    <div style="margin-top:12px;font-size:11px;color:#aaa">↑ melhora · ↓ piora · sem símbolo = estável</div>
+  </div>`;
+}
+
+function showTab(tab, btn) {
+  document.getElementById('tab-avaliar').style.display = 'none';
+  document.getElementById('tab-historico').style.display = 'none';
+  document.getElementById('tab-evolucao').style.display = 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).style.display = 'block';
+  if (btn) btn.classList.add('active');
+  if (tab === 'historico') renderHistorico();
+  if (tab === 'evolucao') renderEvolucao();
+}
+</script>
+</body>
+</html>

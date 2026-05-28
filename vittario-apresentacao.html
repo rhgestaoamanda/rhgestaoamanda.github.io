@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vittario — Apresentação Institucional</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; background: #FAF7F0; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* NAV */
+  #topnav {
+    background: #1C3829;
+    padding: 10px 28px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .brand {
+    color: #F0D28A;
+    font-size: 12px;
+    font-family: sans-serif;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-right: 16px;
+    text-transform: uppercase;
+  }
+  .navbtn {
+    background: transparent;
+    color: rgba(255,255,255,0.55);
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .navbtn.active {
+    background: #C8902A;
+    color: #fff;
+    font-weight: 700;
+  }
+  .navcount {
+    margin-left: auto;
+    color: rgba(255,255,255,0.35);
+    font-size: 11px;
+    font-family: sans-serif;
+  }
+
+  /* SLIDES */
+  .slide { display: none; min-height: 82vh; animation: fadeUp 0.25s ease; }
+  .slide.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* BOTTOM NAV */
+  #botnav {
+    background: #1C3829;
+    padding: 12px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    bottom: 0;
+  }
+  .navprev, .navnext {
+    border-radius: 4px;
+    padding: 6px 20px;
+    font-family: sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .navprev {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+  }
+  .navprev:disabled { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.2); cursor: default; }
+  .navnext {
+    background: #C8902A;
+    border: 1px solid #C8902A;
+    color: #fff;
+    font-weight: 600;
+  }
+  .navnext:disabled { background: transparent; border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.2); cursor: default; }
+  .dots { display: flex; gap: 6px; align-items: center; }
+  .dot {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 6px;
+    border: none;
+  }
+  .dot.active { width: 20px; background: #C8902A; }
+
+  /* SHARED */
+  .slide-inner { padding: 52px 8%; }
+  .tag {
+    display: inline-block;
+    background: #D4EDE3;
+    border-radius: 4px;
+    padding: 4px 12px;
+    margin-bottom: 14px;
+    font-family: sans-serif;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: #2A5C45;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  h1.title {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 400;
+    color: #1A1A18;
+    margin: 0 0 16px;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
+  h1.title em { font-style: italic; }
+  .lead {
+    font-family: sans-serif;
+    color: #6B7A72;
+    font-size: 15px;
+    max-width: 560px;
+    line-height: 1.75;
+    margin: 0 0 32px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding: 18px 18px;
+  }
+  .card-title { font-family: sans-serif; font-weight: 700; font-size: 13px; color: #1A1A18; margin-bottom: 6px; }
+  .card-text  { font-family: sans-serif; font-size: 12px; color: #6B7A72; line-height: 1.65; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 14px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; margin-bottom: 24px; }
+  .emo  { font-size: 22px; margin-bottom: 8px; }
+  .emo-lg { font-size: 40px; margin-bottom: 8px; }
+
+  /* CAPA */
+  #slide-capa {
+    background: linear-gradient(145deg, #1C3829 0%, #2A5C45 60%, #4A7C5E 100%);
+    min-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 10%;
+    position: relative;
+    overflow: hidden;
+  }
+  #slide-capa::before {
+    content:'';
+    position:absolute;top:-80px;right:-80px;width:320px;height:320px;
+    border-radius:50%;border:1px solid rgba(255,255,255,0.08);
+  }
+  #slide-capa::after {
+    content:'';
+    position:absolute;bottom:-60px;left:-60px;width:240px;height:240px;
+    border-radius:50%;border:1px solid rgba(255,255,255,0.06);
+  }
+  .capa-badge {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 6px 18px;
+    margin-bottom: 32px;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #F0D28A;
+    text-transform: uppercase;
+  }
+  .capa-h1 { color:#fff; font-size: clamp(36px,6vw,64px); font-weight:400; line-height:1.1; letter-spacing:-1px; margin-bottom:12px; }
+  .capa-h1 span { color:#F0D28A; font-style:italic; }
+  .capa-sub { color:rgba(255,255,255,0.65); font-size:16px; font-family:sans-serif; font-weight:300; max-width:480px; line-height:1.7; margin: 20px auto 48px; }
+  .capa-stats { display:flex; gap:32px; flex-wrap:wrap; justify-content:center; }
+  .stat-n { color:#F0D28A; font-size:28px; font-weight:700; line-height:1; }
+  .stat-l { color:rgba(255,255,255,0.5); font-size:11px; font-family:sans-serif; letter-spacing:1px; margin-top:4px; text-transform:uppercase; }
+
+  /* HISTORIA */
+  .timeline { display:flex; flex-direction:column; gap:0; margin-bottom:32px; }
+  .tl-item { display:flex; gap:24px; align-items:flex-start; padding-bottom:24px; }
+  .tl-item:last-child { padding-bottom:0; }
+  .tl-left { display:flex; flex-direction:column; align-items:center; width:64px; flex-shrink:0; }
+  .tl-ano { border-radius:6px; padding:4px 8px; font-size:11px; font-family:sans-serif; font-weight:700; letter-spacing:0.5px; text-align:center; white-space:nowrap; }
+  .tl-ano.past { background:#1C3829; color:#fff; }
+  .tl-ano.now  { background:#C8902A; color:#fff; }
+  .tl-line { width:1px; flex:1; min-height:24px; background:rgba(0,0,0,0.12); margin:6px 0; }
+  .tl-text { font-family:sans-serif; font-size:14px; color:#1A1A18; line-height:1.65; margin:3px 0 0; }
+  .hist-footer { background:#1C3829; border-radius:10px; padding:20px 28px; display:flex; gap:32px; flex-wrap:wrap; }
+  .hf-item { flex:1 1 160px; }
+  .hf-title { color:#F0D28A; font-size:13px; font-family:sans-serif; font-weight:700; margin-bottom:4px; }
+  .hf-text  { color:rgba(255,255,255,0.55); font-size:12px; font-family:sans-serif; line-height:1.5; }
+
+  /* CENARIO */
+  .quote-box {
+    background: rgba(200,144,42,0.1);
+    border: 1px solid rgba(200,144,42,0.3);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #1A1A18;
+    line-height: 1.7;
+    font-style: italic;
+  }
+  .card.top-green  { border-top: 3px solid #1C3829; }
+  .card.top-brown  { border-top: 3px solid #8B4513; }
+  .card.top-gold   { border-top: 3px solid #C8902A; }
+  .card.top-sage   { border-top: 3px solid #4A7C5E; }
+
+  /* MISSÃO */
+  .missao-box {
+    background: #1C3829;
+    border-radius: 12px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .missao-box::before {
+    content:'';position:absolute;top:-30px;right:-30px;
+    width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.04);
+  }
+  .visao-box {
+    background: #fff;
+    border: 2px solid #1C3829;
+    border-radius: 12px;
+    padding: 32px 28px;
+  }
+  .box-label {
+    font-family: sans-serif;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .box-text { font-size: 17px; line-height: 1.7; margin: 0; }
+  .why-box {
+    background: #D4EDE3;
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .why-label { font-size:11px; letter-spacing:2px; color:#2A5C45; text-transform:uppercase; font-weight:700; font-family:sans-serif; margin-bottom:8px; }
+  .why-text  { color:#1C3829; font-size:14px; line-height:1.7; font-family:sans-serif; }
+
+  /* VALORES */
+  .valor-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
+  .valor-btn {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 16px 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .valor-btn.sel {
+    background: #1C3829;
+    border-color: #1C3829;
+    transform: scale(1.02);
+  }
+  .valor-btn .vb-icon { font-size:22px; margin-bottom:6px; }
+  .valor-btn .vb-title { font-family:sans-serif; font-weight:700; font-size:13px; color:#1A1A18; }
+  .valor-btn.sel .vb-title { color:#F0D28A; }
+  .valor-detail {
+    background: #1C3829;
+    border-radius: 12px;
+    padding: 28px 32px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .vd-icon { font-size:40px; line-height:1; flex-shrink:0; }
+  .vd-label { font-family:sans-serif; font-size:10px; letter-spacing:2.5px; color:#F0D28A; text-transform:uppercase; font-weight:700; margin-bottom:8px; }
+  .vd-text  { color:#fff; font-size:15px; line-height:1.75; font-family:sans-serif; }
+
+  /* CULTURA */
+  .card.left-green { border-left: 3px solid #1C3829; }
+  .card.left-gold  { border-left: 3px solid #C8902A; }
+
+  /* ENCERRAMENTO */
+  #slide-enc {
+    background: linear-gradient(150deg, #1C3829 0%, #2A5C45 100%);
+    min-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 10%;
+    position: relative;
+    overflow: hidden;
+  }
+  #slide-enc::before {
+    content:'';position:absolute;bottom:-100px;right:-100px;
+    width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);
+  }
+  #slide-enc::after {
+    content:'';position:absolute;top:-60px;left:-60px;
+    width:280px;height:280px;border-radius:50%;border:1px solid rgba(255,255,255,0.05);
+  }
+  .enc-h1 { color:#fff; font-size:clamp(28px,5vw,48px); font-weight:400; line-height:1.2; letter-spacing:-0.5px; margin:0 0 16px; }
+  .enc-h1 span { color:#F0D28A; font-style:italic; }
+  .enc-sub { color:rgba(255,255,255,0.7); font-size:15px; font-family:sans-serif; line-height:1.75; max-width:560px; margin:0 auto 48px; }
+  .tags-wrap { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:48px; }
+  .enc-tag {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    color: #fff;
+    font-size: 12px;
+    font-family: sans-serif;
+    letter-spacing: 0.3px;
+  }
+  .enc-footer { border-top:1px solid rgba(255,255,255,0.15); padding-top:24px; color:rgba(255,255,255,0.35); font-size:11px; font-family:sans-serif; letter-spacing:1px; }
+
+  @media (max-width: 600px) {
+    .valor-grid { grid-template-columns: repeat(2,1fr); }
+    .slide-inner { padding: 32px 5%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav id="topnav">
+  <span class="brand">VITTARIO</span>
+  <button class="navbtn active" onclick="goTo(0)">Início</button>
+  <button class="navbtn" onclick="goTo(1)">História</button>
+  <button class="navbtn" onclick="goTo(2)">Cenário</button>
+  <button class="navbtn" onclick="goTo(3)">Missão &amp; Visão</button>
+  <button class="navbtn" onclick="goTo(4)">Valores</button>
+  <button class="navbtn" onclick="goTo(5)">Cultura</button>
+  <button class="navbtn" onclick="goTo(6)">Nosso Perfil</button>
+  <button class="navbtn" onclick="goTo(7)">Encerramento</button>
+  <span class="navcount" id="counter">1 / 8</span>
+</nav>
+
+<!-- ═══ SLIDE 0 — CAPA ═══════════════════════════════════ -->
+<div class="slide active" id="s0">
+  <div id="slide-capa">
+    <span class="capa-badge">Bem-vindo à Vittario</span>
+    <h1 class="capa-h1">Apresentação<br><span>Institucional</span></h1>
+    <p class="capa-sub">Quem somos, onde estamos e para onde vamos — com honestidade, clareza e propósito.</p>
+    <div class="capa-stats">
+      <div><div class="stat-n">27+</div><div class="stat-l">Anos de mercado</div></div>
+      <div><div class="stat-n">B2B</div><div class="stat-l">Distribuição especializada</div></div>
+      <div><div class="stat-n">RJ</div><div class="stat-l">Operação no Rio</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 1 — HISTÓRIA ══════════════════════════════ -->
+<div class="slide" id="s1">
+  <div class="slide-inner">
+    <span class="tag">Nossa história</span>
+    <h1 class="title">25 anos conectando <em style="color:#2A5C45">o campo à mesa</em></h1>
+    <p class="lead">A Vittario nasceu com uma missão simples e poderosa: levar alimentos frescos com qualidade, direto de quem produz para quem precisa. Em mais de duas décadas, essa essência nunca mudou.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-ano past">1998</span><div class="tl-line"></div></div>
+        <p class="tl-text">Fundação da Vitta Rio no Rio de Janeiro, com foco na distribuição de hortifruti direto do produtor para o setor alimentício.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-ano past">2000s</span><div class="tl-line"></div></div>
+        <p class="tl-text">Consolidação da operação com frota própria de caminhões isotérmicos, garantindo padrão de qualidade nas entregas diárias.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-ano past">2010s</span><div class="tl-line"></div></div>
+        <p class="tl-text">Expansão da carteira de clientes B2B — restaurantes, hotéis, supermercados e todo o setor de food service do Rio.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-ano now">Hoje</span></div>
+        <p class="tl-text">Uma das maiores distribuidoras de alimentos saudáveis do Brasil, em forte fase de crescimento e estruturação interna.</p>
+      </div>
+    </div>
+
+    <div class="hist-footer">
+      <div class="hf-item">
+        <div class="hf-title">Do produtor direto</div>
+        <div class="hf-text">Sem intermediários, garantindo frescor e preço competitivo para o cliente final.</div>
+      </div>
+      <div class="hf-item">
+        <div class="hf-title">Frota própria</div>
+        <div class="hf-text">Caminhões isotérmicos que mantêm a qualidade do produto do armazém até a entrega.</div>
+      </div>
+      <div class="hf-item">
+        <div class="hf-title">Entrega diária</div>
+        <div class="hf-text">Horário definido pelo cliente, com monitoramento de tempo e rotas otimizadas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 2 — CENÁRIO ══════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="slide-inner">
+    <span class="tag">Cenário atual</span>
+    <h1 class="title">Crescemos rápido. <em style="color:#C8902A">Agora estamos nos estruturando.</em></h1>
+    <p class="lead">Crescimento rápido é um privilégio — e também um desafio. Quando a operação expande mais rápido do que os processos conseguem acompanhar, é preciso parar, respirar e reconstruir as bases com intencionalidade. É exatamente isso que estamos fazendo.</p>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card top-green">
+        <div class="emo">🚀</div>
+        <div class="card-title">Crescimento acelerado</div>
+        <div class="card-text">Expandimos nossa operação e carteira de clientes de forma significativa em pouco tempo.</div>
+      </div>
+      <div class="card top-brown">
+        <div class="emo">⚙️</div>
+        <div class="card-title">Processos desatualizados</div>
+        <div class="card-text">O crescimento superou a capacidade dos fluxos internos de acompanhar. Isso criou gargalos reais.</div>
+      </div>
+      <div class="card top-gold">
+        <div class="emo">🔧</div>
+        <div class="card-title">Reestruturação em curso</div>
+        <div class="card-text">Estamos reorganizando setores, cargos e processos para construir uma operação mais madura e escalável.</div>
+      </div>
+      <div class="card top-sage">
+        <div class="emo">🌿</div>
+        <div class="card-title">Base para o futuro</div>
+        <div class="card-text">Essa fase é o alicerce para uma empresa mais sólida. Quem entra agora, entra para construir.</div>
+      </div>
+    </div>
+
+    <div class="quote-box">
+      "Transparência é um dos nossos valores. Por isso, queremos que você saiba exatamente onde estamos — e que o convite para fazer parte desse time vem com responsabilidade, não com respostas prontas."
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 3 — MISSÃO & VISÃO ══════════════════════ -->
+<div class="slide" id="s3">
+  <div class="slide-inner">
+    <span class="tag">Identidade organizacional</span>
+    <h1 class="title">Missão &amp; Visão</h1>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="missao-box">
+        <div class="box-label" style="color:#F0D28A">Nossa Missão</div>
+        <p class="box-text" style="color:#fff">Conectar o campo à mesa com excelência, levando alimentos frescos e saudáveis a quem precisa — com cuidado com o produtor, compromisso com o cliente e respeito por cada pessoa da nossa equipe.</p>
+      </div>
+      <div class="visao-box">
+        <div class="box-label" style="color:#1C3829">Nossa Visão</div>
+        <p class="box-text" style="color:#1A1A18">Ser a distribuidora de hortifruti mais confiável e estruturada do Brasil — reconhecida não apenas pela qualidade dos produtos, mas pela solidez dos nossos processos e pelo desenvolvimento contínuo das nossas pessoas.</p>
+      </div>
+    </div>
+
+    <div class="why-box">
+      <div class="why-label">Por que essa identidade importa?</div>
+      <p class="why-text">Missão e visão só têm valor quando guiam decisões reais. Aqui, elas não ficam na parede — elas definem como contratamos, como priorizamos e como avaliamos se estamos no caminho certo. Se você está lendo isso, é porque acreditamos que você pode ajudar a viver esses princípios todos os dias.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 4 — VALORES ══════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="slide-inner">
+    <span class="tag">Nossos valores</span>
+    <h1 class="title">O que guia <em style="color:#2A5C45">cada decisão</em></h1>
+    <p class="lead" style="margin-bottom:24px">Cada valor nasceu de metáforas do campo — porque acreditamos que a natureza do nosso negócio deve refletir a forma como nos comportamos. Clique em um valor para explorar.</p>
+
+    <div class="valor-grid" id="valorGrid"></div>
+    <div class="valor-detail" id="valorDetail"></div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 5 — CULTURA ══════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="slide-inner">
+    <span class="tag">Nossa cultura</span>
+    <h1 class="title">Como a Vittario <em style="color:#2A5C45">funciona por dentro</em></h1>
+    <p class="lead">Cultura não é o que está escrito — é o que acontece quando ninguém está olhando. Esses são os comportamentos que esperamos de todos, de estagiário a diretoria.</p>
+
+    <div class="grid-2">
+      <div class="card left-green">
+        <div class="card-title">Comunicação direta</div>
+        <div class="card-text">Valorizamos clareza. Aqui se diz o que se pensa, com respeito e intenção construtiva. Não há espaço para rodeios ou omissões.</div>
+      </div>
+      <div class="card left-gold">
+        <div class="card-title">Aprendizado contínuo</div>
+        <div class="card-text">Reconhecemos que ainda temos muito a melhorar — e isso não é fraqueza, é honestidade. Quem aprende rápido aqui, cresce junto.</div>
+      </div>
+      <div class="card left-green">
+        <div class="card-title">Resultado com responsabilidade</div>
+        <div class="card-text">Entregamos o que prometemos. E quando não conseguimos, comunicamos antes. Responsabilidade é inegociável.</div>
+      </div>
+      <div class="card left-gold">
+        <div class="card-title">Respeito ao processo</div>
+        <div class="card-text">Processos existem para proteger a operação e as pessoas. Quem respeita o fluxo, permite que todos avancem.</div>
+      </div>
+      <div class="card left-green">
+        <div class="card-title">Crescimento coletivo</div>
+        <div class="card-text">Aqui não se brilha sozinho. O sucesso de um setor alimenta o sucesso de toda a empresa.</div>
+      </div>
+      <div class="card left-gold">
+        <div class="card-title">Humanidade antes de tudo</div>
+        <div class="card-text">Lidamos com pessoas — e isso nunca será esquecido. Empatia, cuidado e consideração fazem parte do dia a dia.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 6 — PERFIL ═══════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="slide-inner">
+    <span class="tag">O profissional Vittario</span>
+    <h1 class="title">O que esperamos <em style="color:#C8902A">de você</em></h1>
+    <p class="lead">Não buscamos profissionais perfeitos. Buscamos pessoas comprometidas, que se autoconhecem, que crescem com feedback e que entendem que trabalho com propósito exige postura profissional consistente.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="emo">🧠</div>
+        <div class="card-title">Maturidade Profissional</div>
+        <div class="card-text">Age com senso crítico, respeita processos e entende que crescimento coletivo é mais valioso do que protagonismo individual.</div>
+      </div>
+      <div class="card">
+        <div class="emo">⚖️</div>
+        <div class="card-title">Equilíbrio Emocional</div>
+        <div class="card-text">Lida com pressão, mudanças e incertezas sem perder o foco. Sabe quando avançar e quando pausar para pensar.</div>
+      </div>
+      <div class="card">
+        <div class="emo">📋</div>
+        <div class="card-title">Organização</div>
+        <div class="card-text">Cuida do próprio trabalho, mantém registros, respeita prazos e contribui para a previsibilidade da operação.</div>
+      </div>
+      <div class="card">
+        <div class="emo">🔀</div>
+        <div class="card-title">Flexibilidade</div>
+        <div class="card-text">Adapta-se às mudanças sem resistência. Num ambiente em reestruturação, a capacidade de se ajustar é um diferencial real.</div>
+      </div>
+      <div class="card">
+        <div class="emo">🎯</div>
+        <div class="card-title">Autogestão</div>
+        <div class="card-text">Não precisa ser cobrado a cada passo. Planeja, executa e reporta com autonomia e responsabilidade.</div>
+      </div>
+      <div class="card">
+        <div class="emo">💡</div>
+        <div class="card-title">Proatividade com Dados</div>
+        <div class="card-text">Não espera ser perguntado. Traz análises, identifica oportunidades de melhoria e apresenta sugestões embasadas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 7 — ENCERRAMENTO ════════════════════════ -->
+<div class="slide" id="s7">
+  <div id="slide-enc">
+    <div style="font-size:40px;margin-bottom:24px">🌱</div>
+    <h1 class="enc-h1">Sua jornada na Vittario <span>começa agora.</span></h1>
+    <p class="enc-sub">Você entra em um momento de transformação real. Isso significa que suas contribuições têm peso e que há espaço para crescer junto com a empresa. Seja bem-vindo — e obrigado por escolher a Vittario.</p>
+    <div class="tags-wrap">
+      <span class="enc-tag">Faça perguntas</span>
+      <span class="enc-tag">Traga dados</span>
+      <span class="enc-tag">Proponha melhorias</span>
+      <span class="enc-tag">Respeite o processo</span>
+      <span class="enc-tag">Cresça com a gente</span>
+    </div>
+    <div class="enc-footer">VITTARIO · Distribuidora de Hortifruti · Desde 1998 · Rio de Janeiro</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="botnav">
+  <button class="navprev" id="btnPrev" onclick="prev()" disabled>← Anterior</button>
+  <div class="dots" id="dots"></div>
+  <button class="navnext" id="btnNext" onclick="next()">Próximo →</button>
+</nav>
+
+<script>
+  const TOTAL = 8;
+  let cur = 0;
+
+  const valores = [
+    { icon:"🌱", titulo:"Raiz",     descricao:"Honramos nossa história de mais de 25 anos. Crescemos sem perder nossa essência e o compromisso que nos trouxe até aqui." },
+    { icon:"💧", titulo:"Frescor",  descricao:"Não nos acomodamos. Renovamos processos, ideias e soluções com a mesma frequência que entregamos nossos produtos." },
+    { icon:"🌾", titulo:"Colheita", descricao:"Somos orientados a resultado. O que plantamos com qualidade, colhemos com orgulho — em produtos e em pessoas." },
+    { icon:"🪨", titulo:"Terreno",  descricao:"Construímos bases sólidas. Organização, processos e método são nosso alicerce para crescer de forma sustentável." },
+    { icon:"🔄", titulo:"Ciclo",    descricao:"Aprendemos com cada fase. Todo desafio é uma oportunidade de evoluir — individualmente e como empresa." },
+    { icon:"🔦", titulo:"Clareza",  descricao:"Comunicamos de forma direta, damos feedbacks honestos e agimos com transparência. Sem rodeios, com respeito." },
+  ];
+
+  let valorSel = 0;
+
+  function buildValores() {
+    const grid = document.getElementById('valorGrid');
+    grid.innerHTML = valores.map((v, i) =>
+      `<button class="valor-btn ${i===valorSel?'sel':''}" onclick="selectValor(${i})">
+        <div class="vb-icon">${v.icon}</div>
+        <div class="vb-title">${v.titulo}</div>
+      </button>`
+    ).join('');
+    const detail = document.getElementById('valorDetail');
+    const v = valores[valorSel];
+    detail.innerHTML = `
+      <div class="vd-icon">${v.icon}</div>
+      <div>
+        <div class="vd-label">${v.titulo}</div>
+        <p class="vd-text">${v.descricao}</p>
+      </div>`;
+  }
+
+  function selectValor(i) {
+    valorSel = i;
+    buildValores();
+  }
+
+  function buildDots() {
+    const d = document.getElementById('dots');
+    d.innerHTML = Array.from({length:TOTAL},(_,i)=>
+      `<button class="dot ${i===cur?'active':''}" onclick="goTo(${i})"></button>`
+    ).join('');
+  }
+
+  function goTo(idx) {
+    document.getElementById('s'+cur).classList.remove('active');
+    document.querySelectorAll('.navbtn')[idx].classList.add('active');
+    document.querySelectorAll('.navbtn')[cur].classList.remove('active');
+    cur = idx;
+    document.getElementById('s'+cur).classList.add('active');
+    document.getElementById('counter').textContent = (cur+1)+' / '+TOTAL;
+    document.getElementById('btnPrev').disabled = cur===0;
+    document.getElementById('btnNext').disabled = cur===TOTAL-1;
+    buildDots();
+    if (cur===4) buildValores();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function next() { if(cur<TOTAL-1) goTo(cur+1); }
+  function prev() { if(cur>0) goTo(cur-1); }
+
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight') next();
+    if(e.key==='ArrowLeft')  prev();
+  });
+
+  buildDots();
+  buildValores();
+</script>
+</body>
+</html>
