@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Templates de Mensagens — Vitta Rio RH</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gd:#0F6E56;--gm:#1D9E75;--gl:#E1F5EE;--gb:#5DCAA5;
+  --bd:#0C447C;--bl:#E6F1FB;--bb:#85B7EB;
+  --am:#854F0B;--al:#FAEEDA;--ab:#EF9F27;
+  --rm:#A32D2D;--rl:#FCEBEB;
+  --pm:#534AB7;--pl:#EEEDFE;
+  --bg:#F7F6F2;--lg:#F1EFE8;--bo:#D3D1C7;
+  --tx:#5F5E5A;--mu:#888780;--bk:#2C2C2A;--wh:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--bk);min-height:100vh;padding-bottom:5rem}
+.topbar{background:var(--wh);border-bottom:1px solid var(--bo);padding:0;position:sticky;top:0;z-index:100}
+.ti{max-width:860px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:11px;height:56px}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--gm);color:var(--wh);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bt{font-size:14px;font-weight:500;color:var(--bk)}
+.bs{font-size:12px;color:var(--tx)}
+.page{max-width:860px;margin:0 auto;padding:2rem 2rem 2rem}
+.hero{background:var(--wh);border:1px solid var(--bo);border-left:4px solid var(--gm);border-radius:0 12px 12px 0;padding:20px 24px;margin-bottom:1.5rem}
+.hero-t{font-size:19px;font-weight:500;color:var(--bk);margin-bottom:5px}
+.hero-s{font-size:13px;color:var(--tx);line-height:1.7}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.75rem}
+.how-card{background:var(--wh);border:1px solid var(--bo);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--tx);line-height:1.6}
+.how-card strong{color:var(--bk);font-size:13px;display:block;margin-bottom:3px}
+.how-card .num{font-size:18px;font-weight:500;color:var(--gm);margin-bottom:4px}
+.section-hdr{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin:1.5rem 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bo)}
+.tcard{background:var(--wh);border:1px solid var(--bo);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.tcard-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .15s}
+.tcard-head:hover{background:var(--bg)}
+.t-badge{display:inline-block;font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:10px;flex-shrink:0}
+.bg-inv{background:var(--bl);color:var(--bd)}
+.bg-tri{background:var(--lg);color:var(--tx)}
+.bg-rep{background:var(--rl);color:var(--rm)}
+.bg-apr{background:var(--gl);color:var(--gd)}
+.bg-ban{background:var(--pl);color:var(--pm)}
+.bg-rea{background:var(--al);color:var(--am)}
+.tcard-title{font-size:14px;font-weight:500;color:var(--bk);flex:1}
+.tcard-sub{font-size:12px;color:var(--mu);margin-top:1px}
+.tarrow{font-size:16px;color:var(--mu);transition:transform .2s;line-height:1;margin-left:auto}
+.tcard.open .tarrow{transform:rotate(90deg)}
+.tcard-body{display:none;padding:0 18px 18px}
+.tcard.open .tcard-body{display:block}
+.t-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;padding-top:4px;font-size:12px;color:var(--mu)}
+.t-meta span{display:flex;align-items:center;gap:5px}
+.t-meta strong{color:var(--tx)}
+.msg-box{background:var(--bg);border:1px solid var(--bo);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--tx);line-height:1.8;white-space:pre-wrap;font-family:'DM Sans',sans-serif;position:relative}
+.var-hint{background:var(--al);color:var(--am);border-radius:4px;padding:1px 6px;font-size:11px;font-weight:500}
+.btn-copy{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--wh);color:var(--tx);border:1px solid var(--bo);border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;margin-top:12px}
+.btn-copy:hover{background:var(--lg);color:var(--bk)}
+.copy-ok{font-size:12px;color:var(--gd);margin-left:8px;display:none}
+.copy-ok.show{display:inline}
+.tip-box{background:var(--gl);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:var(--gd);line-height:1.6}
+.tip-box strong{color:var(--bk)}
+.alert-box{background:var(--al);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:var(--am);line-height:1.6}
+.vars-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.var-pill{background:var(--al);color:var(--am);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:500;font-family:monospace}
+@media(max-width:500px){.page{padding:1.5rem 1rem 2rem}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="ti">
+    <div class="logo">VR</div>
+    <div><div class="bt">Vitta Rio · RH</div><div class="bs">Templates de mensagens — recrutamento e seleção</div></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-t">Templates de comunicação com candidatos</div>
+    <div class="hero-s">Mensagens padronizadas para cada etapa do processo seletivo. Personalize os campos destacados antes de enviar. A comunicação respeitosa com todos os candidatos — inclusive os reprovados — é parte da imagem da Vitta Rio como empregadora.</div>
+  </div>
+
+  <div class="how">
+    <div class="how-card"><div class="num">1</div><strong>Abra o template</strong>Clique na etapa desejada para expandir.</div>
+    <div class="how-card"><div class="num">2</div><strong>Personalize</strong>Substitua os campos em MAIÚSCULO pelo dado real do candidato.</div>
+    <div class="how-card"><div class="num">3</div><strong>Copie</strong>Use o botão "Copiar texto" e cole no WhatsApp ou e-mail.</div>
+    <div class="how-card"><div class="num">4</div><strong>Registre</strong>Marque o envio na aba "Feedbacks" da planilha ATS.</div>
+  </div>
+
+  <div class="section-hdr">Convite e agendamento</div>
+
+  <!-- T1 -->
+  <div class="tcard open" id="t1">
+    <div class="tcard-head" onclick="tog('t1')">
+      <span class="t-badge bg-inv">T1</span>
+      <div>
+        <div class="tcard-title">Convite para entrevista de RH</div>
+        <div class="tcard-sub">Enviar após aprovação na triagem de currículos</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp (preferencial) ou e-mail</span>
+        <span>⏱ <strong>Enviar:</strong> em até 24h após triagem</span>
+        <span>📋 <strong>Registrar:</strong> aba Pipeline — coluna "Data convite RH"</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">CARGO</span>
+        <span class="var-pill">DATA</span><span class="var-pill">HORÁRIO</span>
+        <span class="var-pill">FORMATO</span><span class="var-pill">LOCAL_OU_LINK</span>
+      </div>
+      <div class="msg-box" id="msg-t1">Olá, NOME! Tudo bem?
+
+Sou [seu nome], assistente de RH da Vitta Rio. Seu currículo foi selecionado para a vaga de CARGO e gostaríamos de te convidar para uma entrevista inicial com o nosso RH. 😊
+
+📅 Data: DATA
+🕐 Horário: HORÁRIO
+📍 Formato: FORMATO
+🔗 Local / link: LOCAL_OU_LINK
+
+A entrevista tem duração aproximada de 30 a 40 minutos.
+
+Você tem disponibilidade nesse horário? Caso não consiga, me fala outra opção para que possamos encaixar!
+
+Aguardo seu retorno. Qualquer dúvida, estou à disposição.
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t1','ok-t1')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t1">Copiado!</span>
+      <div class="tip-box"><strong>Dica:</strong> Envie sempre pelo WhatsApp se tiver o número — a taxa de resposta é muito maior do que por e-mail. Para cargos operacionais, prefira mensagem direta e simples, sem formalidade excessiva.</div>
+    </div>
+  </div>
+
+  <!-- T2 -->
+  <div class="tcard" id="t2">
+    <div class="tcard-head" onclick="tog('t2')">
+      <span class="t-badge bg-inv">T2</span>
+      <div>
+        <div class="tcard-title">Confirmação de entrevista agendada</div>
+        <div class="tcard-sub">Enviar 1 dia antes da entrevista como lembrete</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp</span>
+        <span>⏱ <strong>Enviar:</strong> na véspera da entrevista</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">CARGO</span>
+        <span class="var-pill">DATA</span><span class="var-pill">HORÁRIO</span>
+        <span class="var-pill">LOCAL_OU_LINK</span>
+      </div>
+      <div class="msg-box" id="msg-t2">Olá, NOME! 👋
+
+Passando para confirmar sua entrevista de RH amanhã para a vaga de CARGO na Vitta Rio.
+
+📅 DATA às HORÁRIO
+📍 LOCAL_OU_LINK
+
+Por favor, confirme sua presença respondendo esta mensagem. Caso precise reagendar, me avise com antecedência para que possamos reorganizar a agenda.
+
+Te esperamos! 😊
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t2','ok-t2')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t2">Copiado!</span>
+    </div>
+  </div>
+
+  <!-- T3 -->
+  <div class="tcard" id="t3">
+    <div class="tcard-head" onclick="tog('t3')">
+      <span class="t-badge bg-rea">T3</span>
+      <div>
+        <div class="tcard-title">Reagendamento de entrevista</div>
+        <div class="tcard-sub">Quando o RH ou o candidato precisa mudar o horário</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">NOVA_DATA</span>
+        <span class="var-pill">NOVO_HORÁRIO</span><span class="var-pill">LOCAL_OU_LINK</span>
+      </div>
+      <div class="msg-box" id="msg-t3">Olá, NOME!
+
+Precisamos reagendar sua entrevista. Pedimos desculpas pelo inconveniente!
+
+A nova data sugerida é:
+📅 NOVA_DATA às NOVO_HORÁRIO
+📍 LOCAL_OU_LINK
+
+Esse horário funciona para você? Se preferir, pode nos sugerir outra opção e encaixamos na agenda.
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t3','ok-t3')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t3">Copiado!</span>
+    </div>
+  </div>
+
+  <div class="section-hdr">Feedbacks de reprovação</div>
+
+  <!-- T4 -->
+  <div class="tcard" id="t4">
+    <div class="tcard-head" onclick="tog('t4')">
+      <span class="t-badge bg-tri">T4</span>
+      <div>
+        <div class="tcard-title">Reprovação na triagem de currículos</div>
+        <div class="tcard-sub">Candidato não avançou após análise do currículo</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp ou e-mail</span>
+        <span>⏱ <strong>Enviar:</strong> em até 5 dias úteis após triagem</span>
+        <span>📋 <strong>Registrar:</strong> aba Feedbacks da planilha</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">CARGO</span>
+      </div>
+      <div class="msg-box" id="msg-t4">Olá, NOME! Tudo bem?
+
+Obrigada pelo seu interesse na vaga de CARGO na Vitta Rio e pelo tempo dedicado ao processo.
+
+Após análise cuidadosa do seu currículo, decidimos seguir com candidatos cujo perfil está mais alinhado às necessidades específicas desta vaga no momento.
+
+Sua candidatura ficará registrada em nosso banco de talentos e, caso surja uma oportunidade compatível com o seu perfil, entraremos em contato.
+
+Desejamos muito sucesso na sua jornada profissional! 🙂
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t4','ok-t4')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t4">Copiado!</span>
+      <div class="alert-box"><strong>Importante:</strong> Não mencione o motivo específico da reprovação na triagem — isso pode gerar questionamentos desnecessários. A mensagem padrão é suficiente e respeitosa.</div>
+    </div>
+  </div>
+
+  <!-- T5 -->
+  <div class="tcard" id="t5">
+    <div class="tcard-head" onclick="tog('t5')">
+      <span class="t-badge bg-rep">T5</span>
+      <div>
+        <div class="tcard-title">Reprovação após entrevista de RH</div>
+        <div class="tcard-sub">Candidato passou da triagem mas não avançou para o líder</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp (preferencial)</span>
+        <span>⏱ <strong>Enviar:</strong> em até 3 dias úteis após entrevista</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">CARGO</span>
+      </div>
+      <div class="msg-box" id="msg-t5">Olá, NOME!
+
+Foi um prazer conversar com você durante nossa entrevista para a vaga de CARGO.
+
+Agradecemos muito pelo seu tempo e pela abertura em compartilhar sua trajetória conosco.
+
+Após uma avaliação cuidadosa, decidimos avançar com candidatos cujo perfil está mais alinhado às necessidades desta posição no momento. Essa é sempre uma decisão difícil, especialmente quando conversamos com pessoas tão dedicadas como você.
+
+Seu perfil ficará guardado em nosso banco de talentos e você será um dos primeiros a ser contactado em novas oportunidades que combinem com sua experiência.
+
+Desejamos muito sucesso! Qualquer dúvida, estou à disposição. 🙂
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t5','ok-t5')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t5">Copiado!</span>
+      <div class="tip-box"><strong>Dica:</strong> Para candidatos que se saíram bem mas não eram o perfil exato, você pode adicionar uma linha personalizada antes do encerramento, como: <em>"Sua experiência com [X] foi muito relevante e certamente será valorizada em futuras oportunidades."</em></div>
+    </div>
+  </div>
+
+  <!-- T6 -->
+  <div class="tcard" id="t6">
+    <div class="tcard-head" onclick="tog('t6')">
+      <span class="t-badge bg-rep">T6</span>
+      <div>
+        <div class="tcard-title">Reprovação após entrevista com o líder</div>
+        <div class="tcard-sub">Candidato chegou à etapa final mas não foi o escolhido</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp ou ligação + WhatsApp</span>
+        <span>⏱ <strong>Enviar:</strong> em até 2 dias úteis após decisão do líder</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">CARGO</span>
+      </div>
+      <div class="msg-box" id="msg-t6">Olá, NOME!
+
+Quero agradecer de verdade pelo tempo que você dedicou ao nosso processo seletivo para a vaga de CARGO. Foi muito bom conhecer você e entender mais sobre sua trajetória.
+
+Após as entrevistas com nosso time, tomamos a difícil decisão de seguir com outro candidato para esta posição. Isso não significa que seu perfil não seja excelente — neste momento específico, optamos por uma combinação diferente de competências.
+
+Você chegou às etapas finais do nosso processo, o que por si só já demonstra o seu nível. Gostaríamos muito de manter contato e te chamar quando surgir uma nova oportunidade compatível com o seu perfil.
+
+Muito obrigada e sucesso na sua jornada! 🌟
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t6','ok-t6')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t6">Copiado!</span>
+      <div class="tip-box"><strong>Boas práticas:</strong> Para candidatos finalistas, considere ligar antes de enviar a mensagem — demonstra mais cuidado e é a abordagem mais humana. Use a mensagem como complemento ou confirmação da ligação.</div>
+    </div>
+  </div>
+
+  <div class="section-hdr">Aprovação e contratação</div>
+
+  <!-- T7 -->
+  <div class="tcard" id="t7">
+    <div class="tcard-head" onclick="tog('t7')">
+      <span class="t-badge bg-apr">T7</span>
+      <div>
+        <div class="tcard-title">Comunicação de aprovação e proposta</div>
+        <div class="tcard-sub">Candidato aprovado — apresentação da oferta</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> Ligação + WhatsApp com resumo</span>
+        <span>⏱ <strong>Enviar:</strong> assim que o líder aprovar</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">CARGO</span>
+        <span class="var-pill">SALARIO</span><span class="var-pill">DATA_INICIO</span>
+        <span class="var-pill">BENEFICIOS</span>
+      </div>
+      <div class="msg-box" id="msg-t7">Olá, NOME! Tenho uma ótima notícia! 🎉
+
+Você foi aprovado(a) no processo seletivo para a vaga de CARGO na Vitta Rio! Parabéns — foi uma decisão muito positiva do nosso time!
+
+Seguem os detalhes da proposta:
+
+💼 Cargo: CARGO
+💰 Salário: SALARIO
+🎁 Benefícios: BENEFICIOS
+📅 Data de início prevista: DATA_INICIO
+📋 Regime: CLT
+
+Em breve entraremos em contato para alinhar os próximos passos da admissão e passar a lista de documentos necessários.
+
+Fico à disposição para qualquer dúvida. Seja bem-vindo(a) à equipe Vitta Rio! 💚
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t7','ok-t7')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t7">Copiado!</span>
+      <div class="alert-box"><strong>Atenção:</strong> Só envie esta mensagem após confirmação final da Amanda e do líder. A aprovação verbal não é suficiente — certifique-se de que a proposta foi validada antes de comunicar ao candidato.</div>
+    </div>
+  </div>
+
+  <!-- T8 -->
+  <div class="tcard" id="t8">
+    <div class="tcard-head" onclick="tog('t8')">
+      <span class="t-badge bg-apr">T8</span>
+      <div>
+        <div class="tcard-title">Solicitação de documentos para admissão</div>
+        <div class="tcard-sub">Após aceite da proposta</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp</span>
+        <span>⏱ <strong>Enviar:</strong> após confirmação do candidato</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">DATA_INICIO</span>
+        <span class="var-pill">PRAZO_DOCS</span>
+      </div>
+      <div class="msg-box" id="msg-t8">Olá, NOME! 😊
+
+Que bom ter você conosco! Para darmos andamento à sua admissão com início em DATA_INICIO, precisamos que você envie os seguintes documentos até PRAZO_DOCS:
+
+📄 Documentos necessários:
+• RG ou CNH (frente e verso)
+• CPF
+• Carteira de Trabalho (CTPS) — física ou digital
+• PIS / NIS (número)
+• Comprovante de residência atualizado (últimos 3 meses)
+• Comprovante de escolaridade
+• Foto 3x4 recente
+• Certidão de nascimento ou casamento
+• Dados bancários (banco, agência, conta e tipo)
+• Cartão do plano de saúde (se tiver)
+• Exame admissional (vamos agendar — confirme sua disponibilidade)
+
+Pode enviar por aqui mesmo (WhatsApp) ou trazer pessoalmente na sede.
+
+Qualquer dúvida, é só chamar! 🙂
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t8','ok-t8')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t8">Copiado!</span>
+    </div>
+  </div>
+
+  <div class="section-hdr">Banco de talentos</div>
+
+  <!-- T9 -->
+  <div class="tcard" id="t9">
+    <div class="tcard-head" onclick="tog('t9')">
+      <span class="t-badge bg-ban">T9</span>
+      <div>
+        <div class="tcard-title">Inclusão no banco de talentos</div>
+        <div class="tcard-sub">Candidato aprovado que não foi contratado agora</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp</span>
+        <span>⏱ <strong>Enviar:</strong> junto com o feedback de não aprovação desta vaga</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span>
+      </div>
+      <div class="msg-box" id="msg-t9">Olá, NOME!
+
+Além do retorno que já te dei sobre esta vaga, queria te informar que seu perfil foi incluído em nosso banco de talentos da Vitta Rio. 🌟
+
+Isso significa que, quando surgir uma nova oportunidade alinhada com sua experiência e competências, você será uma das primeiras pessoas que vamos contactar — sem precisar passar por todo o processo novamente.
+
+Manteremos seu contato ativo por 6 meses. Se nesse período houver alguma mudança de telefone ou disponibilidade, é só me avisar aqui.
+
+Muito obrigada e conte conosco! 💚
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t9','ok-t9')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t9">Copiado!</span>
+    </div>
+  </div>
+
+  <!-- T10 -->
+  <div class="tcard" id="t10">
+    <div class="tcard-head" onclick="tog('t10')">
+      <span class="t-badge bg-ban">T10</span>
+      <div>
+        <div class="tcard-title">Reativação do banco de talentos</div>
+        <div class="tcard-sub">Contactar candidato do banco para nova vaga</div>
+      </div>
+      <span class="tarrow">›</span>
+    </div>
+    <div class="tcard-body">
+      <div class="t-meta">
+        <span>📱 <strong>Canal:</strong> WhatsApp</span>
+      </div>
+      <div class="vars-row">
+        <span class="var-pill">NOME</span><span class="var-pill">CARGO</span><span class="var-pill">SETOR</span>
+      </div>
+      <div class="msg-box" id="msg-t10">Olá, NOME! Tudo bem?
+
+Aqui é [seu nome], do RH da Vitta Rio. Você participou do nosso processo seletivo há algum tempo e ficou em nosso banco de talentos.
+
+Surgiu uma nova vaga de CARGO no setor de SETOR e o seu perfil combinaria muito bem com o que estamos buscando!
+
+Você ainda tem interesse em oportunidades conosco? Se sim, podemos agendar uma conversa rápida para eu te passar mais detalhes e verificar seu interesse e disponibilidade atual.
+
+Aguardo seu retorno! 😊
+
+[seu nome] | RH Vitta Rio</div>
+      <button class="btn-copy" onclick="copiar('msg-t10','ok-t10')">Copiar texto</button>
+      <span class="copy-ok" id="ok-t10">Copiado!</span>
+      <div class="tip-box"><strong>Dica:</strong> Verifique na planilha banco de talentos se o candidato ainda está dentro do prazo de validade (6 meses) antes de contactar.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function tog(id){
+  var c=document.getElementById(id);
+  c.classList.toggle('open');
+}
+function copiar(msgId, okId){
+  var txt=document.getElementById(msgId).textContent;
+  navigator.clipboard.writeText(txt.trim()).then(function(){
+    var ok=document.getElementById(okId);
+    ok.classList.add('show');
+    setTimeout(function(){ok.classList.remove('show')},2500);
+  }).catch(function(){
+    var el=document.getElementById(msgId);
+    var range=document.createRange();
+    range.selectNodeContents(el);
+    var sel=window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    var ok=document.getElementById(okId);
+    ok.classList.add('show');
+    setTimeout(function(){ok.classList.remove('show')},2500);
+  });
+}
+</script>
+</body>
+</html>
