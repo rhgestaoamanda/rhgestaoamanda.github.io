@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel RH — Vitta Rio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green-dark:#0F6E56;--green-mid:#1D9E75;--green-light:#E1F5EE;--green-border:#5DCAA5;
+  --blue-light:#E6F1FB;--blue-mid:#185FA5;--blue-dark:#0C447C;--blue-border:#85B7EB;
+  --amber-light:#FAEEDA;--amber-mid:#854F0B;--amber-border:#EF9F27;
+  --red-light:#FCEBEB;--red-mid:#A32D2D;--red-border:#F09595;
+  --purple-light:#EEEDFE;--purple-mid:#534AB7;
+  --gray-bg:#F7F6F2;--gray-light:#F1EFE8;--gray-border:#D3D1C7;
+  --gray-text:#5F5E5A;--gray-muted:#888780;--black:#2C2C2A;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--gray-bg);color:var(--black);min-height:100vh}
+
+.top-bar{background:var(--white);border-bottom:1px solid var(--gray-border);padding:0}
+.top-inner{max-width:960px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:0;justify-content:space-between}
+.top-left{display:flex;align-items:center;gap:12px;padding:14px 0}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:var(--green-mid);display:flex;align-items:center;justify-content:center;color:var(--white);font-size:13px;font-weight:500;flex-shrink:0}
+.top-title{font-size:14px;font-weight:500;color:var(--black)}
+.top-sub{font-size:12px;color:var(--gray-text)}
+.top-right{font-size:12px;color:var(--gray-text);display:flex;align-items:center;gap:6px}
+.rh-badge{background:var(--green-light);color:var(--green-dark);border:0.5px solid var(--green-border);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+
+.tabs-bar{background:var(--white);border-bottom:1px solid var(--gray-border)}
+.tabs-inner{max-width:960px;margin:0 auto;padding:0 2rem;display:flex;gap:0}
+.tab{padding:12px 18px;font-size:13px;font-weight:500;color:var(--gray-text);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.tab.active{color:var(--green-dark);border-bottom-color:var(--green-dark)}
+.tab:hover:not(.active){color:var(--black)}
+.tab-badge{font-size:11px;background:var(--gray-light);padding:1px 7px;border-radius:10px;color:var(--gray-text)}
+.tab.active .tab-badge{background:var(--green-light);color:var(--green-dark)}
+
+.page{max-width:960px;margin:0 auto;padding:2rem 2rem 5rem}
+.view{display:none}.view.active{display:block}
+
+/* ── DASHBOARD ── */
+.dash-title{font-size:18px;font-weight:500;color:var(--black);margin-bottom:4px}
+.dash-sub{font-size:13px;color:var(--gray-text);margin-bottom:1.5rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem}
+.stat-card{background:var(--white);border:1px solid var(--gray-border);border-radius:12px;padding:16px 18px}
+.stat-label{font-size:11px;color:var(--gray-text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.stat-val{font-size:28px;font-weight:500;color:var(--black)}
+.stat-val.danger{color:var(--red-mid)}
+.stat-val.warning{color:var(--amber-mid)}
+.stat-val.success{color:var(--green-dark)}
+.stat-val.info{color:var(--blue-dark)}
+.stat-sub{font-size:11px;color:var(--gray-muted);margin-top:3px}
+
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem}
+@media(max-width:640px){.dash-grid{grid-template-columns:1fr}}
+.dash-card{background:var(--white);border:1px solid var(--gray-border);border-radius:12px;padding:18px 20px}
+.dash-card-title{font-size:13px;font-weight:500;color:var(--black);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px}
+.bar-label{width:110px;color:var(--gray-text);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:7px;background:var(--gray-light);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.bar-num{width:24px;text-align:right;color:var(--gray-muted);font-weight:500}
+.list-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--gray-border);font-size:13px}
+.list-item:last-child{border-bottom:none}
+.li-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.li-dot.alta{background:var(--red-mid)}
+.li-dot.media{background:var(--amber-border)}
+.li-dot.baixa{background:var(--green-mid)}
+.li-cargo{font-weight:500;color:var(--black);line-height:1.3}
+.li-meta{font-size:11px;color:var(--gray-muted);margin-top:1px}
+
+/* ── HISTÓRICO ── */
+.hist-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.search-wrap{flex:1;min-width:200px;position:relative}
+.search-wrap input{width:100%;padding:8px 10px 8px 34px;border:1px solid var(--gray-border);border-radius:8px;font-size:13px;background:var(--white);color:var(--black);font-family:inherit;outline:none;transition:border-color .15s}
+.search-wrap input:focus{border-color:var(--green-border)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-muted)}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.f-btn{padding:5px 13px;border:1px solid var(--gray-border);border-radius:20px;font-size:12px;font-weight:500;color:var(--gray-text);background:var(--white);cursor:pointer;font-family:inherit;transition:all .15s}
+.f-btn:hover{background:var(--gray-light)}
+.f-btn.active{background:var(--gray-light);color:var(--black);border-color:var(--gray-muted)}
+.sort-select{padding:6px 10px;border:1px solid var(--gray-border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--white);color:var(--gray-text);cursor:pointer;appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+
+.empty-state{text-align:center;padding:4rem 1rem;color:var(--gray-text)}
+.empty-icon{font-size:42px;margin-bottom:12px;opacity:.35}
+.empty-title{font-size:15px;font-weight:500;color:var(--black);margin-bottom:5px}
+.empty-sub{font-size:13px}
+
+.vaga-card{background:var(--white);border:1px solid var(--gray-border);border-radius:12px;padding:16px 20px;margin-bottom:10px;transition:border-color .15s}
+.vaga-card:hover{border-color:var(--gray-muted)}
+.vc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--blue-light);color:var(--blue-dark);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.vc-cargo{font-size:15px;font-weight:500;color:var(--black);margin-bottom:2px}
+.vc-meta{font-size:12px;color:var(--gray-text)}
+.vc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-left:auto;align-items:flex-start}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:3px 9px;border-radius:10px}
+.p-alta{background:var(--red-light);color:var(--red-mid)}
+.p-media{background:var(--amber-light);color:var(--amber-mid)}
+.p-baixa{background:var(--green-light);color:var(--green-dark)}
+.p-neutral{background:var(--gray-light);color:var(--gray-text)}
+.p-blue{background:var(--blue-light);color:var(--blue-dark)}
+.p-conf{background:var(--purple-light);color:var(--purple-mid)}
+.p-status-novo{background:var(--blue-light);color:var(--blue-dark)}
+.p-status-em-andamento{background:var(--amber-light);color:var(--amber-mid)}
+.p-status-concluido{background:var(--green-light);color:var(--green-dark)}
+.p-status-cancelado{background:var(--gray-light);color:var(--gray-text)}
+
+.vc-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;border-top:1px solid var(--gray-border);padding-top:12px;margin-bottom:8px}
+.vd-item{display:flex;flex-direction:column;gap:2px}
+.vd-lbl{font-size:10px;color:var(--gray-muted);text-transform:uppercase;letter-spacing:.05em}
+.vd-val{font-size:12px;color:var(--black);font-weight:500}
+
+.vc-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--gray-border);padding-top:10px;margin-top:4px}
+.status-select{font-size:12px;padding:5px 26px 5px 10px;border:1px solid var(--gray-border);border-radius:6px;background:var(--white);color:var(--black);cursor:pointer;font-family:inherit;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.action-btn{font-size:12px;padding:5px 12px;border:1px solid var(--gray-border);border-radius:6px;background:var(--white);color:var(--gray-text);cursor:pointer;font-family:inherit;transition:background .15s;display:inline-flex;align-items:center;gap:5px}
+.action-btn:hover{background:var(--gray-light)}
+.action-btn.danger:hover{background:var(--red-light);color:var(--red-mid);border-color:var(--red-border)}
+.expand-btn{font-size:12px;color:var(--gray-muted);cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:5px 0;border:none;background:none;font-family:inherit;margin-left:auto;transition:color .15s}
+.expand-btn:hover{color:var(--black)}
+.vaga-extra{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-border)}
+.vaga-extra.open{display:block}
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.extra-block{background:var(--gray-light);border-radius:8px;padding:12px 14px}
+.extra-label{font-size:10px;font-weight:500;color:var(--gray-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.extra-text{font-size:13px;color:var(--gray-text);line-height:1.6}
+
+.rh-note-wrap{margin-top:10px}
+.rh-note-input{width:100%;font-size:12px;padding:8px 10px;border:1px solid var(--gray-border);border-radius:6px;font-family:inherit;background:var(--white);color:var(--black);resize:none;min-height:58px;transition:border-color .15s;line-height:1.5}
+.rh-note-input:focus{outline:none;border-color:var(--green-border)}
+.rh-note-label{font-size:11px;color:var(--gray-muted);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.save-note-btn{font-size:11px;padding:4px 10px;border:1px solid var(--green-border);border-radius:5px;background:var(--green-light);color:var(--green-dark);cursor:pointer;font-family:inherit;margin-top:5px;transition:opacity .15s}
+.save-note-btn:hover{opacity:.8}
+.note-saved{font-size:11px;color:var(--green-dark);margin-top:4px;display:none}
+.note-saved.show{display:block}
+
+/* FORMULÁRIO */
+.form-section{background:var(--white);border:1px solid var(--gray-border);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--gray-muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gray-border)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+.form-grid:last-child{margin-bottom:0}
+.fg-2{grid-template-columns:repeat(2,1fr)}
+.fg-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.fg-2,.fg-3{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:5px}
+label.lbl{font-size:12px;font-weight:500;color:var(--gray-text)}
+label.lbl .req{color:var(--red-mid)}
+label.lbl .hint{font-weight:400;color:var(--gray-muted);font-size:11px}
+input[type=text],input[type=number],select,textarea{width:100%;font-size:13px;padding:9px 11px;border:1px solid var(--gray-border);border-radius:8px;background:var(--white);color:var(--black);outline:none;transition:border-color .15s;font-family:inherit;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--green-border);box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+input.err-field,select.err-field,textarea.err-field{border-color:var(--red-border)}
+textarea{resize:vertical;min-height:88px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+.err-msg{font-size:11px;color:var(--red-mid);margin-top:2px;display:none}
+.err-msg.show{display:block}
+.radio-group{display:flex;gap:7px;flex-wrap:wrap;margin-top:1px}
+.radio-opt{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--black);cursor:pointer;padding:7px 12px;border:1px solid var(--gray-border);border-radius:8px;background:var(--white);transition:all .15s;user-select:none}
+.radio-opt:hover{background:var(--gray-light)}
+.radio-opt.sel{border-color:var(--green-border);background:var(--green-light);color:var(--green-dark)}
+.radio-opt.sel-alta{border-color:var(--red-border);background:var(--red-light);color:var(--red-mid)}
+.radio-opt.sel-media{border-color:var(--amber-border);background:var(--amber-light);color:var(--amber-mid)}
+.radio-opt input{display:none}
+.cond-block{display:none;margin-top:14px}
+.cond-block.show{display:block}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;background:var(--green-mid);color:var(--white);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-primary:hover{opacity:.88}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;background:transparent;color:var(--gray-text);border:1px solid var(--gray-border);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-ghost:hover{background:var(--gray-light)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.success-banner{display:none;align-items:center;gap:14px;background:var(--green-light);border:1px solid var(--green-border);border-radius:12px;padding:16px 20px;margin-bottom:1.5rem}
+.success-banner.show{display:flex}
+
+@media(max-width:500px){.page{padding:1.5rem 1rem 4rem}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-inner">
+    <div class="top-left">
+      <div class="logo-mark">VR</div>
+      <div>
+        <div class="top-title">Vitta Rio · Painel de RH</div>
+        <div class="top-sub">Gestão de vagas e recrutamento</div>
+      </div>
+    </div>
+    <div class="top-right"><span class="rh-badge">Acesso RH</span></div>
+  </div>
+</div>
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <div class="tab active" id="tab-dash" onclick="showView('dash')">Dashboard</div>
+    <div class="tab" id="tab-hist" onclick="showView('hist')">Histórico de vagas <span class="tab-badge" id="hist-count">0</span></div>
+    <div class="tab" id="tab-nova" onclick="showView('nova')">+ Registrar vaga</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ── DASHBOARD ── -->
+  <div id="view-dash" class="view active">
+    <div class="dash-title">Visão geral</div>
+    <div class="dash-sub" id="dash-date">Carregando...</div>
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total de vagas</div><div class="stat-val" id="st-total">0</div><div class="stat-sub">solicitações registradas</div></div>
+      <div class="stat-card"><div class="stat-label">Em aberto</div><div class="stat-val info" id="st-aberto">0</div><div class="stat-sub">aguardando preenchimento</div></div>
+      <div class="stat-card"><div class="stat-label">Em andamento</div><div class="stat-val warning" id="st-andamento">0</div><div class="stat-sub">processo em curso</div></div>
+      <div class="stat-card"><div class="stat-label">Concluídas</div><div class="stat-val success" id="st-concluido">0</div><div class="stat-sub">colaborador contratado</div></div>
+      <div class="stat-card"><div class="stat-label">Urgência alta</div><div class="stat-val danger" id="st-alta">0</div><div class="stat-sub">atenção imediata</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">Vagas por setor</div>
+        <div id="bar-setores"><div style="font-size:13px;color:var(--gray-muted);padding:1rem 0">Nenhuma vaga registrada ainda.</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Vagas urgentes em aberto</div>
+        <div id="list-urgentes"><div style="font-size:13px;color:var(--gray-muted);padding:1rem 0">Nenhuma vaga urgente.</div></div>
+      </div>
+    </div>
+    <div class="dash-card" style="margin-bottom:1rem">
+      <div class="dash-card-title">Últimas solicitações recebidas</div>
+      <div id="list-recentes"><div style="font-size:13px;color:var(--gray-muted);padding:1rem 0">Nenhuma solicitação ainda.</div></div>
+    </div>
+  </div>
+
+  <!-- ── HISTÓRICO ── -->
+  <div id="view-hist" class="view">
+    <div class="hist-controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Buscar por cargo, setor ou líder..." oninput="applyFilters()">
+      </div>
+      <select class="sort-select" id="sort-select" onchange="applyFilters()">
+        <option value="recente">Mais recentes</option>
+        <option value="antigo">Mais antigos</option>
+        <option value="urgencia">Urgência (alta → baixa)</option>
+        <option value="cargo">Cargo (A-Z)</option>
+      </select>
+    </div>
+    <div class="filter-row">
+      <button class="f-btn active" onclick="setFilter('status','all',this)">Todas</button>
+      <button class="f-btn" onclick="setFilter('status','novo',this)">Em aberto</button>
+      <button class="f-btn" onclick="setFilter('status','em-andamento',this)">Em andamento</button>
+      <button class="f-btn" onclick="setFilter('status','concluido',this)">Concluídas</button>
+      <button class="f-btn" onclick="setFilter('urgencia','Alto',this)">Urgência alta</button>
+      <button class="f-btn" onclick="setFilter('motivo','Substituição',this)">Substituição</button>
+      <button class="f-btn" onclick="setFilter('conf','Sim',this)">Confidenciais</button>
+    </div>
+    <div id="hist-list"></div>
+  </div>
+
+  <!-- ── NOVA VAGA (manual pelo RH) ── -->
+  <div id="view-nova" class="view">
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:18px;font-weight:500;color:var(--black);margin-bottom:4px">Registrar nova solicitação</div>
+      <div style="font-size:13px;color:var(--gray-text)">Registre aqui solicitações recebidas por e-mail, WhatsApp ou verbalmente.</div>
+    </div>
+
+    <div id="success-banner-rh" class="success-banner">
+      <div style="font-size:22px;color:var(--green-mid)">✓</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--green-dark)">Vaga registrada com sucesso!</div>
+        <div style="font-size:12px;color:var(--green-dark);margin-top:2px">A solicitação foi adicionada ao histórico.</div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">Informações gerais</div>
+      <div class="form-grid fg-2">
+        <div class="form-group">
+          <label class="lbl">Cargo <span class="req">*</span></label>
+          <input type="text" id="n-cargo" placeholder="Ex.: Separador de pedidos">
+          <div class="err-msg" id="ne-cargo">Informe o cargo.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Líder responsável <span class="req">*</span></label>
+          <input type="text" id="n-lider" placeholder="Nome do líder solicitante">
+          <div class="err-msg" id="ne-lider">Informe o líder.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Departamento <span class="req">*</span></label>
+          <select id="n-depto">
+            <option value="">Selecionar...</option>
+            <option>Expedição</option><option>Estoque</option><option>Qualidade</option>
+            <option>Transporte / Logística</option><option>Cozinha / Refeitório</option>
+            <option>Administrativo</option><option>Financeiro</option><option>RH / DP</option>
+            <option>Comercial / Televendas</option>
+            <option>Compras</option>
+            <option>TI</option>
+            <option>Outro</option>
+          </select>
+          <div class="err-msg" id="ne-depto">Selecione o departamento.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Nº de vagas</label>
+          <input type="number" id="n-num" min="1" value="1" style="max-width:120px">
+        </div>
+      </div>
+      <div class="form-grid fg-3">
+        <div class="form-group">
+          <label class="lbl">Motivo <span class="req">*</span></label>
+          <div class="radio-group" id="nrg-motivo">
+            <label class="radio-opt" onclick="npick('nrg-motivo',this,'Aumento de quadro','sel')"><input type="radio"> Aumento de quadro</label>
+            <label class="radio-opt" onclick="npick('nrg-motivo',this,'Substituição','sel')"><input type="radio"> Substituição</label>
+          </div>
+          <div class="err-msg" id="ne-motivo">Selecione o motivo.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Urgência <span class="req">*</span></label>
+          <div class="radio-group" id="nrg-urgencia">
+            <label class="radio-opt" onclick="npick('nrg-urgencia',this,'Baixo','sel')"><input type="radio"> Baixo</label>
+            <label class="radio-opt" onclick="npick('nrg-urgencia',this,'Médio','sel-media')"><input type="radio"> Médio</label>
+            <label class="radio-opt" onclick="npick('nrg-urgencia',this,'Alto','sel-alta')"><input type="radio"> Alto</label>
+          </div>
+          <div class="err-msg" id="ne-urgencia">Selecione a urgência.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Confidencial?</label>
+          <div class="radio-group" id="nrg-conf">
+            <label class="radio-opt" onclick="npick('nrg-conf',this,'Não','sel')"><input type="radio"> Não</label>
+            <label class="radio-opt" onclick="npick('nrg-conf',this,'Sim','sel')"><input type="radio"> Sim</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="section-label">Condições e perfil</div>
+      <div class="form-grid fg-2">
+        <div class="form-group">
+          <label class="lbl">Faixa salarial</label>
+          <input type="text" id="n-salario" placeholder="Ex.: R$ 1.800 – R$ 2.200">
+        </div>
+        <div class="form-group">
+          <label class="lbl">Contrato</label>
+          <select id="n-contrato">
+            <option value="">Selecionar...</option>
+            <option>CLT</option><option>PJ</option><option>Temporário</option>
+            <option>Estágio</option><option>Jovem Aprendiz</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Turno</label>
+          <div class="radio-group" id="nrg-turno">
+            <label class="radio-opt" onclick="npick('nrg-turno',this,'Diurno','sel')"><input type="radio"> Diurno</label>
+            <label class="radio-opt" onclick="npick('nrg-turno',this,'Noturno','sel')"><input type="radio"> Noturno</label>
+            <label class="radio-opt" onclick="npick('nrg-turno',this,'Misto','sel')"><input type="radio"> Misto</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Prazo</label>
+          <select id="n-prazo">
+            <option value="">Selecionar...</option>
+            <option>Imediato (até 1 semana)</option>
+            <option>Urgente (até 2 semanas)</option>
+            <option>Normal (até 30 dias)</option>
+            <option>Sem urgência (30+ dias)</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="lbl">Competências e perfil resumido</label>
+          <textarea id="n-perfil" placeholder="Competências técnicas, comportamentais e qualquer particularidade relevante do perfil..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="lbl">Observações internas do RH</label>
+          <textarea id="n-obs" placeholder="Notas internas, contexto da abertura, informações relevantes para o processo..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="submitNovaVaga()">Registrar vaga</button>
+      <button class="btn-ghost" onclick="clearNova()">Limpar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var vagas=[];
+var radios={};
+var nradios={};
+var activeFilters={status:'all',urgencia:null,motivo:null,conf:null};
+
+function showView(v){
+  document.querySelectorAll('.view').forEach(function(el){el.classList.remove('active')});
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.tab').forEach(function(el){el.classList.remove('active')});
+  document.getElementById('tab-'+v).classList.add('active');
+  if(v==='dash')updateDash();
+  if(v==='hist')applyFilters();
+}
+
+function pick(g,el,val,cls){
+  document.querySelectorAll('#'+g+' .radio-opt').forEach(function(o){o.classList.remove('sel','sel-alta','sel-media')});
+  el.classList.add(cls);radios[g]=val;
+}
+function npick(g,el,val,cls){
+  document.querySelectorAll('#'+g+' .radio-opt').forEach(function(o){o.classList.remove('sel','sel-alta','sel-media')});
+  el.classList.add(cls);nradios[g]=val;
+  var map={'nrg-motivo':'ne-motivo','nrg-urgencia':'ne-urgencia'};
+  if(map[g])document.getElementById(map[g]).classList.remove('show');
+}
+
+function setFilter(type,val,btn){
+  activeFilters[type]=val==='all'?'all':val;
+  if(type!=='status')activeFilters['status']='all';
+  document.querySelectorAll('.f-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters(){
+  var q=(document.getElementById('search-input').value||'').toLowerCase();
+  var sort=document.getElementById('sort-select').value;
+  var filtered=vagas.filter(function(v){
+    if(activeFilters.urgencia&&v.urgencia!==activeFilters.urgencia)return false;
+    if(activeFilters.motivo&&v.motivo!==activeFilters.motivo)return false;
+    if(activeFilters.conf&&v.conf!==activeFilters.conf)return false;
+    if(activeFilters.status&&activeFilters.status!=='all'&&v.status!==activeFilters.status)return false;
+    if(q&&!(v.cargo+v.depto+v.lider).toLowerCase().includes(q))return false;
+    return true;
+  });
+  var urgOrd={'Alto':0,'Médio':1,'Baixo':2};
+  if(sort==='recente')filtered.sort(function(a,b){return b.id-a.id});
+  else if(sort==='antigo')filtered.sort(function(a,b){return a.id-b.id});
+  else if(sort==='urgencia')filtered.sort(function(a,b){return (urgOrd[a.urgencia]||2)-(urgOrd[b.urgencia]||2)});
+  else if(sort==='cargo')filtered.sort(function(a,b){return a.cargo.localeCompare(b.cargo)});
+  renderHist(filtered);
+}
+
+function renderHist(list){
+  var el=document.getElementById('hist-list');
+  if(!list.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">📂</div><div class="empty-title">Nenhuma vaga encontrada</div><div class="empty-sub">Tente ajustar os filtros ou a busca.</div></div>';
+    return;
+  }
+  el.innerHTML=list.map(function(v){
+    var initials=v.lider.split(' ').slice(0,2).map(function(n){return n[0]||''}).join('').toUpperCase();
+    var urgCls=v.urgencia==='Alto'?'p-alta':v.urgencia==='Médio'?'p-media':'p-baixa';
+    var stCls='p-status-'+(v.status||'novo');
+    var stLabel={'novo':'Em aberto','em-andamento':'Em andamento','concluido':'Concluído','cancelado':'Cancelado'}[v.status||'novo'];
+    return '<div class="vaga-card" id="card-'+v.id+'">'+
+      '<div class="vc-top">'+
+        '<div class="avatar">'+initials+'</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div class="vc-cargo">'+v.cargo+'</div>'+
+          '<div class="vc-meta">'+v.depto+' · '+v.lider+' · '+v.date+'</div>'+
+        '</div>'+
+        '<div class="vc-tags">'+
+          '<span class="pill '+stCls+'">'+stLabel+'</span>'+
+          '<span class="pill '+urgCls+'">'+v.urgencia+'</span>'+
+          '<span class="pill p-neutral">'+v.motivo+'</span>'+
+          (v.conf==='Sim'?'<span class="pill p-conf">Confidencial</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="vc-details">'+
+        (v.num?'<div class="vd-item"><div class="vd-lbl">Vagas</div><div class="vd-val">'+v.num+'</div></div>':'')+
+        (v.salario?'<div class="vd-item"><div class="vd-lbl">Faixa salarial</div><div class="vd-val">'+v.salario+'</div></div>':'')+
+        (v.contrato?'<div class="vd-item"><div class="vd-lbl">Contrato</div><div class="vd-val">'+v.contrato+'</div></div>':'')+
+        (v.turno?'<div class="vd-item"><div class="vd-lbl">Turno</div><div class="vd-val">'+v.turno+'</div></div>':'')+
+        (v.carga?'<div class="vd-item"><div class="vd-lbl">Carga horária</div><div class="vd-val">'+v.carga+'</div></div>':'')+
+        (v.escala?'<div class="vd-item"><div class="vd-lbl">Escala</div><div class="vd-val">'+v.escala+'</div></div>':'')+
+        (v.prazo?'<div class="vd-item"><div class="vd-lbl">Prazo</div><div class="vd-val">'+v.prazo+'</div></div>':'')+
+        (v.dc?'<div class="vd-item"><div class="vd-lbl">Desc. de cargo</div><div class="vd-val">'+v.dc+'</div></div>':'')+
+      '</div>'+
+      '<div class="vc-actions">'+
+        '<label style="font-size:12px;color:var(--gray-muted);margin-right:2px">Status:</label>'+
+        '<select class="status-select" onchange="updateStatus('+v.id+',this.value)">'+
+          ['novo','em-andamento','concluido','cancelado'].map(function(s){
+            var l={'novo':'Em aberto','em-andamento':'Em andamento','concluido':'Concluído','cancelado':'Cancelado'}[s];
+            return '<option value="'+s+'"'+(v.status===s?' selected':'')+'>'+l+'</option>';
+          }).join('')+
+        '</select>'+
+        '<button class="action-btn" onclick="toggleExtra(this)">▾ Ver detalhes</button>'+
+        '<button class="action-btn danger" onclick="deleteVaga('+v.id+')">🗑 Excluir</button>'+
+      '</div>'+
+      '<div class="vaga-extra">'+
+        '<div class="extra-grid">'+
+          (v.compTec?'<div class="extra-block"><div class="extra-label">Competências técnicas</div><div class="extra-text">'+v.compTec+'</div></div>':'')+
+          (v.compComp?'<div class="extra-block"><div class="extra-label">Competências comportamentais</div><div class="extra-text">'+v.compComp+'</div></div>':'')+
+          (v.perfil?'<div class="extra-block"><div class="extra-label">Particularidades do perfil</div><div class="extra-text">'+v.perfil+'</div></div>':'')+
+          (v.ativ?'<div class="extra-block"><div class="extra-label">Atividades do cargo</div><div class="extra-text">'+v.ativ+'</div></div>':'')+
+          (v.benef?'<div class="extra-block"><div class="extra-label">Benefícios específicos</div><div class="extra-text">'+v.benef+'</div></div>':'')+
+          (v.subst?'<div class="extra-block"><div class="extra-label">Colaborador substituído</div><div class="extra-text">'+v.subst+'</div></div>':'')+
+          (v.obs?'<div class="extra-block"><div class="extra-label">Observações</div><div class="extra-text">'+v.obs+'</div></div>':'')+
+        '</div>'+
+        '<div class="rh-note-wrap">'+
+          '<div class="rh-note-label">📝 Notas internas do RH</div>'+
+          '<textarea class="rh-note-input" id="note-'+v.id+'" placeholder="Adicione notas internas sobre o andamento desta vaga: candidatos em análise, entrevistas agendadas, decisões pendentes...">'+( v.rhNote||'')+'</textarea>'+
+          '<button class="save-note-btn" onclick="saveNote('+v.id+')">Salvar nota</button>'+
+          '<div class="note-saved" id="ns-'+v.id+'">✓ Nota salva</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function toggleExtra(btn){
+  var card=btn.closest('.vaga-card');
+  var extra=card.querySelector('.vaga-extra');
+  var isOpen=extra.classList.contains('open');
+  extra.classList.toggle('open');
+  btn.textContent=isOpen?'▾ Ver detalhes':'▴ Ocultar detalhes';
+}
+
+function updateStatus(id,status){
+  var v=vagas.find(function(x){return x.id===id});
+  if(v){v.status=status;updateDash();}
+}
+
+function deleteVaga(id){
+  if(!confirm('Excluir esta solicitação de vaga? Esta ação não pode ser desfeita.'))return;
+  vagas=vagas.filter(function(v){return v.id!==id});
+  document.getElementById('hist-count').textContent=vagas.length;
+  applyFilters();updateDash();
+}
+
+function saveNote(id){
+  var v=vagas.find(function(x){return x.id===id});
+  if(v){
+    v.rhNote=document.getElementById('note-'+id).value;
+    var ns=document.getElementById('ns-'+id);
+    ns.classList.add('show');
+    setTimeout(function(){ns.classList.remove('show')},2000);
+  }
+}
+
+function updateDash(){
+  var now=new Date();
+  document.getElementById('dash-date').textContent='Atualizado em '+now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  var aberto=vagas.filter(function(v){return !v.status||v.status==='novo'}).length;
+  var andamento=vagas.filter(function(v){return v.status==='em-andamento'}).length;
+  var concluido=vagas.filter(function(v){return v.status==='concluido'}).length;
+  var alta=vagas.filter(function(v){return v.urgencia==='Alto'&&(!v.status||v.status==='novo'||v.status==='em-andamento')}).length;
+  document.getElementById('st-total').textContent=vagas.length;
+  document.getElementById('st-aberto').textContent=aberto;
+  document.getElementById('st-andamento').textContent=andamento;
+  document.getElementById('st-concluido').textContent=concluido;
+  document.getElementById('st-alta').textContent=alta;
+
+  var setorCount={};
+  vagas.forEach(function(v){setorCount[v.depto]=(setorCount[v.depto]||0)+1});
+  var setores=Object.entries(setorCount).sort(function(a,b){return b[1]-a[1]}).slice(0,6);
+  var maxS=setores.length?setores[0][1]:1;
+  var colors=['#1D9E75','#185FA5','#854F0B','#534AB7','#A32D2D','#3B6D11'];
+  document.getElementById('bar-setores').innerHTML=setores.length?
+    setores.map(function(s,i){return '<div class="bar-row"><div class="bar-label">'+s[0]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(s[1]/maxS*100)+'%;background:'+colors[i%colors.length]+'"></div></div><div class="bar-num">'+s[1]+'</div></div>';}).join(''):
+    '<div style="font-size:13px;color:var(--gray-muted);padding:1rem 0">Nenhuma vaga registrada.</div>';
+
+  var urgentes=vagas.filter(function(v){return v.urgencia==='Alto'&&(!v.status||v.status==='novo'||v.status==='em-andamento')}).slice(0,5);
+  document.getElementById('list-urgentes').innerHTML=urgentes.length?
+    urgentes.map(function(v){return '<div class="list-item"><div class="li-dot alta"></div><div><div class="li-cargo">'+v.cargo+'</div><div class="li-meta">'+v.depto+' · '+v.lider+'</div></div></div>';}).join(''):
+    '<div style="font-size:13px;color:var(--gray-muted);padding:1rem 0">Nenhuma vaga urgente em aberto.</div>';
+
+  var recentes=vagas.slice(0,4);
+  document.getElementById('list-recentes').innerHTML=recentes.length?
+    recentes.map(function(v){var dotCls=v.urgencia==='Alto'?'alta':v.urgencia==='Médio'?'media':'baixa';return '<div class="list-item"><div class="li-dot '+dotCls+'"></div><div style="flex:1"><div class="li-cargo">'+v.cargo+'</div><div class="li-meta">'+v.depto+' · '+v.date+'</div></div><span class="pill p-neutral" style="font-size:10px">'+v.urgencia+'</span></div>';}).join(''):
+    '<div style="font-size:13px;color:var(--gray-muted);padding:1rem 0">Nenhuma solicitação registrada.</div>';
+}
+
+function submitNovaVaga(){
+  var ok=true;
+  if(!document.getElementById('n-cargo').value.trim()){document.getElementById('ne-cargo').classList.add('show');ok=false;}else document.getElementById('ne-cargo').classList.remove('show');
+  if(!document.getElementById('n-lider').value.trim()){document.getElementById('ne-lider').classList.add('show');ok=false;}else document.getElementById('ne-lider').classList.remove('show');
+  if(!document.getElementById('n-depto').value){document.getElementById('ne-depto').classList.add('show');ok=false;}else document.getElementById('ne-depto').classList.remove('show');
+  if(!nradios['nrg-motivo']){document.getElementById('ne-motivo').classList.add('show');ok=false;}else document.getElementById('ne-motivo').classList.remove('show');
+  if(!nradios['nrg-urgencia']){document.getElementById('ne-urgencia').classList.add('show');ok=false;}else document.getElementById('ne-urgencia').classList.remove('show');
+  if(!ok)return;
+  var now=new Date();
+  var v={
+    id:Date.now(),
+    date:now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    cargo:document.getElementById('n-cargo').value.trim(),
+    lider:document.getElementById('n-lider').value.trim(),
+    depto:document.getElementById('n-depto').value,
+    num:document.getElementById('n-num').value||'1',
+    motivo:nradios['nrg-motivo']||'',
+    urgencia:nradios['nrg-urgencia']||'',
+    conf:nradios['nrg-conf']||'Não',
+    salario:document.getElementById('n-salario').value.trim(),
+    contrato:document.getElementById('n-contrato').value,
+    turno:nradios['nrg-turno']||'',
+    prazo:document.getElementById('n-prazo').value,
+    perfil:document.getElementById('n-perfil').value.trim(),
+    obs:document.getElementById('n-obs').value.trim(),
+    status:'novo',rhNote:''
+  };
+  vagas.unshift(v);
+  document.getElementById('hist-count').textContent=vagas.length;
+  updateDash();
+  var b=document.getElementById('success-banner-rh');b.classList.add('show');
+  clearNova();
+  setTimeout(function(){b.classList.remove('show')},4000);
+}
+
+function clearNova(){
+  ['n-cargo','n-lider','n-salario','n-perfil','n-obs'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('n-num').value='1';
+  ['n-depto','n-contrato','n-prazo'].forEach(function(id){document.getElementById(id).value='';});
+  ['nrg-motivo','nrg-urgencia','nrg-conf','nrg-turno'].forEach(function(g){
+    document.querySelectorAll('#'+g+' .radio-opt').forEach(function(o){o.classList.remove('sel','sel-alta','sel-media')});
+    delete nradios[g];
+  });
+  document.querySelectorAll('#view-nova .err-msg').forEach(function(e){e.classList.remove('show')});
+}
+
+updateDash();
+</script>
+</body>
+</html>

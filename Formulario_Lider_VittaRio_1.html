@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitação de Vaga — Vitta Rio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green-dark:#0F6E56;--green-mid:#1D9E75;--green-light:#E1F5EE;--green-border:#5DCAA5;
+  --blue-light:#E6F1FB;--blue-mid:#185FA5;--blue-dark:#0C447C;
+  --amber-light:#FAEEDA;--amber-mid:#854F0B;--amber-border:#EF9F27;
+  --red-light:#FCEBEB;--red-mid:#A32D2D;--red-border:#F09595;
+  --gray-bg:#F7F6F2;--gray-light:#F1EFE8;--gray-border:#D3D1C7;
+  --gray-text:#5F5E5A;--gray-muted:#888780;--black:#2C2C2A;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--gray-bg);color:var(--black);min-height:100vh;padding:0 0 5rem}
+
+.top-bar{background:var(--white);border-bottom:1px solid var(--gray-border);padding:14px 0;margin-bottom:0}
+.top-inner{max-width:720px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:12px}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:var(--green-mid);display:flex;align-items:center;justify-content:center;color:var(--white);font-size:13px;font-weight:500;flex-shrink:0}
+.top-title{font-size:14px;font-weight:500;color:var(--black)}
+.top-sub{font-size:12px;color:var(--gray-text)}
+
+.page{max-width:720px;margin:0 auto;padding:2rem 2rem 2rem}
+
+.hero{background:var(--white);border:1px solid var(--gray-border);border-radius:14px;padding:24px 28px;margin-bottom:1.5rem;border-left:4px solid var(--green-mid)}
+.hero-title{font-size:20px;font-weight:500;color:var(--black);margin-bottom:6px}
+.hero-sub{font-size:13px;color:var(--gray-text);line-height:1.7}
+.req-note{font-size:12px;color:var(--gray-text);margin-top:10px}
+.req-note span{color:var(--red-mid)}
+
+.success-wrap{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 2rem;background:var(--white);border:1px solid var(--green-border);border-radius:14px}
+.success-wrap.show{display:flex}
+.success-circle{width:64px;height:64px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;color:var(--green-mid)}
+.success-title{font-size:18px;font-weight:500;color:var(--black);margin-bottom:6px}
+.success-sub{font-size:13px;color:var(--gray-text);line-height:1.7;max-width:400px}
+.success-info{margin-top:16px;background:var(--green-light);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--green-dark);line-height:1.6}
+
+.form-wrap{display:block}
+.form-wrap.hidden{display:none}
+
+.form-section{background:var(--white);border:1px solid var(--gray-border);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--gray-muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gray-border)}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+.form-grid:last-child{margin-bottom:0}
+.fg-2{grid-template-columns:repeat(2,1fr)}
+.fg-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.fg-2,.fg-3{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:5px}
+label.lbl{font-size:12px;font-weight:500;color:var(--gray-text)}
+label.lbl .req{color:var(--red-mid)}
+label.lbl .hint{font-weight:400;color:var(--gray-muted);font-size:11px}
+input[type=text],input[type=number],select,textarea{width:100%;font-size:13px;padding:9px 11px;border:1px solid var(--gray-border);border-radius:8px;background:var(--white);color:var(--black);outline:none;transition:border-color .15s;font-family:inherit;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--green-border);box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+input.err-field,select.err-field,textarea.err-field{border-color:var(--red-border)}
+textarea{resize:vertical;min-height:88px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+.err-msg{font-size:11px;color:var(--red-mid);margin-top:2px;display:none}
+.err-msg.show{display:block}
+.radio-group{display:flex;gap:7px;flex-wrap:wrap;margin-top:1px}
+.radio-opt{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--black);cursor:pointer;padding:7px 12px;border:1px solid var(--gray-border);border-radius:8px;background:var(--white);transition:all .15s;user-select:none}
+.radio-opt:hover{background:var(--gray-light)}
+.radio-opt.sel{border-color:var(--green-border);background:var(--green-light);color:var(--green-dark)}
+.radio-opt.sel-alta{border-color:var(--red-border);background:var(--red-light);color:var(--red-mid)}
+.radio-opt.sel-media{border-color:var(--amber-border);background:var(--amber-light);color:var(--amber-mid)}
+.radio-opt input{display:none}
+.cond-block{display:none;margin-top:14px}
+.cond-block.show{display:block}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--green-mid);color:var(--white);border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;width:100%;justify-content:center;margin-top:4px}
+.btn-primary:hover{opacity:.88}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;background:transparent;color:var(--gray-text);border:1px solid var(--gray-border);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-ghost:hover{background:var(--gray-light)}
+.btn-row{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+.step-dots{display:flex;gap:6px;margin-bottom:1.5rem;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gray-border);transition:all .2s}
+.dot.active{background:var(--green-mid);width:20px;border-radius:4px}
+.dot.done{background:var(--green-border)}
+.step-label{font-size:12px;color:var(--gray-text);margin-left:8px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-inner">
+    <div class="logo-mark">VR</div>
+    <div>
+      <div class="top-title">Vitta Rio</div>
+      <div class="top-sub">Solicitação de abertura de vaga</div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-title">Precisa de um novo colaborador?</div>
+    <div class="hero-sub">Preencha este formulário para que o RH possa iniciar o processo de recrutamento e seleção. Quanto mais detalhes você fornecer, mais rápido e assertivo será o processo.</div>
+    <div class="req-note">Campos com <span>*</span> são obrigatórios.</div>
+  </div>
+
+  <div id="success-wrap" class="success-wrap">
+    <div class="success-circle">✓</div>
+    <div class="success-title">Solicitação enviada!</div>
+    <div class="success-sub">Sua solicitação foi registrada com sucesso. O RH entrará em contato em breve para alinhar os próximos passos do processo seletivo.</div>
+    <div class="success-info">📋 Guarde o resumo da sua solicitação abaixo para referência.</div>
+    <div id="resumo" style="margin-top:16px;text-align:left;width:100%;background:var(--gray-light);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--gray-text);line-height:1.8"></div>
+    <button class="btn-ghost" onclick="novaVaga()" style="margin-top:16px">+ Nova solicitação</button>
+  </div>
+
+  <div id="form-wrap" class="form-wrap">
+
+    <!-- BLOCO 1 -->
+    <div class="form-section">
+      <div class="section-label">1 · Informações gerais</div>
+      <div class="form-grid fg-2">
+        <div class="form-group">
+          <label class="lbl">Cargo <span class="req">*</span></label>
+          <input type="text" id="f-cargo" placeholder="Ex.: Assistente Administrativo I">
+          <div class="err-msg" id="e-cargo">Informe o nome do cargo.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Seu nome (líder responsável) <span class="req">*</span></label>
+          <input type="text" id="f-lider" placeholder="Nome completo">
+          <div class="err-msg" id="e-lider">Informe seu nome.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Departamento / setor <span class="req">*</span></label>
+          <select id="f-depto">
+            <option value="">Selecionar...</option>
+            <option>Expedição</option>
+            <option>Estoque</option>
+            <option>Qualidade</option>
+            <option>Transporte / Logística</option>
+            <option>Cozinha / Refeitório</option>
+            <option>Administrativo</option>
+            <option>Financeiro</option>
+            <option>RH / DP</option>
+            <option>Comercial / Televendas</option>
+            <option>Compras</option>
+            <option>TI</option>
+            <option>Outro</option>
+          </select>
+          <div class="err-msg" id="e-depto">Selecione o departamento.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Número de vagas <span class="req">*</span></label>
+          <input type="number" id="f-num" min="1" value="1" style="max-width:130px">
+        </div>
+      </div>
+      <div class="form-grid fg-3">
+        <div class="form-group">
+          <label class="lbl">Motivo da abertura <span class="req">*</span></label>
+          <div class="radio-group" id="rg-motivo">
+            <label class="radio-opt" onclick="pick('rg-motivo',this,'Aumento de quadro','sel')"><input type="radio"> Aumento de quadro</label>
+            <label class="radio-opt" onclick="pick('rg-motivo',this,'Substituição','sel');showCond('cond-subst',true)"><input type="radio"> Substituição</label>
+          </div>
+          <div class="err-msg" id="e-motivo">Selecione o motivo.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Nível de urgência <span class="req">*</span></label>
+          <div class="radio-group" id="rg-urgencia">
+            <label class="radio-opt" onclick="pick('rg-urgencia',this,'Baixo','sel')"><input type="radio"> Baixo</label>
+            <label class="radio-opt" onclick="pick('rg-urgencia',this,'Médio','sel-media')"><input type="radio"> Médio</label>
+            <label class="radio-opt" onclick="pick('rg-urgencia',this,'Alto','sel-alta')"><input type="radio"> Alto</label>
+          </div>
+          <div class="err-msg" id="e-urgencia">Selecione a urgência.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Contratação confidencial? <span class="req">*</span></label>
+          <div class="radio-group" id="rg-conf">
+            <label class="radio-opt" onclick="pick('rg-conf',this,'Não','sel')"><input type="radio"> Não</label>
+            <label class="radio-opt" onclick="pick('rg-conf',this,'Sim','sel')"><input type="radio"> Sim</label>
+          </div>
+          <div class="err-msg" id="e-conf">Selecione uma opção.</div>
+        </div>
+      </div>
+      <div class="cond-block" id="cond-subst">
+        <div class="form-group">
+          <label class="lbl">Colaborador sendo substituído <span class="req">*</span> <span class="hint">(nome + motivo da substituição)</span></label>
+          <input type="text" id="f-subst" placeholder="Ex.: João Silva — desligamento">
+          <div class="err-msg" id="e-subst">Informe o colaborador substituído.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 2 -->
+    <div class="form-section">
+      <div class="section-label">2 · Condições de trabalho e remuneração</div>
+      <div class="form-grid fg-2">
+        <div class="form-group">
+          <label class="lbl">Faixa salarial prevista <span class="req">*</span></label>
+          <input type="text" id="f-salario" placeholder="Ex.: R$ 1.800 – R$ 2.200">
+          <div class="err-msg" id="e-salario">Informe a faixa salarial.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Tipo de contrato <span class="req">*</span></label>
+          <select id="f-contrato">
+            <option value="">Selecionar...</option>
+            <option>CLT</option><option>PJ</option><option>Temporário</option>
+            <option>Estágio</option><option>Jovem Aprendiz</option>
+          </select>
+          <div class="err-msg" id="e-contrato">Selecione o tipo de contrato.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Local de trabalho <span class="req">*</span></label>
+          <input type="text" id="f-local" placeholder="Ex.: Sede Rio de Janeiro">
+          <div class="err-msg" id="e-local">Informe o local de trabalho.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Turno <span class="req">*</span></label>
+          <div class="radio-group" id="rg-turno">
+            <label class="radio-opt" onclick="pick('rg-turno',this,'Diurno','sel')"><input type="radio"> Diurno</label>
+            <label class="radio-opt" onclick="pick('rg-turno',this,'Noturno','sel')"><input type="radio"> Noturno</label>
+            <label class="radio-opt" onclick="pick('rg-turno',this,'Misto','sel')"><input type="radio"> Misto</label>
+            <label class="radio-opt" onclick="pick('rg-turno',this,'A definir','sel')"><input type="radio"> A definir</label>
+          </div>
+          <div class="err-msg" id="e-turno">Selecione o turno.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Carga horária <span class="req">*</span></label>
+          <input type="text" id="f-carga" placeholder="Ex.: 44h semanais">
+          <div class="err-msg" id="e-carga">Informe a carga horária.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Escala <span class="req">*</span></label>
+          <input type="text" id="f-escala" placeholder="Ex.: Segunda a sábado / 6x1">
+          <div class="err-msg" id="e-escala">Informe a escala.</div>
+        </div>
+        <div class="form-group full">
+          <label class="lbl">Benefícios específicos desta vaga <span class="hint">(além dos benefícios padrão da empresa)</span></label>
+          <input type="text" id="f-benef" placeholder="Ex.: adicional noturno, insalubridade, comissão...">
+        </div>
+        <div class="form-group">
+          <label class="lbl">Prazo ideal para preenchimento <span class="req">*</span></label>
+          <select id="f-prazo">
+            <option value="">Selecionar...</option>
+            <option>Imediato (até 1 semana)</option>
+            <option>Urgente (até 2 semanas)</option>
+            <option>Normal (até 30 dias)</option>
+            <option>Sem urgência (30+ dias)</option>
+          </select>
+          <div class="err-msg" id="e-prazo">Selecione o prazo.</div>
+        </div>
+        <div class="form-group">
+          <label class="lbl">Data prevista de início</label>
+          <input type="text" id="f-inicio" placeholder="Ex.: 01/07/2025 ou a combinar">
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 3 -->
+    <div class="form-section">
+      <div class="section-label">3 · Perfil e competências</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="lbl">Existe Descrição de Cargo (DC) para esta vaga? <span class="req">*</span></label>
+          <div class="radio-group" id="rg-dc">
+            <label class="radio-opt" onclick="pick('rg-dc',this,'Sim','sel');showCond('cond-ativ',false)"><input type="radio"> Sim, existe DC</label>
+            <label class="radio-opt" onclick="pick('rg-dc',this,'Não — cargo novo','sel');showCond('cond-ativ',true)"><input type="radio"> Não — é cargo novo</label>
+          </div>
+          <div class="err-msg" id="e-dc">Indique se há Descrição de Cargo.</div>
+        </div>
+      </div>
+      <div class="cond-block" id="cond-ativ">
+        <div class="form-group">
+          <label class="lbl">Principais atividades do cargo <span class="req">*</span> <span class="hint">(descreva detalhadamente — será base para o recrutamento)</span></label>
+          <textarea id="f-ativ" placeholder="Liste as responsabilidades e tarefas do dia a dia desta função." style="min-height:110px"></textarea>
+          <div class="err-msg" id="e-ativ">Descreva as atividades do cargo.</div>
+        </div>
+      </div>
+      <div class="form-grid" style="margin-top:14px">
+        <div class="form-group full">
+          <label class="lbl">Competências técnicas obrigatórias <span class="req">*</span> <span class="hint">(conhecimentos e habilidades indispensáveis)</span></label>
+          <textarea id="f-comp-tec" placeholder="Ex.: experiência com ERP, Excel intermediário, CNH categoria B, conhecimento de logística..."></textarea>
+          <div class="err-msg" id="e-comp-tec">Informe as competências técnicas.</div>
+        </div>
+        <div class="form-group full">
+          <label class="lbl">Competências comportamentais importantes <span class="req">*</span></label>
+          <textarea id="f-comp-comp" placeholder="Ex.: organização, comunicação assertiva, trabalho em equipe, proatividade, atenção a detalhes..."></textarea>
+          <div class="err-msg" id="e-comp-comp">Informe as competências comportamentais.</div>
+        </div>
+        <div class="form-group full">
+          <label class="lbl">Particularidades do perfil <span class="hint">(algo além da DC que seja importante para esta vaga específica?)</span></label>
+          <textarea id="f-perfil" placeholder="Ex.: precisa de perfil para crescer para liderança, ou experiência em operação noturna, ou fluência em inglês..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="lbl">Observações adicionais para o RH</label>
+          <textarea id="f-obs" placeholder="Qualquer informação que o RH deva saber: contexto da abertura, restrições de horário para entrevistas, informações sobre a equipe atual..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="submitForm()">Enviar solicitação para o RH →</button>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--gray-muted)">Ao enviar, o RH da Vitta Rio receberá todas as informações acima.</div>
+
+  </div>
+</div>
+
+<script>
+var radios={};
+var substActive=false;
+var dcActive=null;
+
+function pick(g,el,val,cls){
+  document.querySelectorAll('#'+g+' .radio-opt').forEach(function(o){o.classList.remove('sel','sel-alta','sel-media')});
+  el.classList.add(cls);
+  radios[g]=val;
+  var map={'rg-motivo':'e-motivo','rg-urgencia':'e-urgencia','rg-conf':'e-conf','rg-turno':'e-turno','rg-dc':'e-dc'};
+  if(map[g]) document.getElementById(map[g]).classList.remove('show');
+  if(g==='rg-motivo'){
+    substActive=(val==='Substituição');
+    if(!substActive){document.getElementById('f-subst').value='';setErr('f-subst','e-subst',false);}
+  }
+  if(g==='rg-dc'){
+    dcActive=(val==='Sim');
+    if(dcActive){document.getElementById('f-ativ').value='';setErr('f-ativ','e-ativ',false);}
+  }
+}
+
+function showCond(id,show){
+  document.getElementById(id).classList.toggle('show',show);
+}
+
+function setErr(fid,eid,show){
+  var f=document.getElementById(fid),e=document.getElementById(eid);
+  if(f)f.classList.toggle('err-field',show);
+  if(e)e.classList.toggle('show',show);
+}
+
+function validate(){
+  var ok=true;
+  [['f-cargo','e-cargo'],['f-lider','e-lider'],['f-salario','e-salario'],['f-local','e-local'],
+   ['f-carga','e-carga'],['f-escala','e-escala'],['f-comp-tec','e-comp-tec'],['f-comp-comp','e-comp-comp']
+  ].forEach(function(p){var empty=!document.getElementById(p[0]).value.trim();setErr(p[0],p[1],empty);if(empty)ok=false;});
+  [['f-depto','e-depto'],['f-contrato','e-contrato'],['f-prazo','e-prazo']].forEach(function(p){
+    var empty=!document.getElementById(p[0]).value;setErr(p[0],p[1],empty);if(empty)ok=false;});
+  ['rg-motivo','rg-urgencia','rg-conf','rg-turno','rg-dc'].forEach(function(g){
+    var map={'rg-motivo':'e-motivo','rg-urgencia':'e-urgencia','rg-conf':'e-conf','rg-turno':'e-turno','rg-dc':'e-dc'};
+    if(!radios[g]){document.getElementById(map[g]).classList.add('show');ok=false;}
+  });
+  if(substActive){var e=!document.getElementById('f-subst').value.trim();setErr('f-subst','e-subst',e);if(e)ok=false;}
+  if(dcActive===false){var e2=!document.getElementById('f-ativ').value.trim();setErr('f-ativ','e-ativ',e2);if(e2)ok=false;}
+  if(dcActive===null){document.getElementById('e-dc').classList.add('show');ok=false;}
+  return ok;
+}
+
+function submitForm(){
+  if(!validate()){
+    var first=document.querySelector('.err-msg.show, .err-field');
+    if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  var now=new Date();
+  var v={
+    cargo:document.getElementById('f-cargo').value.trim(),
+    lider:document.getElementById('f-lider').value.trim(),
+    depto:document.getElementById('f-depto').value,
+    num:document.getElementById('f-num').value||'1',
+    motivo:radios['rg-motivo'],urgencia:radios['rg-urgencia'],conf:radios['rg-conf'],
+    subst:document.getElementById('f-subst').value.trim(),
+    salario:document.getElementById('f-salario').value.trim(),
+    contrato:document.getElementById('f-contrato').value,
+    local:document.getElementById('f-local').value.trim(),
+    turno:radios['rg-turno'],
+    carga:document.getElementById('f-carga').value.trim(),
+    escala:document.getElementById('f-escala').value.trim(),
+    benef:document.getElementById('f-benef').value.trim(),
+    prazo:document.getElementById('f-prazo').value,
+    inicio:document.getElementById('f-inicio').value.trim(),
+    dc:radios['rg-dc'],
+    ativ:document.getElementById('f-ativ').value.trim(),
+    compTec:document.getElementById('f-comp-tec').value.trim(),
+    compComp:document.getElementById('f-comp-comp').value.trim(),
+    perfil:document.getElementById('f-perfil').value.trim(),
+    obs:document.getElementById('f-obs').value.trim(),
+    date:now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+  };
+  var rows=[
+    ['Cargo',v.cargo],['Líder',v.lider],['Setor',v.depto],['Vagas',v.num],
+    ['Motivo',v.motivo+(v.subst?' — '+v.subst:'')],['Urgência',v.urgencia],
+    ['Confidencial',v.conf],['Salário',v.salario],['Contrato',v.contrato],
+    ['Turno',v.turno],['Carga',v.carga],['Escala',v.escala],['Prazo',v.prazo],
+    ['Descrição de cargo',v.dc]
+  ];
+  document.getElementById('resumo').innerHTML='<strong style="color:var(--black);display:block;margin-bottom:8px">Resumo da solicitação — '+v.date+'</strong>'+
+    rows.filter(function(r){return r[1]}).map(function(r){return '<span style="color:var(--gray-muted)">'+r[0]+':</span> '+r[1]}).join('<br>');
+  document.getElementById('form-wrap').classList.add('hidden');
+  document.getElementById('success-wrap').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function novaVaga(){
+  document.getElementById('success-wrap').classList.remove('show');
+  document.getElementById('form-wrap').classList.remove('hidden');
+  radios={};substActive=false;dcActive=null;
+  document.querySelectorAll('input[type=text],input[type=number],textarea').forEach(function(el){if(el.id!=='f-num')el.value='';});
+  document.getElementById('f-num').value='1';
+  document.querySelectorAll('select').forEach(function(el){el.value='';});
+  document.querySelectorAll('.radio-opt').forEach(function(el){el.classList.remove('sel','sel-alta','sel-media')});
+  document.querySelectorAll('.err-msg').forEach(function(el){el.classList.remove('show')});
+  document.querySelectorAll('.err-field').forEach(function(el){el.classList.remove('err-field')});
+  document.querySelectorAll('.cond-block').forEach(function(el){el.classList.remove('show')});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
