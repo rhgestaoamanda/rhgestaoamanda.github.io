@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxo de R&S por Competências — Vitta Rio RH</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #0F6E56; --green-mid: #1D9E75; --green-light: #E1F5EE; --green-border: #5DCAA5;
+    --blue-light: #E6F1FB; --blue-mid: #185FA5; --blue-dark: #0C447C;
+    --amber-light: #FAEEDA; --amber-mid: #854F0B; --amber-border: #EF9F27;
+    --purple-light: #EEEDFE; --purple-mid: #534AB7;
+    --gray-bg: #F7F6F2; --gray-light: #F1EFE8; --gray-border: #D3D1C7;
+    --gray-text: #5F5E5A; --gray-muted: #888780; --black: #2C2C2A; --white: #ffffff;
+    --info-bg: #E6F1FB; --info-text: #0C447C; --info-border: #85B7EB;
+    --warn-bg: #FAEEDA; --warn-text: #633806; --warn-border: #EF9F27;
+    --success-bg: #E1F5EE; --success-text: #0F6E56; --success-border: #5DCAA5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--black); min-height: 100vh; padding: 0; }
+
+  /* STICKY HEADER */
+  .sticky-header { position: sticky; top: 0; z-index: 100; background: var(--gray-bg); border-bottom: 1px solid var(--gray-border); padding: 10px 0; }
+  .sticky-inner { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+  .progress-label { font-size: 12px; color: var(--gray-text); display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .progress-track { height: 4px; background: var(--gray-border); border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green-mid); border-radius: 10px; width: 0%; transition: width .4s ease; }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+  /* HEADER */
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); margin-bottom: 14px; }
+  .main-title { font-family: 'DM Serif Display', serif; font-size: 30px; color: var(--black); line-height: 1.25; margin-bottom: 8px; }
+  .main-subtitle { font-size: 14px; color: var(--gray-text); line-height: 1.7; margin-bottom: 24px; }
+  .divider { height: 1px; background: var(--gray-border); margin: 0 0 24px; }
+
+  /* CONTEXT */
+  .context-box { background: var(--success-bg); border-left: 3px solid var(--green-mid); border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 24px; font-size: 14px; color: var(--success-text); line-height: 1.7; }
+  .context-box strong { color: var(--black); }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-text); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-rh { background: var(--info-bg); border: 1.5px solid var(--info-text); }
+  .dot-lider { background: var(--warn-bg); border: 1.5px solid var(--amber-border); }
+  .dot-shared { background: var(--success-bg); border: 1.5px solid var(--green-border); }
+
+  /* STEPS NAV */
+  .rs-step { display: flex; gap: 0; cursor: pointer; }
+  .rs-step-left { display: flex; flex-direction: column; align-items: center; width: 40px; flex-shrink: 0; }
+  .rs-step-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; flex-shrink: 0; transition: all .2s; border: 1px solid var(--gray-border); background: var(--gray-light); color: var(--gray-text); }
+  .rs-step.active .rs-step-circle { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+  .rs-step-line { width: 2px; flex: 1; min-height: 14px; background: var(--gray-border); margin: 3px 0; }
+  .rs-step:last-child .rs-step-line { display: none; }
+  .rs-step-content { padding: 0 0 20px 16px; flex: 1; min-width: 0; }
+  .rs-step-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rs-step-name { font-size: 15px; font-weight: 500; color: var(--black); }
+  .rs-step.active .rs-step-name { color: var(--success-text); }
+  .rs-step-tag { font-size: 10px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; padding: 2px 9px; border-radius: 10px; }
+  .tag-rh { background: var(--info-bg); color: var(--info-text); }
+  .tag-lider { background: var(--warn-bg); color: var(--warn-text); }
+  .tag-shared { background: var(--success-bg); color: var(--success-text); }
+  .rs-step-desc { font-size: 13px; color: var(--gray-text); line-height: 1.6; margin-top: 3px; }
+  .rs-step-arrow { margin-left: auto; color: var(--gray-muted); font-size: 18px; transition: transform .2s; line-height: 1; }
+  .rs-step.active .rs-step-arrow { transform: rotate(90deg); color: var(--success-text); }
+
+  /* PANEL */
+  .rs-panel { overflow: hidden; max-height: 0; transition: max-height .4s ease; }
+  .rs-panel.open { max-height: 3000px; }
+  .rs-panel-inner { padding: 12px 0 4px; }
+
+  /* CARDS */
+  .card { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--black); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .card-title .icon { font-size: 17px; }
+  .card-body { font-size: 13px; color: var(--gray-text); line-height: 1.7; }
+  .card-body ul { padding-left: 1.3rem; }
+  .card-body ul li { margin-bottom: 5px; }
+  .card-body p + p { margin-top: 8px; }
+
+  /* TIPS */
+  .tip { background: var(--success-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--success-text); line-height: 1.6; }
+  .tip strong { color: #085041; }
+  .warn { background: var(--warn-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--warn-text); line-height: 1.6; }
+  .warn strong { color: #412402; }
+  .info-box { background: var(--info-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--info-text); line-height: 1.6; }
+  .info-box strong { color: var(--blue-dark); }
+
+  /* CHA */
+  .cha-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+  @media(max-width:520px) { .cha-grid { grid-template-columns: 1fr; } }
+  .cha-cell { border-radius: 8px; padding: 10px 12px; border: 1px solid var(--gray-border); }
+  .cha-cell.c { background: var(--info-bg); }
+  .cha-cell.h { background: var(--purple-light); }
+  .cha-cell.a { background: #EAF3DE; }
+  .cha-tag { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+  .cha-cell.c .cha-tag { color: var(--blue-mid); }
+  .cha-cell.h .cha-tag { color: var(--purple-mid); }
+  .cha-cell.a .cha-tag { color: #3B6D11; }
+  .cha-name { font-size: 12px; font-weight: 500; color: var(--black); margin-bottom: 3px; }
+  .cha-desc { font-size: 11px; color: var(--gray-text); line-height: 1.5; }
+
+  /* STEP LIST */
+  .step-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  .step-list li { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--gray-border); font-size: 13px; color: var(--gray-text); line-height: 1.6; align-items: flex-start; }
+  .step-list li:last-child { border-bottom: none; }
+  .snum { min-width: 22px; height: 22px; border-radius: 50%; background: var(--gray-light); border: 1px solid var(--gray-border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--gray-text); flex-shrink: 0; margin-top: 1px; }
+
+  /* FINAL NOTE */
+  .final-note { background: var(--success-bg); border: 1px solid var(--success-border); border-radius: 12px; padding: 18px 22px; text-align: center; font-size: 14px; color: var(--success-text); line-height: 1.7; margin-top: 8px; }
+  .final-note strong { color: var(--black); }
+
+  @media(max-width:480px) {
+    .page { padding: 1.5rem 1rem 4rem; }
+    .main-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div class="sticky-inner">
+    <div class="progress-label">
+      <span>Seu progresso no guia</span>
+      <span id="prog-text">0 de 8 etapas abertas</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div style="margin-bottom:28px">
+    <div class="badge">Vitta Rio · RH</div>
+    <h1 class="main-title">Fluxo de recrutamento e seleção<br>por competências</h1>
+    <p class="main-subtitle">Guia prático e didático para entender e aplicar cada etapa do processo — da abertura da vaga à admissão. Clique em cada etapa para expandir o conteúdo.</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="context-box">
+    <strong>Antes de começar:</strong> Recrutamento e seleção por competências significa que em cada etapa do processo estamos avaliando conhecimentos, habilidades e atitudes (o CHA) específicos para aquela vaga — não apenas analisando currículos e fazendo entrevistas genéricas. Isso torna o processo mais justo, mais assertivo e mais alinhado com o que a empresa realmente precisa.
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-rh"></div> Responsabilidade do RH</div>
+    <div class="legend-item"><div class="legend-dot dot-lider"></div> Responsabilidade do líder</div>
+    <div class="legend-item"><div class="legend-dot dot-shared"></div> RH + líder juntos</div>
+  </div>
+
+  <!-- ETAPA 1 -->
+  <div class="rs-step" data-step="1" onclick="toggleStep(1)">
+    <div class="rs-step-left"><div class="rs-step-circle">1</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Abertura e briefing da vaga</div>
+        <span class="rs-step-tag tag-shared">RH + líder</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Entender a real necessidade antes de sair buscando candidatos.</div>
+      <div class="rs-panel" id="panel-1">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">💡 O que é e por que fazer?</div>
+            <div class="card-body">
+              <p>Antes de qualquer busca, o RH precisa sentar com o líder solicitante e entender <strong>com profundidade</strong> o que a vaga exige. Muitas contratações erradas acontecem porque o RH recebe apenas um nome de cargo e começa a recrutar sem saber o que realmente é necessário.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 O que levantar no briefing com o líder</div>
+            <div class="card-body">
+              <ul>
+                <li><strong>Por que a vaga existe?</strong> É substituição, vaga nova, crescimento do setor?</li>
+                <li><strong>Quais serão as principais atividades do dia a dia?</strong> Detalhar o mais possível.</li>
+                <li><strong>Quais conhecimentos técnicos são obrigatórios?</strong> (ex.: domínio de ERP, Excel, CNH)</li>
+                <li><strong>Quais competências comportamentais são importantes?</strong> (ex.: organização, comunicação, trabalho em equipe)</li>
+                <li><strong>Há algum perfil que não funcionou antes?</strong> O que não deu certo e por quê?</li>
+                <li><strong>Qual o prazo ideal para preencher a vaga?</strong></li>
+                <li><strong>Qual a faixa salarial aprovada?</strong></li>
+                <li><strong>Há possibilidade de contratação CLT ou PJ?</strong> Quais benefícios?</li>
+              </ul>
+              <div class="tip"><strong>Dica:</strong> Anote tudo e ao final confirme com o líder: <em>"Então o que você mais precisa é alguém que faça X, com perfil Y e entregando Z — correto?"</em>. Isso evita retrabalho.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🧠 Mapeando as competências da vaga (CHA)</div>
+            <div class="card-body">
+              <p>A partir do briefing, organize as competências necessárias em três dimensões:</p>
+              <div class="cha-grid">
+                <div class="cha-cell c"><div class="cha-tag">Conhecimento</div><div class="cha-name">O saber</div><div class="cha-desc">Formação, cursos, técnicas específicas que a pessoa precisa ter.</div></div>
+                <div class="cha-cell h"><div class="cha-tag">Habilidade</div><div class="cha-name">O saber fazer</div><div class="cha-desc">O que sabe executar na prática — sistemas, processos, ferramentas.</div></div>
+                <div class="cha-cell a"><div class="cha-tag">Atitude</div><div class="cha-name">O querer fazer</div><div class="cha-desc">Como se comporta — proatividade, organização, comunicação.</div></div>
+              </div>
+              <div class="info-box"><strong>Exemplo — Separador (operacional):</strong><br>
+              Conhecimento: noções de armazenagem, leitura de etiquetas<br>
+              Habilidade: uso de coletores, organização de carga por rota<br>
+              Atitude: atenção, ritmo de trabalho, trabalho em equipe</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 2 -->
+  <div class="rs-step" data-step="2" onclick="toggleStep(2)">
+    <div class="rs-step-left"><div class="rs-step-circle">2</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Divulgação e atração de candidatos</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Escolher os canais certos e criar um anúncio que atraia o perfil desejado.</div>
+      <div class="rs-panel" id="panel-2">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📢 Como divulgar a vaga</div>
+            <div class="card-body">
+              <ul>
+                <li><strong>LinkedIn Jobs:</strong> ótimo para cargos administrativos, liderança e técnicos especializados</li>
+                <li><strong>Indeed / Catho / Infojobs:</strong> bom alcance para cargos operacionais e administrativos</li>
+                <li><strong>Vagas.com:</strong> forte para operacional e cargos de entrada</li>
+                <li><strong>WhatsApp e grupos de bairro:</strong> muito efetivo para cargos operacionais locais</li>
+                <li><strong>Indicações internas:</strong> sempre válido — peça aos colaboradores indicar pessoas conhecidas</li>
+                <li><strong>CIEE / IEL:</strong> para estágios e jovens aprendizes</li>
+              </ul>
+              <div class="tip"><strong>Regra prática:</strong> Para cargos operacionais (separadores, conferentes, estoquistas), prefira canais simples e locais. Para cargos técnicos e administrativos, use plataformas especializadas.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📝 Como escrever um bom anúncio de vaga</div>
+            <div class="card-body">
+              <ul>
+                <li><strong>Título claro:</strong> use o nome do cargo real + cidade. Ex.: "Assistente Administrativo — Rio de Janeiro/RJ"</li>
+                <li><strong>Breve apresentação da empresa:</strong> o que a Vitta Rio faz, cultura, diferencial</li>
+                <li><strong>Principais atividades:</strong> 4 a 6 pontos objetivos do dia a dia</li>
+                <li><strong>Requisitos obrigatórios:</strong> o que é indispensável (não coloque tudo, só o essencial)</li>
+                <li><strong>Diferenciais (desejáveis):</strong> o que conta pontos mas não elimina</li>
+                <li><strong>Benefícios:</strong> salário (se possível), VT, VA/VR, horários, regime</li>
+              </ul>
+              <div class="warn"><strong>Cuidado:</strong> Não coloque requisitos desnecessários ou excludentes. "Ensino superior completo" para um cargo operacional, por exemplo, reduz candidatos sem necessidade real.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 3 -->
+  <div class="rs-step" data-step="3" onclick="toggleStep(3)">
+    <div class="rs-step-left"><div class="rs-step-circle">3</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Triagem de currículos</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Filtrar candidatos com base nas competências mapeadas — não apenas no currículo bonito.</div>
+      <div class="rs-panel" id="panel-3">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">🔍 Como triar por competências</div>
+            <div class="card-body">
+              <p>A triagem por competências não elimina candidatos pela ausência de um diploma ou empresa famosa. Ela avalia se as experiências descritas indicam que a pessoa <strong>desenvolveu as competências necessárias</strong>.</p>
+              <ul style="margin-top:8px">
+                <li>Leia o currículo buscando <strong>evidências</strong> das competências mapeadas no briefing</li>
+                <li>Pergunte-se: <em>"Essa pessoa provavelmente fez X ou Y em algum momento da carreira?"</em></li>
+                <li>Não elimine apenas por ausência de formação específica, se houver experiência prática equivalente</li>
+                <li>Crie uma <strong>matriz de triagem</strong> simples: liste os critérios principais e marque se o currículo atende, atende parcialmente ou não atende</li>
+              </ul>
+              <div class="info-box"><strong>Critérios de triagem (exemplo — Assistente Adm.):</strong><br>
+              ✔ Experiência com rotinas administrativas<br>
+              ✔ Uso de algum sistema ERP<br>
+              ✔ Noções de financeiro/contas a pagar (desejável)<br>
+              ✔ Disponibilidade de horário compatível</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">👥 Quantos candidatos levar para a próxima etapa?</div>
+            <div class="card-body">
+              <ul>
+                <li>Ideal: <strong>5 a 8 candidatos</strong> aprovados na triagem para a etapa de entrevistas do RH</li>
+                <li>Para entrevista com o líder: <strong>2 a 4 finalistas</strong> com pareceres prontos</li>
+                <li>Cargos operacionais com alta rotatividade podem ter triagem mais ágil</li>
+              </ul>
+              <div class="tip">Registre por que cada candidato foi aprovado ou reprovado. Isso é fundamental para dar feedback e para aprender com o processo.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 4 -->
+  <div class="rs-step" data-step="4" onclick="toggleStep(4)">
+    <div class="rs-step-left"><div class="rs-step-circle">4</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Entrevista de RH por competências</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Primeira entrevista conduzida pelo RH para aprofundar a análise das competências.</div>
+      <div class="rs-panel" id="panel-4">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">💬 O que é a entrevista por competências?</div>
+            <div class="card-body">
+              <p>A entrevista por competências usa perguntas baseadas em <strong>situações reais vividas pelo candidato</strong>. Em vez de perguntar "você é organizado?", perguntamos: <em>"Me fala de uma situação em que você precisou gerenciar várias tarefas ao mesmo tempo. Como você se organizou?"</em></p>
+              <p>Isso porque competências se revelam no comportamento passado — e comportamento passado é o melhor preditor de comportamento futuro.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⭐ Técnica STAR — como ouvir e analisar respostas</div>
+            <div class="card-body">
+              <p>Use a técnica STAR para guiar sua escuta e, se precisar, para aprofundar as perguntas:</p>
+              <ul class="step-list">
+                <li><div class="snum">S</div><div><strong>Situação:</strong> Qual era o contexto? Onde trabalhava, o que estava acontecendo?</div></li>
+                <li><div class="snum">T</div><div><strong>Tarefa:</strong> Qual era a responsabilidade ou desafio da pessoa naquele momento?</div></li>
+                <li><div class="snum">A</div><div><strong>Ação:</strong> O que ela fez especificamente? Como agiu?</div></li>
+                <li><div class="snum">R</div><div><strong>Resultado:</strong> Qual foi o resultado? O que aprendeu com isso?</div></li>
+              </ul>
+              <div class="tip"><strong>Dica:</strong> Se o candidato der respostas vagas ("eu sempre faço assim..."), peça uma situação específica: <em>"Você consegue me dar um exemplo concreto de quando isso aconteceu?"</em></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Exemplos de perguntas por competência</div>
+            <div class="card-body">
+              <ul>
+                <li><strong>Organização:</strong> "Me conta uma situação em que você tinha muitas demandas ao mesmo tempo. Como você priorizou?"</li>
+                <li><strong>Comunicação:</strong> "Já precisou passar uma informação difícil para alguém? Como fez isso?"</li>
+                <li><strong>Trabalho em equipe:</strong> "Me dê um exemplo de como você lidou com um conflito no trabalho."</li>
+                <li><strong>Iniciativa:</strong> "Já identificou um problema no trabalho e tomou a frente para resolver sem ser pedido? Me conta."</li>
+                <li><strong>Adaptabilidade:</strong> "Já passou por uma mudança grande no trabalho? Como se adaptou?"</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📄 Como registrar e elaborar o parecer</div>
+            <div class="card-body">
+              <p>Ao final de cada entrevista, registre:</p>
+              <ul style="margin-top:6px">
+                <li>Competências avaliadas e evidências encontradas (ou ausência delas)</li>
+                <li>Pontos de atenção relevantes (ex.: disponibilidade de horário, pretensão salarial)</li>
+                <li>Impressão geral sobre postura e comunicação</li>
+                <li>Recomendação: <strong>apto para próxima etapa / não apto / apto com ressalvas</strong></li>
+              </ul>
+              <div class="tip">O parecer enviado ao líder deve ser objetivo, sem julgamentos pessoais, e baseado nas evidências coletadas na entrevista.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 5 -->
+  <div class="rs-step" data-step="5" onclick="toggleStep(5)">
+    <div class="rs-step-left"><div class="rs-step-circle">5</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Etapas complementares (se necessário)</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Testes práticos, dinâmicas ou avaliações técnicas — conforme a vaga exigir.</div>
+      <div class="rs-panel" id="panel-5">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">✅ Quando usar e o que aplicar</div>
+            <div class="card-body">
+              <p>Nem toda vaga precisa de etapas extras. Use conforme a necessidade:</p>
+              <ul style="margin-top:8px">
+                <li><strong>Teste prático:</strong> para cargos que exigem habilidade técnica verificável (ex.: teste de Excel para adm., prova de digitação, prova de logística)</li>
+                <li><strong>Dinâmica de grupo:</strong> quando o volume de candidatos é alto e quer-se observar comportamento em grupo (útil para cargos operacionais em processo coletivo)</li>
+                <li><strong>Teste comportamental:</strong> ferramentas como DISC, MBTI ou similares — quando o perfil comportamental é crítico para o cargo</li>
+                <li><strong>Redação / exercício de escrita:</strong> para cargos de comunicação, atendimento ou gestão</li>
+              </ul>
+              <div class="info-box"><strong>Na Vitta Rio agora:</strong> Para cargos operacionais como separador, conferente e estoquista, o foco deve ser na entrevista estruturada e, se possível, em uma atividade prática simples. Testes complexos podem inviabilizar o processo com o volume de candidatos que temos.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 6 -->
+  <div class="rs-step" data-step="6" onclick="toggleStep(6)">
+    <div class="rs-step-left"><div class="rs-step-circle">6</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Entrevista final com o líder</div>
+        <span class="rs-step-tag tag-lider">Líder</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">O líder avalia os finalistas e toma a decisão — o RH prepara e acompanha.</div>
+      <div class="rs-panel" id="panel-6">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">👤 Papel do RH nessa etapa</div>
+            <div class="card-body">
+              <ul>
+                <li>Enviar os pareceres dos candidatos finalistas com antecedência</li>
+                <li>Orientar o líder sobre as competências a observar durante a entrevista</li>
+                <li>Participar como observador (quando possível) para garantir alinhamento e aprendizado</li>
+                <li>Fazer o alinhamento pós-entrevista para colher a decisão e os próximos passos</li>
+              </ul>
+              <div class="tip"><strong>Importante:</strong> O líder tem a palavra final na escolha, mas o RH é o guardião do processo — cabe ao RH garantir que a decisão esteja embasada em competências, não apenas em "feeling".</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚠️ O que fazer se o líder não aprovar nenhum candidato</div>
+            <div class="card-body">
+              <ul>
+                <li>Entender quais foram os gaps específicos: o que faltou em cada candidato?</li>
+                <li>Avaliar se o problema está no processo (perfil mal definido no briefing) ou na oferta de mercado</li>
+                <li>Rever os critérios junto com o líder antes de recomeçar</li>
+                <li>Retomar o processo com um briefing atualizado</li>
+              </ul>
+              <div class="warn">Se o líder reprovar candidatos com frequência ou por critérios muito subjetivos, sinalize para a Amanda — pode ser necessário um alinhamento mais estruturado com a liderança sobre expectativas realistas da vaga.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 7 -->
+  <div class="rs-step" data-step="7" onclick="toggleStep(7)">
+    <div class="rs-step-left"><div class="rs-step-circle">7</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Proposta, aprovação e contratação</div>
+        <span class="rs-step-tag tag-shared">RH + líder</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Formalizar a oferta, coletar documentos e encaminhar para o DP.</div>
+      <div class="rs-panel" id="panel-7">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">✔️ Passos após a aprovação do candidato</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Comunicar ao candidato aprovado a decisão e confirmar a proposta (cargo, salário, data de início, benefícios)</div></li>
+                <li><div class="snum">2</div><div>Enviar a lista de documentos necessários para admissão</div></li>
+                <li><div class="snum">3</div><div>Comunicar aos candidatos não aprovados com respeito e clareza</div></li>
+                <li><div class="snum">4</div><div>Encaminhar documentação ao DP para dar andamento à admissão</div></li>
+                <li><div class="snum">5</div><div>Planejar o onboarding e integração do novo colaborador</div></li>
+              </ul>
+              <div class="tip"><strong>Boas práticas:</strong> Todo candidato que passou por entrevista merece um retorno — mesmo os reprovados. Isso cuida da imagem da Vitta Rio como empregadora.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 8 -->
+  <div class="rs-step" data-step="8" onclick="toggleStep(8)">
+    <div class="rs-step-left"><div class="rs-step-circle">8</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Onboarding e integração</div>
+        <span class="rs-step-tag tag-shared">RH + líder</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Receber bem o novo colaborador é parte do processo seletivo — e define se ele fica.</div>
+      <div class="rs-panel" id="panel-8">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">🚪 Por que o onboarding faz parte do R&S?</div>
+            <div class="card-body">
+              <p>Contratar bem e integrar mal é o mesmo que perder o candidato. Boa parte das saídas no primeiro mês acontecem por falta de acolhimento e orientação — não por falta de competência.</p>
+              <p>O onboarding é o primeiro momento em que a cultura da empresa se torna real para o novo colaborador.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📅 O que deve acontecer no onboarding</div>
+            <div class="card-body">
+              <ul>
+                <li><strong>Boas-vindas estruturadas:</strong> apresentação da empresa, missão, valores, organograma</li>
+                <li><strong>Apresentação ao setor e à equipe:</strong> feita pelo líder, com tempo reservado para isso</li>
+                <li><strong>Treinamento inicial:</strong> EPI, normas internas, sistemas utilizados, fluxos do cargo</li>
+                <li><strong>Acompanhamento nos primeiros dias:</strong> check-in no fim da primeira semana e do primeiro mês</li>
+                <li><strong>Período de experiência estruturado:</strong> definir o que se espera nos primeiros 45 e 90 dias</li>
+              </ul>
+              <div class="tip">O check-in no final da primeira semana é simples e muito eficaz: <em>"Como foram seus primeiros dias? Está com alguma dúvida? O que podemos melhorar para você?"</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:1px; background:var(--gray-border); margin:1.5rem 0;"></div>
+
+  <div class="final-note">
+    <strong>Lembre-se:</strong> o fluxo é uma referência — cada vaga tem suas particularidades. O importante é que cada etapa tenha uma razão de ser e que as decisões estejam sempre baseadas em competências, não em impressões pessoais. Em caso de dúvida, consulte a Amanda antes de avançar para a próxima etapa.
+  </div>
+
+</div>
+
+<script>
+  var opened = new Set();
+  function toggleStep(n) {
+    var panel = document.getElementById('panel-' + n);
+    var step = document.querySelector('[data-step="' + n + '"]');
+    var isOpen = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+      step.classList.remove('active');
+      opened.delete(n);
+    } else {
+      panel.classList.add('open');
+      step.classList.add('active');
+      opened.add(n);
+    }
+    var pct = Math.round((opened.size / 8) * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = opened.size + ' de 8 etapas abertas';
+  }
+</script>
+</body>
+</html>
