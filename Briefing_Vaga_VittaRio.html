@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing de Vaga — Vitta Rio RH</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gd:#0F6E56;--gm:#1D9E75;--gl:#E1F5EE;--gb:#5DCAA5;
+  --bl:#E6F1FB;--bm:#185FA5;--bd:#0C447C;--bb:#85B7EB;
+  --al:#FAEEDA;--am:#854F0B;--ab:#EF9F27;
+  --rl:#FCEBEB;--rm:#A32D2D;--rb:#F09595;
+  --pl:#EEEDFE;--pm:#534AB7;
+  --bg:#F7F6F2;--lg:#F1EFE8;--bo:#D3D1C7;
+  --tx:#5F5E5A;--mu:#888780;--bk:#2C2C2A;--wh:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--bk);min-height:100vh}
+
+.topbar{background:var(--wh);border-bottom:1px solid var(--bo);padding:0;position:sticky;top:0;z-index:100}
+.topbar-inner{max-width:800px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:11px;padding:13px 0}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--gm);color:var(--wh);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-title{font-size:14px;font-weight:500;color:var(--bk)}
+.brand-sub{font-size:12px;color:var(--tx)}
+
+.tabs-bar{background:var(--wh);border-bottom:1px solid var(--bo)}
+.tabs-inner{max-width:800px;margin:0 auto;padding:0 2rem;display:flex}
+.tab{padding:12px 20px;font-size:13px;font-weight:500;color:var(--tx);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.tab.on{color:var(--gd);border-bottom-color:var(--gd)}
+.tab:hover:not(.on){color:var(--bk)}
+
+.page{max-width:800px;margin:0 auto;padding:2rem 2rem 5rem}
+.view{display:none}.view.on{display:block}
+
+/* ── GUIA ── */
+.intro-box{background:var(--gl);border-left:3px solid var(--gm);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:1.5rem;font-size:13px;color:var(--gd);line-height:1.7}
+.intro-box strong{color:var(--bk)}
+
+.bloco{background:var(--wh);border:1px solid var(--bo);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.bloco-header{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .15s}
+.bloco-header:hover{background:var(--lg)}
+.bnum{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.btitle{font-size:14px;font-weight:500;color:var(--bk);flex:1}
+.btag{font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:10px}
+.t-todos{background:var(--lg);color:var(--tx)}
+.t-op{background:var(--al);color:var(--am)}
+.t-adm{background:var(--bl);color:var(--bd)}
+.t-lider{background:var(--pl);color:var(--pm)}
+.barrow{font-size:16px;color:var(--mu);transition:transform .2s;margin-left:auto;line-height:1}
+.bloco.open .barrow{transform:rotate(90deg)}
+.bloco-body{display:none;padding:0 18px 18px}
+.bloco.open .bloco-body{display:block}
+
+.perg{display:flex;gap:10px;padding:10px 0;border-bottom:.5px solid var(--bo);font-size:13px;color:var(--tx);line-height:1.6}
+.perg:last-of-type{border-bottom:none}
+.pnum{min-width:24px;height:24px;border-radius:50%;background:var(--lg);border:.5px solid var(--bo);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--tx);flex-shrink:0;margin-top:1px}
+.ptxt{flex:1}
+.ptxt em{font-style:italic;color:var(--bk)}
+.ptip{background:var(--gl);border-radius:8px;padding:9px 12px;margin-top:7px;font-size:12px;color:var(--gd);line-height:1.6}
+.ptip strong{color:var(--gd)}
+.palerta{background:var(--al);border-radius:8px;padding:9px 12px;margin-top:7px;font-size:12px;color:var(--am);line-height:1.6}
+.palerta strong{color:var(--am)}
+
+.enc-box{background:var(--lg);border-radius:12px;padding:16px 20px;margin-top:1rem;font-size:13px;color:var(--tx);line-height:1.7}
+.enc-box strong{color:var(--bk)}
+
+/* ── FICHA ── */
+.prog-wrap{margin-bottom:1.5rem}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;color:var(--tx);margin-bottom:5px}
+.prog-track{height:5px;background:var(--bo);border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;background:var(--gm);border-radius:10px;width:0%;transition:width .3s}
+
+.fsec{background:var(--wh);border:1px solid var(--bo);border-radius:12px;padding:20px 22px;margin-bottom:12px}
+.slabel{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:14px;padding-bottom:8px;border-bottom:.5px solid var(--bo)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;margin-bottom:13px}
+.fgrid:last-child{margin-bottom:0}
+.fg2{grid-template-columns:repeat(2,1fr)}
+.full{grid-column:1/-1}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:12px;font-weight:500;color:var(--tx)}
+.lbl .hint{font-weight:400;color:var(--mu);font-size:11px}
+input[type=text],select,textarea{width:100%;font-size:13px;padding:9px 11px;border:1px solid var(--bo);border-radius:8px;background:var(--wh);color:var(--bk);outline:none;transition:border-color .15s;font-family:inherit;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--gb);box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+textarea{resize:vertical;min-height:82px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:28px}
+
+.cha-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:560px){.cha-grid{grid-template-columns:1fr}}
+.cha-cell{border-radius:10px;padding:12px 14px;border:.5px solid var(--bo)}
+.cha-c{background:var(--bl)}
+.cha-h{background:var(--lg)}
+.cha-a{background:var(--gl)}
+.cha-tag{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.cha-c .cha-tag{color:var(--bd)}
+.cha-h .cha-tag{color:var(--tx)}
+.cha-a .cha-tag{color:var(--gd)}
+.cha-name{font-size:12px;font-weight:500;color:var(--bk);margin-bottom:6px}
+.cha-cell textarea{min-height:70px;font-size:12px;background:rgba(255,255,255,.7)}
+
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;background:var(--gm);color:var(--wh);border:none;border-radius:9px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-primary:hover{opacity:.87}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;background:transparent;color:var(--tx);border:1px solid var(--bo);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-ghost:hover{background:var(--lg)}
+
+.resumo-wrap{display:none;margin-top:1.5rem}
+.resumo-wrap.show{display:block}
+.resumo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.resumo-title{font-size:15px;font-weight:500;color:var(--bk)}
+.btn-copy{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;color:var(--tx);border:1px solid var(--bo);border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-copy:hover{background:var(--lg)}
+.copy-ok{font-size:12px;color:var(--gd);margin-left:8px;display:none}
+.copy-ok.show{display:inline}
+.resumo-box{background:var(--lg);border:1px solid var(--bo);border-radius:12px;padding:18px 20px;font-size:13px;color:var(--tx);line-height:1.9}
+.rb-sec{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin:16px 0 6px;padding-top:12px;border-top:.5px solid var(--bo)}
+.rb-sec:first-child{margin-top:0;padding-top:0;border-top:none}
+.rb-row{display:flex;gap:8px;margin-bottom:4px;align-items:flex-start}
+.rb-k{color:var(--mu);min-width:200px;flex-shrink:0;font-size:12px}
+.rb-v{color:var(--bk);font-weight:500;flex:1;white-space:pre-wrap}
+
+.print-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;color:var(--tx);border:1px solid var(--bo);border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+.print-btn:hover{background:var(--lg)}
+
+@media print{
+  .topbar,.tabs-bar,.prog-wrap,.btn-row,.btn-copy,.btn-ghost,.print-btn{display:none!important}
+  .page{padding:1rem}
+  .resumo-wrap{display:block!important}
+  .fsec,.bloco{break-inside:avoid}
+}
+@media(max-width:500px){
+  .page{padding:1.5rem 1rem 4rem}
+  .tabs-inner{padding:0 1rem}
+  .topbar-inner{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">VR</div>
+      <div>
+        <div class="brand-title">Vitta Rio · RH</div>
+        <div class="brand-sub">Briefing de vaga — recrutamento e seleção por competências</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <div class="tab on" id="tab-guia" onclick="showTab('guia')">&#xe6b5; Roteiro de briefing</div>
+    <div class="tab" id="tab-ficha" onclick="showTab('ficha')">&#xe6b7; Ficha de levantamento</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ══ ABA 1: ROTEIRO ══ -->
+  <div id="view-guia" class="view on">
+
+    <div class="intro-box">
+      <strong>Como usar este roteiro:</strong> Antes da reunião, leia os blocos do tipo de vaga que você vai briefar. Durante a conversa, siga a sequência — cada bloco tem as perguntas certas e dicas de como aprofundar. Ao final, vá para a aba "Ficha de levantamento" e registre tudo o que coletou enquanto ainda está fresco.
+    </div>
+
+    <!-- BLOCO 0 -->
+    <div class="bloco open" id="b0">
+      <div class="bloco-header" onclick="tog('b0')">
+        <div class="bnum" style="background:var(--gl);color:var(--gd)">0</div>
+        <div class="btitle">Abertura da reunião</div>
+        <span class="btag t-todos">Toda vaga</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">—</div>
+          <div class="ptxt">
+            Apresente-se e explique o objetivo da reunião: <em>"Olá [nome], sou [seu nome], assistente de RH. Estou aqui para entender melhor a vaga de [cargo] e garantir que o processo seletivo traga candidatos bem alinhados com o que você precisa. Vou fazer algumas perguntas — quanto mais detalhe você me der, mais assertivo será o processo."</em>
+            <div class="ptip"><strong>Postura:</strong> Tenha papel e caneta (ou celular) para anotar. Mantenha contato visual. Se não entender alguma resposta, peça ao líder um exemplo concreto. Você não precisa saber tudo sobre a área — o líder é o especialista, você é a facilitadora do processo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 1 -->
+    <div class="bloco" id="b1">
+      <div class="bloco-header" onclick="tog('b1')">
+        <div class="bnum" style="background:var(--bl);color:var(--bd)">1</div>
+        <div class="btitle">Contexto da vaga</div>
+        <span class="btag t-todos">Toda vaga</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">1</div>
+          <div class="ptxt"><em>"Por que essa vaga está sendo aberta agora? É uma vaga nova ou substituição?"</em>
+          <div class="ptip"><strong>Se for substituição:</strong> pergunte o que aconteceu com a pessoa anterior e se havia algo no perfil dela que não funcionou. Isso revela expectativas implícitas que o líder pode não mencionar espontaneamente.</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">2</div>
+          <div class="ptxt"><em>"Como está o setor hoje? Quantas pessoas tem na equipe e como essa pessoa vai se encaixar nesse time?"</em>
+          <div class="ptip">Entender o time ajuda a avaliar se o candidato precisa de perfil mais independente (equipe pequena) ou mais colaborativo (equipe grande).</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">3</div>
+          <div class="ptxt"><em>"Qual é o maior desafio do setor hoje? Como essa pessoa poderia ajudar a resolver?"</em>
+          <div class="palerta"><strong>Atenção:</strong> Se o líder citar problemas graves (alta rotatividade, conflitos de equipe, sobrecarga estrutural), anote — é contexto estratégico importante para a Amanda avaliar antes de avançar.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 2 -->
+    <div class="bloco" id="b2">
+      <div class="bloco-header" onclick="tog('b2')">
+        <div class="bnum" style="background:var(--bl);color:var(--bd)">2</div>
+        <div class="btitle">Dia a dia e responsabilidades</div>
+        <span class="btag t-todos">Toda vaga</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">4</div>
+          <div class="ptxt"><em>"Se você pudesse descrever o dia a dia dessa pessoa nos primeiros 30 dias, o que ela estaria fazendo de manhã, de tarde?"</em>
+          <div class="ptip">Essa pergunta concreta ajuda líderes que têm dificuldade em descrever o cargo no abstrato. O cotidiano revela as atividades reais.</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">5</div>
+          <div class="ptxt"><em>"Quais são as 3 entregas mais importantes dessa função? O que você vai cobrar dessa pessoa no final do mês?"</em></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">6</div>
+          <div class="ptxt"><em>"Com quem essa pessoa vai se relacionar no trabalho? Só com a equipe interna ou também com outras áreas, fornecedores, clientes?"</em>
+          <div class="ptip">A amplitude de relacionamento define a importância da competência de comunicação no perfil do candidato.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 3 -->
+    <div class="bloco" id="b3">
+      <div class="bloco-header" onclick="tog('b3')">
+        <div class="bnum" style="background:var(--bl);color:var(--bd)">3</div>
+        <div class="btitle">Competências técnicas — o saber e o saber fazer</div>
+        <span class="btag t-todos">Toda vaga</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">7</div>
+          <div class="ptxt"><em>"O que essa pessoa precisa saber fazer tecnicamente para desempenhar bem a função? Quais conhecimentos são obrigatórios?"</em>
+          <div class="ptip"><strong>Separe obrigatório de desejável:</strong> para cada item que o líder citar, pergunte "isso é essencial ou é um diferencial?" Muitos líderes listam tudo como obrigatório por insegurança.</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">8</div>
+          <div class="ptxt"><em>"Usa algum sistema ou ferramenta específica? Qual o nível de domínio necessário?"</em></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">9</div>
+          <div class="ptxt"><em>"Tem experiência mínima necessária? Quanto tempo na área? Ou aceita alguém sem experiência que aprenda rápido?"</em>
+          <div class="palerta"><strong>Calibre a expectativa:</strong> líderes operacionais às vezes exigem muito tempo de experiência por insegurança. Ajude a calibrar: <em>"Se vier uma pessoa com 6 meses mas muito boa, você consideraria?"</em></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 4 -->
+    <div class="bloco" id="b4">
+      <div class="bloco-header" onclick="tog('b4')">
+        <div class="bnum" style="background:var(--gl);color:var(--gd)">4</div>
+        <div class="btitle">Competências comportamentais — o querer fazer</div>
+        <span class="btag t-todos">Toda vaga</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">10</div>
+          <div class="ptxt"><em>"Se você tivesse que descrever o jeito de ser ideal para essa vaga, como seria essa pessoa?"</em>
+          <div class="ptip">Perguntas sobre comportamento em linguagem simples funcionam melhor com líderes operacionais do que termos técnicos como "competências comportamentais".</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">11</div>
+          <div class="ptxt"><em>"Você já teve alguém excelente nessa função? O que ela tinha de especial que você gostaria de encontrar de novo?"</em>
+          <div class="ptip"><strong>Pergunta de ouro:</strong> revela as competências que o líder valoriza de verdade, não apenas o que acha que deve dizer.</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">12</div>
+          <div class="ptxt"><em>"E o contrário — já teve alguém que não deu certo? O que não funcionou? O que você definitivamente não quer repetir?"</em>
+          <div class="palerta"><strong>Atenção:</strong> Se a resposta revelar critérios discriminatórios (idade, aparência, estado civil, filhos), não anote e redirecione a conversa para competências. Reporte imediatamente para a Amanda.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 5: OPERACIONAL -->
+    <div class="bloco" id="b5">
+      <div class="bloco-header" onclick="tog('b5')">
+        <div class="bnum" style="background:var(--al);color:var(--am)">5</div>
+        <div class="btitle">Especificidades — cargos operacionais</div>
+        <span class="btag t-op">Operacional</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">13</div>
+          <div class="ptxt"><em>"O cargo exige esforço físico? Qual o nível — leve, moderado, intenso? Tem alguma restrição de saúde que inviabilize a função?"</em>
+          <div class="ptip">Fundamental para separação, expedição e estoque. Evita contratações que resultem em afastamentos por limitação física.</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">14</div>
+          <div class="ptxt"><em>"O turno é fixo ou rotativo? A pessoa vai trabalhar em qual horário — dia, noite, fins de semana? Isso é negociável?"</em></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">15</div>
+          <div class="ptxt"><em>"Tem uso de EPI obrigatório? A função exige algum treinamento ou certificação específica antes de iniciar?"</em></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">16</div>
+          <div class="ptxt"><em>"O ritmo de trabalho é constante ou tem picos? Como é o volume nos dias de maior movimento?"</em>
+          <div class="ptip">Candidatos sem experiência em operação de alta demanda costumam ter dificuldade de adaptação. Vale sinalizar isso durante as entrevistas.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 6: ADMINISTRATIVO -->
+    <div class="bloco" id="b6">
+      <div class="bloco-header" onclick="tog('b6')">
+        <div class="bnum" style="background:var(--bl);color:var(--bd)">6</div>
+        <div class="btitle">Especificidades — cargos administrativos</div>
+        <span class="btag t-adm">Administrativo</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">17</div>
+          <div class="ptxt"><em>"Quais são os principais processos administrativos que essa pessoa vai tocar? Tem autonomia para tomar decisões ou tudo passa pelo líder?"</em>
+          <div class="ptip">Define se o perfil deve ser mais executor ou analítico — impacta diretamente as perguntas da entrevista por competências.</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">18</div>
+          <div class="ptxt"><em>"Essa função vai lidar com informações financeiras, contratos ou dados sensíveis? Qual o nível de confidencialidade exigido?"</em></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">19</div>
+          <div class="ptxt"><em>"Qual o nível de Excel e de sistemas que essa pessoa precisa ter? Só consulta, ou vai criar planilhas e relatórios?"</em></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 7: LIDERANÇA -->
+    <div class="bloco" id="b7">
+      <div class="bloco-header" onclick="tog('b7')">
+        <div class="bnum" style="background:var(--pl);color:var(--pm)">7</div>
+        <div class="btitle">Especificidades — cargos de liderança</div>
+        <span class="btag t-lider">Liderança</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">20</div>
+          <div class="ptxt"><em>"Quantas pessoas essa liderança vai gerir? Qual o perfil da equipe — experiente, em formação, mista?"</em></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">21</div>
+          <div class="ptxt"><em>"Qual o maior desafio de gestão dessa equipe hoje? O que essa liderança vai precisar resolver nos primeiros 90 dias?"</em>
+          <div class="ptip">Fundamental para entender se a empresa precisa de um líder de resultado imediato (perfil mais diretivo) ou de construção de equipe (perfil mais desenvolvedor).</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">22</div>
+          <div class="ptxt"><em>"Essa liderança vai reportar para quem? Terá autonomia para contratar, demitir, tomar decisões operacionais?"</em>
+          <div class="palerta"><strong>Atenção:</strong> Se a resposta for "não terá autonomia para nada", o cargo pode não ser de liderança real — reavalie o título com a Amanda antes de seguir o processo.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCO 8: ENCERRAMENTO -->
+    <div class="bloco" id="b8">
+      <div class="bloco-header" onclick="tog('b8')">
+        <div class="bnum" style="background:var(--gl);color:var(--gd)">8</div>
+        <div class="btitle">Encerramento e alinhamento de expectativas</div>
+        <span class="btag t-todos">Toda vaga</span>
+        <span class="barrow">›</span>
+      </div>
+      <div class="bloco-body">
+        <div class="perg">
+          <div class="pnum">23</div>
+          <div class="ptxt"><em>"Tem alguma coisa que eu não perguntei e que você acha importante eu saber sobre essa vaga ou sobre o setor?"</em>
+          <div class="ptip">Sempre abra esse espaço no final — às vezes o líder guarda a informação mais importante para esse momento.</div></div>
+        </div>
+        <div class="perg">
+          <div class="pnum">24</div>
+          <div class="ptxt"><em>"Qual a sua disponibilidade para as entrevistas? Prefere manhã ou tarde? Presencial ou videoconferência?"</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="enc-box">
+      <strong>Ao encerrar, confirme com o líder:</strong> <em>"Deixa eu resumir o que entendi sobre o perfil — [repita os 3 pontos mais importantes]. Está correto? Tem algo que você mudaria?"</em> Isso valida o levantamento e demonstra preparo. Em seguida, vá para a aba "Ficha de levantamento" e registre tudo enquanto ainda está fresco na memória.
+    </div>
+
+  </div>
+
+  <!-- ══ ABA 2: FICHA ══ -->
+  <div id="view-ficha" class="view">
+
+    <div class="prog-wrap">
+      <div class="prog-row"><span>Preenchimento da ficha</span><span id="prog-txt">0%</span></div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    </div>
+
+    <!-- Identificação -->
+    <div class="fsec">
+      <div class="slabel">Identificação da vaga</div>
+      <div class="fgrid fg2">
+        <div class="fgrp"><label class="lbl">Cargo</label><input type="text" id="fi-cargo" placeholder="Ex.: Separador de pedidos" oninput="updP()"></div>
+        <div class="fgrp"><label class="lbl">Líder entrevistado</label><input type="text" id="fi-lider" placeholder="Nome completo" oninput="updP()"></div>
+        <div class="fgrp"><label class="lbl">Setor</label>
+          <select id="fi-setor" onchange="updP()">
+            <option value="">Selecionar...</option>
+            <option>Expedição</option><option>Estoque</option><option>Qualidade</option>
+            <option>Transporte / Logística</option><option>Cozinha / Refeitório</option>
+            <option>Administrativo</option><option>Financeiro</option>
+            <option>Comercial / Televendas</option><option>Compras</option>
+            <option>RH / DP</option><option>TI</option><option>Outro</option>
+          </select>
+        </div>
+        <div class="fgrp"><label class="lbl">Tipo de vaga</label>
+          <select id="fi-tipo" onchange="updP()">
+            <option value="">Selecionar...</option>
+            <option>Operacional</option><option>Administrativo</option>
+            <option>Liderança</option><option>Técnico especializado</option>
+          </select>
+        </div>
+        <div class="fgrp"><label class="lbl">Data do briefing</label><input type="text" id="fi-data" placeholder="Ex.: 28/05/2025" oninput="updP()"></div>
+        <div class="fgrp"><label class="lbl">Realizado por</label><input type="text" id="fi-resp" placeholder="Seu nome" oninput="updP()"></div>
+      </div>
+    </div>
+
+    <!-- Contexto -->
+    <div class="fsec">
+      <div class="slabel">Contexto e cenário da vaga</div>
+      <div class="fgrid">
+        <div class="fgrp full"><label class="lbl">Por que a vaga foi aberta? Contexto do setor</label><textarea id="fi-contexto" placeholder="Motivo da abertura, situação atual do setor, histórico relevante..." oninput="updP()"></textarea></div>
+        <div class="fgrp full"><label class="lbl">Como é a equipe hoje? <span class="hint">(tamanho, perfil, nível de experiência)</span></label><textarea id="fi-equipe" placeholder="Quantidade de pessoas, senioridade, clima da equipe..." oninput="updP()"></textarea></div>
+        <div class="fgrp full"><label class="lbl">Principais desafios do setor que essa pessoa ajudará a resolver</label><textarea id="fi-desafios" placeholder="Problemas que a vaga vai ajudar a solucionar..." oninput="updP()"></textarea></div>
+      </div>
+    </div>
+
+    <!-- Dia a dia -->
+    <div class="fsec">
+      <div class="slabel">Dia a dia e entregas esperadas</div>
+      <div class="fgrid">
+        <div class="fgrp full"><label class="lbl">Principais atividades do dia a dia <span class="hint">(quanto mais detalhe, melhor)</span></label><textarea id="fi-ativ" style="min-height:100px" placeholder="O que essa pessoa vai fazer na prática, rotina semanal..." oninput="updP()"></textarea></div>
+        <div class="fgrp full"><label class="lbl">As 3 principais entregas / resultados esperados</label><textarea id="fi-entregas" placeholder="1. &#10;2. &#10;3. " oninput="updP()"></textarea></div>
+        <div class="fgrp full"><label class="lbl">Com quem essa pessoa vai se relacionar <span class="hint">(interno e externo)</span></label><textarea id="fi-relac" placeholder="Equipe direta, outras áreas, fornecedores, clientes..." oninput="updP()"></textarea></div>
+      </div>
+    </div>
+
+    <!-- CHA -->
+    <div class="fsec">
+      <div class="slabel">Mapeamento de competências — CHA</div>
+      <div class="cha-grid">
+        <div class="cha-cell cha-c">
+          <div class="cha-tag">Conhecimento — o saber</div>
+          <div class="cha-name">Formação, técnicas, cursos</div>
+          <textarea id="fi-c" placeholder="Ex.: logística, ERP, Excel, CNH, boas práticas de armazenagem..." oninput="updP()"></textarea>
+        </div>
+        <div class="cha-cell cha-h">
+          <div class="cha-tag">Habilidade — o saber fazer</div>
+          <div class="cha-name">O que executa na prática</div>
+          <textarea id="fi-h" placeholder="Ex.: operar coletor, montar rotas, elaborar relatórios..." oninput="updP()"></textarea>
+        </div>
+        <div class="cha-cell cha-a">
+          <div class="cha-tag">Atitude — o querer fazer</div>
+          <div class="cha-name">Comportamentos e perfil</div>
+          <textarea id="fi-a" placeholder="Ex.: proatividade, organização, trabalho em equipe..." oninput="updP()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Perfil -->
+    <div class="fsec">
+      <div class="slabel">Perfil ideal e alertas</div>
+      <div class="fgrid">
+        <div class="fgrp full"><label class="lbl">O que tinha de especial a melhor pessoa que já ocupou essa função?</label><textarea id="fi-melhor" placeholder="Competências, comportamentos, jeito de trabalhar..." oninput="updP()"></textarea></div>
+        <div class="fgrp full"><label class="lbl">O que definitivamente não funcionou em contratações anteriores?</label><textarea id="fi-nao" placeholder="Perfis, comportamentos ou situações que deram errado..." oninput="updP()"></textarea></div>
+        <div class="fgrp full"><label class="lbl">Especificidades do tipo de vaga <span class="hint">(operacional: físico, turno; liderança: equipe, autonomia; adm: sistemas, Excel)</span></label><textarea id="fi-espec" placeholder="Tudo que é particular a este tipo de cargo..." oninput="updP()"></textarea></div>
+      </div>
+    </div>
+
+    <!-- Conclusão -->
+    <div class="fsec">
+      <div class="slabel">Conclusão e próximos passos</div>
+      <div class="fgrid fg2">
+        <div class="fgrp full"><label class="lbl">Informações adicionais relevantes mencionadas pelo líder</label><textarea id="fi-adicional" placeholder="Qualquer coisa importante que surgiu na conversa..." oninput="updP()"></textarea></div>
+        <div class="fgrp"><label class="lbl">Disponibilidade do líder para entrevistas</label><input type="text" id="fi-disp" placeholder="Ex.: manhãs, terças e quintas" oninput="updP()"></div>
+        <div class="fgrp"><label class="lbl">Próximos passos combinados</label><input type="text" id="fi-prox" placeholder="Ex.: RH envia triagem em 3 dias úteis" oninput="updP()"></div>
+        <div class="fgrp full"><label class="lbl">Pontos de atenção / alertas para a Amanda revisar</label><textarea id="fi-alertas" placeholder="Algo que precisa de validação ou aprovação antes de avançar..." oninput="updP()"></textarea></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="gerarResumo()">Gerar resumo do briefing</button>
+      <button class="btn-ghost" onclick="limpar()">Limpar ficha</button>
+      <button class="print-btn" onclick="window.print()">Imprimir</button>
+    </div>
+
+    <!-- RESUMO -->
+    <div class="resumo-wrap" id="resumo-wrap">
+      <div class="resumo-header">
+        <div class="resumo-title">Resumo do briefing — <span id="resumo-cargo"></span></div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <button class="btn-copy" onclick="copiar()">Copiar texto</button>
+          <span class="copy-ok" id="copy-ok">Copiado!</span>
+        </div>
+      </div>
+      <div class="resumo-box" id="resumo-box"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showTab(t){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on')});
+  document.querySelectorAll('.tab').forEach(function(tb){tb.classList.remove('on')});
+  document.getElementById('view-'+t).classList.add('on');
+  document.getElementById('tab-'+t).classList.add('on');
+}
+
+function tog(id){
+  document.getElementById(id).classList.toggle('open');
+}
+
+var FIELDS=['fi-cargo','fi-lider','fi-setor','fi-tipo','fi-data','fi-resp',
+  'fi-contexto','fi-equipe','fi-desafios','fi-ativ','fi-entregas','fi-relac',
+  'fi-c','fi-h','fi-a','fi-melhor','fi-nao','fi-espec',
+  'fi-adicional','fi-disp','fi-prox','fi-alertas'];
+
+function updP(){
+  var n=FIELDS.filter(function(id){var e=document.getElementById(id);return e&&e.value.trim().length>0}).length;
+  var p=Math.round(n/FIELDS.length*100);
+  document.getElementById('prog-fill').style.width=p+'%';
+  document.getElementById('prog-txt').textContent=p+'%';
+}
+
+function g(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+
+function gerarResumo(){
+  var cargo=g('fi-cargo')||'[cargo não informado]';
+  document.getElementById('resumo-cargo').textContent=cargo;
+  var html='';
+  function sec(t){html+='<div class="rb-sec">'+t+'</div>';}
+  function row(k,v){if(v)html+='<div class="rb-row"><span class="rb-k">'+k+'</span><span class="rb-v">'+v.replace(/\n/g,'<br>')+'</span></div>';}
+
+  sec('Identificação da vaga');
+  row('Cargo',cargo);row('Líder',g('fi-lider'));row('Setor',g('fi-setor'));
+  row('Tipo de vaga',g('fi-tipo'));row('Data do briefing',g('fi-data'));row('Realizado por',g('fi-resp'));
+
+  sec('Contexto e cenário');
+  row('Contexto da abertura',g('fi-contexto'));
+  row('Equipe atual',g('fi-equipe'));
+  row('Desafios que a vaga resolve',g('fi-desafios'));
+
+  sec('Dia a dia e entregas');
+  row('Atividades do dia a dia',g('fi-ativ'));
+  row('Principais entregas esperadas',g('fi-entregas'));
+  row('Relacionamentos',g('fi-relac'));
+
+  sec('Competências — CHA');
+  row('Conhecimento (o saber)',g('fi-c'));
+  row('Habilidade (o saber fazer)',g('fi-h'));
+  row('Atitude (o querer fazer)',g('fi-a'));
+
+  sec('Perfil ideal e alertas');
+  row('O que funcionou bem antes',g('fi-melhor'));
+  row('O que não deve se repetir',g('fi-nao'));
+  row('Especificidades da função',g('fi-espec'));
+
+  sec('Conclusão e próximos passos');
+  row('Disponibilidade para entrevistas',g('fi-disp'));
+  row('Próximos passos combinados',g('fi-prox'));
+  row('Informações adicionais',g('fi-adicional'));
+  row('Alertas para a Amanda',g('fi-alertas'));
+
+  document.getElementById('resumo-box').innerHTML=html;
+  document.getElementById('resumo-wrap').classList.add('show');
+  document.getElementById('resumo-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copiar(){
+  var cargo=g('fi-cargo')||'[cargo não informado]';
+  var linhas=['RESUMO DO BRIEFING — '+cargo.toUpperCase(),'Data: '+g('fi-data'),'Realizado por: '+g('fi-resp'),''];
+  function sec(t){linhas.push('── '+t+' ──');}
+  function row(k,v){if(v){linhas.push(k+': '+v);}}
+  sec('IDENTIFICAÇÃO');row('Cargo',cargo);row('Líder',g('fi-lider'));row('Setor',g('fi-setor'));row('Tipo',g('fi-tipo'));linhas.push('');
+  sec('CONTEXTO');row('Contexto',g('fi-contexto'));row('Equipe',g('fi-equipe'));row('Desafios',g('fi-desafios'));linhas.push('');
+  sec('DIA A DIA');row('Atividades',g('fi-ativ'));row('Entregas',g('fi-entregas'));row('Relacionamentos',g('fi-relac'));linhas.push('');
+  sec('CHA — COMPETÊNCIAS');row('Conhecimento',g('fi-c'));row('Habilidade',g('fi-h'));row('Atitude',g('fi-a'));linhas.push('');
+  sec('PERFIL');row('O que funcionou',g('fi-melhor'));row('O que evitar',g('fi-nao'));row('Especificidades',g('fi-espec'));linhas.push('');
+  sec('PRÓXIMOS PASSOS');row('Disponibilidade',g('fi-disp'));row('Próximos passos',g('fi-prox'));row('Adicionais',g('fi-adicional'));row('Alertas Amanda',g('fi-alertas'));
+  navigator.clipboard.writeText(linhas.join('\n')).then(function(){
+    var ok=document.getElementById('copy-ok');ok.classList.add('show');
+    setTimeout(function(){ok.classList.remove('show')},2500);
+  });
+}
+
+function limpar(){
+  FIELDS.forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('resumo-wrap').classList.remove('show');
+  updP();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+updP();
+</script>
+</body>
+</html>
