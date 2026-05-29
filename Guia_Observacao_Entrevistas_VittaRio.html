@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia de Observação e Alinhamento — Vitta Rio RH</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #0F6E56;
+    --green-mid: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-border: #5DCAA5;
+    --purple-light: #EEEDFE;
+    --purple-mid: #534AB7;
+    --purple-border: #AFA9EC;
+    --blue-light: #E6F1FB;
+    --blue-mid: #185FA5;
+    --amber-light: #FAEEDA;
+    --amber-mid: #854F0B;
+    --amber-border: #EF9F27;
+    --gray-bg: #F7F6F2;
+    --gray-light: #F1EFE8;
+    --gray-border: #D3D1C7;
+    --gray-text: #5F5E5A;
+    --gray-muted: #888780;
+    --black: #2C2C2A;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-bg);
+    color: var(--black);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    border: 1px solid var(--green-border);
+    margin-bottom: 14px;
+  }
+
+  .main-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--black);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .main-subtitle {
+    font-size: 14px;
+    color: var(--gray-text);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--gray-border);
+    margin: 0 0 24px;
+  }
+
+  /* CONTEXT BOX */
+  .context-box {
+    background: var(--green-light);
+    border-left: 3px solid var(--green-mid);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-bottom: 28px;
+    font-size: 14px;
+    color: var(--gray-text);
+    line-height: 1.7;
+  }
+  .context-box strong { color: var(--black); }
+
+  /* SECTIONS */
+  .section { margin-bottom: 28px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-border);
+  }
+
+  .step-circle {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--green-mid);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--black);
+    flex: 1;
+  }
+
+  .time-badge {
+    font-size: 12px;
+    color: var(--gray-text);
+    background: var(--gray-light);
+    border: 1px solid var(--gray-border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title .icon {
+    font-size: 16px;
+    color: var(--green-mid);
+  }
+
+  .card-body {
+    font-size: 13px;
+    color: var(--gray-text);
+    line-height: 1.7;
+  }
+
+  .card-body ul {
+    padding-left: 1.3rem;
+  }
+
+  .card-body ul li {
+    margin-bottom: 5px;
+  }
+
+  /* TIPS */
+  .tip {
+    background: var(--green-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--green-dark);
+    line-height: 1.6;
+  }
+  .tip strong { color: #085041; }
+
+  .warn {
+    background: var(--amber-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--amber-mid);
+    line-height: 1.6;
+  }
+  .warn strong { color: #633806; }
+
+  /* CHA GRID */
+  .cha-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 12px 0 10px;
+  }
+
+  @media (max-width: 520px) {
+    .cha-grid { grid-template-columns: 1fr; }
+  }
+
+  .cha-card {
+    border-radius: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--gray-border);
+  }
+  .cha-card.conhecimento { background: var(--blue-light); }
+  .cha-card.habilidade   { background: var(--purple-light); }
+  .cha-card.atitude      { background: #EAF3DE; }
+
+  .cha-tag {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .cha-card.conhecimento .cha-tag { color: var(--blue-mid); }
+  .cha-card.habilidade   .cha-tag { color: var(--purple-mid); }
+  .cha-card.atitude      .cha-tag { color: #3B6D11; }
+
+  .cha-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .cha-desc {
+    font-size: 12px;
+    color: var(--gray-text);
+    line-height: 1.5;
+  }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; padding: 0; margin: 0; }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--gray-border);
+    font-size: 13px;
+    color: var(--gray-text);
+    line-height: 1.6;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li:hover { background: #fafafa; border-radius: 6px; padding-left: 4px; }
+
+  .checklist li.checked .check-label {
+    text-decoration: line-through;
+    opacity: 0.55;
+  }
+
+  .check-box {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    border: 2px solid var(--green-mid);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+    background: white;
+  }
+
+  .checklist li.checked .check-box {
+    background: var(--green-mid);
+    border-color: var(--green-mid);
+  }
+
+  .check-tick {
+    display: none;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .checklist li.checked .check-tick { display: block; }
+
+  .check-label { flex: 1; }
+  .check-label strong { color: var(--black); font-weight: 500; }
+
+  /* ALIGNMENT STEPS */
+  .steps { display: flex; flex-direction: column; gap: 10px; }
+
+  .step-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--gray-light);
+    border: 1px solid var(--gray-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500;
+    color: var(--gray-text);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-content { flex: 1; }
+
+  .step-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 2px;
+  }
+
+  .step-text {
+    font-size: 13px;
+    color: var(--gray-text);
+    line-height: 1.6;
+  }
+
+  .step-text em {
+    font-style: italic;
+    color: var(--black);
+  }
+
+  /* QUOTE BLOCK */
+  .quote-block {
+    background: var(--purple-light);
+    border-left: 3px solid var(--purple-border);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 10px 0;
+    font-size: 13px;
+    color: var(--gray-text);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* FINAL NOTE */
+  .final-note {
+    background: var(--green-light);
+    border: 1px solid var(--green-border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--gray-text);
+    line-height: 1.7;
+    margin-top: 8px;
+  }
+  .final-note strong { color: var(--black); }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--gray-bg);
+    padding: 8px 0 10px;
+    margin-bottom: 20px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--gray-text);
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .progress-track {
+    height: 5px;
+    background: var(--gray-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--green-mid);
+    border-radius: 10px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white; padding: 0; }
+    .progress-bar-wrap { display: none; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap">
+    <div class="progress-label">
+      <span>Progresso dos checklists</span>
+      <span id="progress-text">0 de 11 itens</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <div style="margin-bottom: 28px;">
+    <div class="badge">Vitta Rio · RH</div>
+    <h1 class="main-title">Guia de observação e alinhamento:<br>entrevistas finais</h1>
+    <p class="main-subtitle">Material de orientação para acompanhar as entrevistas da vaga de Assistente Administrativo I — setor de transporte.</p>
+    <div class="divider"></div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="context-box">
+    <strong>Contexto da vaga:</strong> Três candidatas finalistas serão entrevistadas pela líder do setor de transporte. Você participará como <strong>observadora</strong> — não conduz a entrevista, mas registra o que vê e ouve para, ao final, fazer um alinhamento com a líder sobre o resultado e os próximos passos.
+  </div>
+
+  <!-- SEÇÃO 1 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-circle">1</div>
+      <div class="section-title">Antes das entrevistas: o que você precisa saber</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Sobre a vaga</div>
+      <div class="card-body">
+        <ul>
+          <li>Cargo: <strong>Assistente Administrativo I</strong> — perfil generalista</li>
+          <li>Setor: transporte / logística</li>
+          <li>A líder busca alguém que cubra atividades financeiras (contas a pagar, faturamento) <strong>e</strong> administrativas</li>
+          <li>As três candidatas têm experiência com gestão de documentos e uso de sistemas ERP robustos — ponto positivo já reconhecido pela líder</li>
+          <li>Nenhuma tem experiência específica em contas a pagar ou faturamento, mas a líder aceitou avançar mesmo assim</li>
+        </ul>
+        <div class="tip"><strong>Por que isso importa:</strong> Conhecer esse contexto ajuda você a entender o que a líder está observando — ela tentará descobrir se alguma candidata tem conhecimento financeiro mesmo sem o histórico formal.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧠 Uma breve introdução: o que é gestão por competências?</div>
+      <div class="card-body">
+        <p>Competência é a combinação de três elementos que fazem uma pessoa ter bom desempenho em um cargo:</p>
+        <div class="cha-grid">
+          <div class="cha-card conhecimento">
+            <div class="cha-tag">Conhecimento</div>
+            <div class="cha-name">O saber</div>
+            <div class="cha-desc">O que a pessoa conhece sobre o assunto — formação, cursos, experiências anteriores.</div>
+          </div>
+          <div class="cha-card habilidade">
+            <div class="cha-tag">Habilidade</div>
+            <div class="cha-name">O saber fazer</div>
+            <div class="cha-desc">O que a pessoa consegue executar na prática — usar sistemas, organizar documentos, resolver problemas.</div>
+          </div>
+          <div class="cha-card atitude">
+            <div class="cha-tag">Atitude</div>
+            <div class="cha-name">O querer fazer</div>
+            <div class="cha-desc">Como a pessoa se comporta — proatividade, comunicação, comprometimento diante de desafios.</div>
+          </div>
+        </div>
+        <div class="tip">Durante a observação, tente perceber esses três elementos nas respostas das candidatas — não apenas o que elas já fizeram, mas <strong>como falam sobre suas experiências e como se posicionam.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-circle">2</div>
+      <div class="section-title">Durante as entrevistas: como observar</div>
+      <div class="time-badge">10:30 – 11:30</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">👁 Sua postura como observadora</div>
+      <div class="card-body">
+        <ul>
+          <li>Posicione-se de forma discreta — ao lado ou levemente atrás da líder</li>
+          <li>Não interfira nas perguntas nem nas respostas. Seu papel é escutar e registrar</li>
+          <li>Apresente-se brevemente: <em>"Olá, sou [nome], assistente de RH — vou acompanhar a entrevista de hoje"</em></li>
+          <li>Mantenha uma expressão neutra — reações visíveis podem influenciar a candidata ou a líder</li>
+          <li>Tenha papel e caneta (ou seu celular/tablet) para anotações</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📝 O que registrar — ficha de observação</div>
+      <div class="card-body">
+        <p style="margin-bottom: 10px;">Para cada candidata, marque os pontos observados:</p>
+        <ul class="checklist" id="checklist-obs">
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Conhecimento técnico demonstrado:</strong> Citou experiência com contas a pagar, faturamento ou rotinas financeiras? Mencionou sistemas ERP? Quais?</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Habilidades práticas:</strong> Como descreveu seu dia a dia no trabalho? Deu exemplos concretos de atividades que realizou?</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Postura e comunicação:</strong> Fala com clareza? Demonstra organização no raciocínio? Parece segura?</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Disponibilidade e adequação:</strong> Horários, salário pretendido, possibilidade de início. A proposta está dentro do informado?</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Reação da líder:</strong> Observe se ela aprofundou alguma resposta, demonstrou interesse ou ceticismo. Isso diz muito sobre o que ela valorizou.</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Impressão geral:</strong> Ao final de cada entrevista, registre um ponto forte e um ponto de atenção da candidata.</div>
+          </li>
+        </ul>
+        <div class="warn" style="margin-top: 12px;"><strong>Atenção:</strong> Não anote opiniões sobre aparência, idade ou vida pessoal das candidatas. Foque exclusivamente em elementos relacionados ao cargo e às competências.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 3 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-circle">3</div>
+      <div class="section-title">Após as entrevistas: como fazer o alinhamento com a líder</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💬 Como conduzir o alinhamento</div>
+      <div class="card-body">
+        <p style="margin-bottom: 12px;">Logo após a última entrevista, peça alguns minutos com a líder. Use a seguinte sequência:</p>
+        <div class="steps">
+          <div class="step-row">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-label">Abra o espaço</div>
+              <div class="step-text">Deixe a líder falar primeiro. Pergunte: <em>"Qual foi a sua impressão geral das três candidatas?"</em></div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-label">Explore a preferência dela</div>
+              <div class="step-text">Pergunte: <em>"Alguma se destacou? Por quê?"</em> — deixe ela chegar à conclusão com as próprias palavras.</div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-label">Verifique os pontos críticos da vaga</div>
+              <div class="step-text">Pergunte: <em>"A parte de contas a pagar e faturamento ficou mais clara a partir das entrevistas? Alguma das três te deu mais segurança nesse ponto?"</em></div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-label">Cheque a decisão</div>
+              <div class="step-text">Pergunte: <em>"Você se sente segura para indicar uma candidata para aprovação, ou prefere que a Amanda encaminhe novas opções para você avaliar?"</em></div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <div class="step-label">Registre e repasse para a Amanda</div>
+              <div class="step-text">Anote o nome da candidata indicada (ou a decisão de buscar novas candidatas) e envie um resumo por mensagem para a Amanda logo após o alinhamento.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">👥 Se a líder não ficar satisfeita com nenhuma candidata</div>
+      <div class="card-body">
+        <p>Caso a líder informe que nenhuma das candidatas atende ao esperado, não tome a decisão sozinha — esse é o momento de acionar a Amanda. Você pode dizer:</p>
+        <div class="quote-block">
+          "Entendo. Vou repassar esse feedback para a Amanda com os pontos que você levantou, para que ela possa ajustar o processo de seleção e encaminhar novas candidatas mais alinhadas com o que você precisa, especialmente na parte financeira."
+        </div>
+        <div class="tip"><strong>Nessa situação, registre:</strong> qual foi o gap específico que a líder apontou (ex.: falta de experiência em contas a pagar), o perfil que ela deseja e qualquer observação que ajude a Amanda a refinar a busca.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 4 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-circle">4</div>
+      <div class="section-title">Resumo do que você leva para a Amanda</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">✅ Checklist de entrega pós-entrevistas</div>
+      <div class="card-body">
+        <ul class="checklist" id="checklist-entrega">
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Ficha com anotações de observação</strong> de cada candidata</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Impressão da líder sobre cada uma</strong> (destacou alguma? por quê?)</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Candidata indicada para aprovação</strong> — ou sinalização de que nenhuma foi aprovada</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Gaps identificados,</strong> caso precise revisitar o processo</div>
+          </li>
+          <li onclick="toggle(this)">
+            <div class="check-box"><span class="check-tick">✓</span></div>
+            <div class="check-label"><strong>Dúvidas ou pontos em aberto</strong> para a Amanda esclarecer</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTA FINAL -->
+  <div class="final-note">
+    <strong>Lembre-se:</strong> sua função hoje é observar, registrar e facilitar o alinhamento — não decidir. Quanto mais detalhadas forem suas anotações, mais valor você entrega para o processo e para a Amanda. Qualquer dúvida que surgir durante as entrevistas, anote e repasse depois.
+  </div>
+
+</div>
+
+<script>
+  function toggle(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.checklist li');
+    const checked = document.querySelectorAll('.checklist li.checked');
+    const total = all.length;
+    const done = checked.length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = done + ' de ' + total + ' itens';
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
