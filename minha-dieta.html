@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Dieta & Saúde Intestinal</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #f4a0b0;
+    --rose-deep: #e07090;
+    --rose-light: #fce8ee;
+    --mint: #a8d8b0;
+    --mint-deep: #6bbf7a;
+    --cream: #fdf6f0;
+    --warm-white: #fffaf7;
+    --text: #2d2420;
+    --text-soft: #7a6860;
+    --text-muted: #b0a09a;
+    --card: #ffffff;
+    --border: #f0e8e4;
+    --shadow: 0 4px 24px rgba(180,100,110,0.08);
+    --shadow-lg: 0 12px 48px rgba(180,100,110,0.14);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #f9e0e8 0%, #fce8f0 40%, #e8f4ec 100%);
+    padding: 28px 20px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(244,160,176,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: 10px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(168,216,176,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-inner { position: relative; z-index: 1; }
+  .header-date {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .header-title span { color: var(--rose-deep); font-style: italic; }
+  .header-sub {
+    font-size: 13px;
+    color: var(--text-soft);
+    margin-bottom: 16px;
+  }
+
+  /* MACRO PILLS */
+  .macro-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .macro-pill {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .macro-pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+  }
+  .dot-prot { background: var(--rose-deep); }
+  .dot-carb { background: #f0b060; }
+  .dot-fat  { background: var(--mint-deep); }
+  .dot-cal  { background: #9090e0; }
+
+  /* PROGRESS RING */
+  .progress-circle-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0 4px;
+  }
+  .progress-ring-container {
+    position: relative;
+    width: 90px; height: 90px;
+  }
+  .progress-ring-container svg {
+    transform: rotate(-90deg);
+  }
+  .progress-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text-soft);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .progress-ring-text strong {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 12px;
+    gap: 0;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 14px 16px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .nav-tab.active {
+    color: var(--rose-deep);
+    border-bottom-color: var(--rose-deep);
+    font-weight: 600;
+  }
+  .nav-tab:hover { color: var(--rose-deep); }
+
+  /* MAIN CONTENT */
+  .main { padding: 16px 16px 100px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 20px 0 10px;
+  }
+
+  /* MEAL CARD */
+  .meal-card {
+    background: var(--card);
+    border-radius: 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .meal-card:active { transform: scale(0.99); }
+
+  .meal-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    gap: 12px;
+  }
+  .meal-icon {
+    width: 42px; height: 42px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .meal-info { flex: 1; }
+  .meal-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .meal-kcal {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-top: 1px;
+  }
+  .meal-check {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .meal-check.done {
+    background: var(--mint-deep);
+    border-color: var(--mint-deep);
+    color: white;
+  }
+  .meal-expand-icon {
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .meal-card.expanded .meal-expand-icon { transform: rotate(180deg); }
+
+  .meal-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+  .meal-card.expanded .meal-body { display: block; }
+
+  /* FOOD ITEMS */
+  .food-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    gap: 10px;
+    border-bottom: 1px solid #faf0f0;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-radius: 8px;
+    padding: 8px 6px;
+  }
+  .food-item:last-child { border-bottom: none; }
+  .food-item:hover { background: var(--rose-light); }
+  .food-item-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--rose);
+    flex-shrink: 0;
+  }
+  .food-item-name {
+    flex: 1;
+    font-size: 13.5px;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .food-item-qty {
+    font-size: 12px;
+    color: var(--text-soft);
+    background: var(--rose-light);
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .swap-btn {
+    background: none;
+    border: 1px solid var(--rose);
+    border-radius: 8px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: var(--rose-deep);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .swap-btn:hover { background: var(--rose-light); }
+
+  /* RECIPE TOGGLE */
+  .recipe-toggle {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #fef4f7, #f0f8f2);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--rose-deep);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px dashed var(--rose);
+  }
+  .recipe-content {
+    display: none;
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--warm-white);
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: var(--text-soft);
+    line-height: 1.7;
+  }
+  .recipe-content.show { display: block; }
+
+  /* SWAP MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(45,36,32,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-sheet {
+    background: var(--warm-white);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px 20px 40px;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .modal-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .modal-subtitle { font-size: 12px; color: var(--text-soft); margin-bottom: 16px; }
+  .swap-option {
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .swap-option:hover, .swap-option.selected {
+    border-color: var(--rose-deep);
+    background: var(--rose-light);
+  }
+  .swap-option-name { font-size: 14px; font-weight: 500; }
+  .swap-option-qty { font-size: 12px; color: var(--text-soft); }
+  .confirm-swap-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--rose-deep), #c05070);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 14px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* HABIT TRACKER */
+  .habit-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .habit-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    gap: 12px;
+    border-bottom: 1px solid #faf0f0;
+    cursor: pointer;
+  }
+  .habit-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .habit-icon {
+    font-size: 22px;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .habit-text { flex: 1; }
+  .habit-name { font-size: 14px; font-weight: 500; }
+  .habit-desc { font-size: 11px; color: var(--text-soft); margin-top: 1px; }
+  .habit-toggle {
+    width: 44px; height: 26px;
+    background: var(--border);
+    border-radius: 13px;
+    position: relative;
+    transition: background 0.25s;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .habit-toggle::after {
+    content: '';
+    position: absolute;
+    left: 3px; top: 3px;
+    width: 20px; height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: left 0.25s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .habit-toggle.on { background: var(--mint-deep); }
+  .habit-toggle.on::after { left: 21px; }
+
+  /* WATER TRACKER */
+  .water-card {
+    background: linear-gradient(135deg, #e8f4fd, #d4eaf8);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #c0ddf0;
+  }
+  .water-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2070a0;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .water-glasses {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .glass {
+    font-size: 26px;
+    cursor: pointer;
+    transition: transform 0.15s, filter 0.15s;
+    filter: grayscale(0.7) opacity(0.4);
+  }
+  .glass.filled {
+    filter: none;
+    transform: scale(1.1);
+  }
+  .water-count {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #4080a0;
+    font-weight: 500;
+  }
+
+  /* TIPS CARD */
+  .tip-card {
+    background: linear-gradient(135deg, #fff8e8, #fef2d8);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border: 1px solid #f0d890;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .tip-text { font-size: 13px; color: #604020; line-height: 1.5; }
+  .tip-text strong { font-weight: 600; display: block; margin-bottom: 2px; }
+
+  /* GAS TRACKER */
+  .gas-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .gas-scale {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .gas-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--warm-white);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .gas-btn.selected { border-color: var(--rose-deep); background: var(--rose-light); color: var(--rose-deep); }
+  .gas-emoji { font-size: 20px; display: block; margin-bottom: 2px; }
+
+  /* LOG HISTORY */
+  .log-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .log-item:last-child { border-bottom: none; }
+  .log-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    min-width: 60px;
+    padding-top: 2px;
+  }
+  .log-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .log-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-good { background: #e0f4e4; color: #2a8a3a; }
+  .badge-warn { background: #fff0e0; color: #a06020; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(255,250,247,0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 20px;
+    z-index: 50;
+  }
+  .bnav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 4px;
+    transition: all 0.15s;
+  }
+  .bnav-icon { font-size: 22px; }
+  .bnav-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+  .bnav-item.active .bnav-label { color: var(--rose-deep); font-weight: 600; }
+
+  /* SEARCH */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 14px;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    background: none;
+    color: var(--text);
+  }
+  .search-bar input::placeholder { color: var(--text-muted); }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: linear-gradient(135deg, #fce8ee, #f8e0ea);
+    border: 1px solid var(--rose);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #8a3048;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    line-height: 1.4;
+  }
+
+  /* SUBSTITUTION GROUP */
+  .group-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 14px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* STREAKS */
+  .streak-card {
+    background: linear-gradient(135deg, #2d1a24, #3d2030);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 12px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .streak-card::before {
+    content: '🔥';
+    position: absolute;
+    right: 16px; top: 12px;
+    font-size: 48px;
+    opacity: 0.15;
+  }
+  .streak-num {
+    font-family: 'Fraunces', serif;
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--rose);
+  }
+  .streak-label { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+
+  /* ANIMATIONS */
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  .pop { animation: pop 0.25s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .tab-panel.active { animation: fadeIn 0.25s ease; }
+
+  /* PROGRESS BAR */
+  .prog-bar-wrap { margin: 10px 0; }
+  .prog-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-soft); margin-bottom: 4px; }
+  .prog-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .prog-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  /* NOTE TEXTAREA */
+  .note-area {
+    width: 100%;
+    background: var(--warm-white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    resize: none;
+    outline: none;
+    margin-top: 8px;
+  }
+  .note-area:focus { border-color: var(--rose); }
+
+  .save-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--rose-deep), #c05070);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.15s;
+  }
+  .save-btn:active { opacity: 0.85; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state .es-icon { font-size: 40px; margin-bottom: 10px; }
+  .empty-state p { font-size: 13px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-date" id="headerDate"></div>
+    <h1 class="header-title">Olá, <span>Amanda</span> 🌸</h1>
+    <p class="header-sub">Cardápio emagrecimento · 1500 kcal</p>
+    <div class="macro-bar">
+      <div class="macro-pill"><span class="dot dot-cal"></span><span id="totalKcal">0</span> / 1500 kcal</div>
+      <div class="macro-pill"><span class="dot dot-prot"></span>Prot <span id="totalProt">0</span>g</div>
+      <div class="macro-pill"><span class="dot dot-carb"></span>Carb <span id="totalCarb">0</span>g</div>
+    </div>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs">
+  <div class="nav-tab active" onclick="switchTab('hoje')" data-tab="hoje">📋 Hoje</div>
+  <div class="nav-tab" onclick="switchTab('substituicoes')" data-tab="substituicoes">🔄 Substituições</div>
+  <div class="nav-tab" onclick="switchTab('habitos')" data-tab="habitos">✅ Hábitos</div>
+  <div class="nav-tab" onclick="switchTab('diario')" data-tab="diario">📔 Diário</div>
+  <div class="nav-tab" onclick="switchTab('dicas')" data-tab="dicas">💡 Dicas</div>
+</nav>
+
+<div class="main">
+
+  <!-- TAB: HOJE -->
+  <div class="tab-panel active" id="tab-hoje">
+
+    <div class="alert-banner">
+      🌿 <span>Dica do dia: mastigue devagar e evite líquidos durante as refeições para reduzir os gases!</span>
+    </div>
+
+    <!-- Progress bars -->
+    <div style="background:var(--card);border-radius:18px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow);border:1px solid var(--border);">
+      <div style="font-weight:600;font-size:13px;margin-bottom:10px;color:var(--text)">📊 Progresso do dia</div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-label"><span>🔥 Calorias</span><span id="kcalBar-label">0 / 1500 kcal</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" id="kcalBar" style="width:0%;background:linear-gradient(90deg,#e07090,#f0a0b0)"></div></div>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-label"><span>💪 Proteínas</span><span id="protBar-label">0 / 121.7g</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" id="protBar" style="width:0%;background:linear-gradient(90deg,#c05070,#e07090)"></div></div>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="prog-bar-label"><span>🌾 Carboidratos</span><span id="carbBar-label">0 / 159.4g</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" id="carbBar" style="width:0%;background:linear-gradient(90deg,#e0a040,#f0c060)"></div></div>
+      </div>
+    </div>
+
+    <div class="section-label">Refeições</div>
+
+    <!-- CAFÉ DA MANHÃ -->
+    <div class="meal-card" id="meal-cafe">
+      <div class="meal-header" onclick="toggleMeal('cafe')">
+        <div class="meal-icon" style="background:linear-gradient(135deg,#fce8c0,#f8d890)">☀️</div>
+        <div class="meal-info">
+          <div class="meal-name">Café da manhã</div>
+          <div class="meal-kcal" id="cafe-status">307 kcal · Prot 24.4g · Carb 29g</div>
+        </div>
+        <div class="meal-check" id="check-cafe" onclick="event.stopPropagation();toggleCheck('cafe')">✓</div>
+        <div class="meal-expand-icon">▼</div>
+      </div>
+      <div class="meal-body" id="body-cafe">
+        <div class="food-item" onclick="openSwap('Ovos','cafe',[['2 ovos inteiros (110g)','principal'],['2 ovos frito/mexido (100g)','substituição']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Ovos de galinha</span>
+          <span class="food-item-qty">2 unid grandes</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Fruta','cafe',[['Banana prata 1 unid (55g)','principal'],['Mamão formosa 1 fatia (170g)','opção'],['Melão 2 fatias (230g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Banana prata</span>
+          <span class="food-item-qty">1 unid grande (55g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Carboidrato','cafe',[['Aveia em flocos 3 col sopa (21g)','principal'],['Pão tipo folha/rap 1 unid (40g)','opção'],['Goma de tapioca 1 col sopa (20g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Aveia em flocos</span>
+          <span class="food-item-qty">3 col sopa (21g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Lácteo','cafe',[['Iogurte natural desnatado 170ml','principal'],['Queijo minas frescal light 40g','opção'],['Queijo minas + requeijão light 20g+30g','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Iogurte natural desnatado</span>
+          <span class="food-item-qty">1 unid (170ml)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item">
+          <span class="food-item-dot" style="background:var(--mint-deep)"></span>
+          <span class="food-item-name">Café</span>
+          <span class="food-item-qty">1 xícara (80ml)</span>
+        </div>
+
+        <div class="recipe-toggle" onclick="toggleRecipe('cafe')">
+          🍳 Ver sugestões de receitas (3 opções)
+        </div>
+        <div class="recipe-content" id="recipe-cafe">
+          <strong>Op. 1 – Bolinho de Chocolate:</strong> 2 ovos + banana + 3 col farelo de aveia + 1 col cacau em pó. Bata, coloque em forminha e leve ao micro-ondas por 2 min.<br><br>
+          <strong>Op. 2 – Crepe de Banana e Queijo:</strong> 1 ovo + 1 col goma de tapioca + queijo minas frescal light (40g) + 1 banana pequena. Misture ovo e goma, frite na frigideira, recheie.<br><br>
+          <strong>Op. 3 – Pão de Queijo de Frigideira:</strong> 2 ovos + 1 col açafrão + 1 col requeijão light + 1 ft queijo minas + 3 col farelo de aveia + 1 ft mamão. Misture, frite, sirva.
+        </div>
+      </div>
+    </div>
+
+    <!-- ALMOÇO -->
+    <div class="meal-card" id="meal-almoco">
+      <div class="meal-header" onclick="toggleMeal('almoco')">
+        <div class="meal-icon" style="background:linear-gradient(135deg,#d4f0dc,#b8e8c4)">🥗</div>
+        <div class="meal-info">
+          <div class="meal-name">Almoço</div>
+          <div class="meal-kcal" id="almoco-status">421 kcal · Prot 36g · Carb 44.5g</div>
+        </div>
+        <div class="meal-check" id="check-almoco" onclick="event.stopPropagation();toggleCheck('almoco')">✓</div>
+        <div class="meal-expand-icon">▼</div>
+      </div>
+      <div class="meal-body" id="body-almoco">
+        <div class="food-item" onclick="openSwap('Proteína','almoco',[['Filé de frango grelhado 2 bifes (100g)','principal'],['Contrafilé grelhado 2 bifes (80g)','opção'],['Sobrecoxa sem pele assada (100g)','opção'],['Pescada branca grelhada (150g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Filé de frango grelhado</span>
+          <span class="food-item-qty">2 bifes (100g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Carboidrato','almoco',[['Batata inglesa cozida 6 col sopa (180g)','principal'],['Arroz branco 3 col sopa (75g)','opção'],['Arroz integral 3 col sopa (75g)','opção'],['Macarrão 3 col arroz (75g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Batata inglesa cozida</span>
+          <span class="food-item-qty">6 col sopa (180g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Leguminosa','almoco',[['Feijão preto 1 concha (65g)','principal'],['Grão de bico 1 col arroz (45g)','opção'],['Ervilha em vagem 3 col sopa (90g)','opção'],['Lentilha cozida 1 col arroz (35g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Feijão preto cozido</span>
+          <span class="food-item-qty">1 concha (65g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item">
+          <span class="food-item-dot" style="background:var(--mint-deep)"></span>
+          <span class="food-item-name">Alface + abóbora cabotian cozida</span>
+          <span class="food-item-qty">à vontade</span>
+        </div>
+        <div class="food-item" onclick="openSwap('Fruta','almoco',[['Abacaxi 2 fatias (150g)','principal'],['Suco laranja 1 copo (165ml)','opção'],['Suco uva concentrado 100ml','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Abacaxi</span>
+          <span class="food-item-qty">2 fatias (150g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="recipe-toggle" onclick="toggleRecipe('almoco')">
+          🍳 Ver receita extra: Macarronada de Abobrinha
+        </div>
+        <div class="recipe-content" id="recipe-almoco">
+          <strong>Macarronada de Abobrinha:</strong> 4 col sopa patinho cozido (80g) + 150g abobrinha cozida + 3 col sopa extrato de tomate.<br><br>
+          1. Rale a abobrinha em fatias finas.<br>
+          2. Frite alho e cebola até dourar.<br>
+          3. Adicione a abobrinha ralada e refogue com extrato de tomate.<br>
+          4. Acrescente a carne moída.
+        </div>
+      </div>
+    </div>
+
+    <!-- LANCHE -->
+    <div class="meal-card" id="meal-lanche">
+      <div class="meal-header" onclick="toggleMeal('lanche')">
+        <div class="meal-icon" style="background:linear-gradient(135deg,#f0e0f8,#e4d0f0)">🍎</div>
+        <div class="meal-info">
+          <div class="meal-name">Lanche</div>
+          <div class="meal-kcal" id="lanche-status">272 kcal · Prot 17.1g · Carb 34.6g</div>
+        </div>
+        <div class="meal-check" id="check-lanche" onclick="event.stopPropagation();toggleCheck('lanche')">✓</div>
+        <div class="meal-expand-icon">▼</div>
+      </div>
+      <div class="meal-body" id="body-lanche">
+        <div class="food-item" onclick="openSwap('Proteína','lanche',[['Ovo de galinha 1 unid (55g)','principal'],['Outra proteína 0.5 porção grupo 4','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Ovo de galinha</span>
+          <span class="food-item-qty">1 unid (55g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Fruta','lanche',[['Abacaxi 2 fatias (150g)','principal'],['Melão 2 fatias (230g)','opção'],['Uva 15 unid (120g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Abacaxi</span>
+          <span class="food-item-qty">2 fatias (150g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Pão/Fibra','lanche',[['Pão integral 1 fatia (25g)','principal'],['Cuscuz de milho 3 col (45g)','opção'],['Goma de tapioca 1 col (20g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Pão de forma integral</span>
+          <span class="food-item-qty">1 fatia (25g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Lácteo','lanche',[['Queijo minas frescal light 2 fatias (40g)','principal'],['Iogurte natural desnatado 170ml','opção'],['Creme de ricota light + queijo minas 30g+20g','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Queijo minas frescal light</span>
+          <span class="food-item-qty">2 fatias (40g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="recipe-toggle" onclick="toggleRecipe('lanche')">
+          🍳 Ver sugestões de receitas (3 opções)
+        </div>
+        <div class="recipe-content" id="recipe-lanche">
+          <strong>Op. 1 – Suco Verde + Pão com Queijo:</strong> Abacaxi + 2 folhas couve + hortelã + limão. Bata no liquidificador. Sirva com pão integral e queijo minas frescal light + ovo mexido.<br><br>
+          <strong>Op. 2 – Cuscuz com Queijo e Ricota:</strong> 5 col sopa cuscuz (75g) + creme de ricota light + queijo minas frescal + orégano. Prepare o cuscuz, recheie com queijo e ricota. Sirva com 2 ovos mexidos e melão.<br><br>
+          <strong>Op. 3 – Crepioca:</strong> 1 ovo + 1 col goma de tapioca + queijo minas light (40g) + morango. Misture, frite, recheie com queijo.
+        </div>
+      </div>
+    </div>
+
+    <!-- JANTAR -->
+    <div class="meal-card" id="meal-jantar">
+      <div class="meal-header" onclick="toggleMeal('jantar')">
+        <div class="meal-icon" style="background:linear-gradient(135deg,#d4e8f8,#c0d8f0)">🌙</div>
+        <div class="meal-info">
+          <div class="meal-name">Jantar</div>
+          <div class="meal-kcal" id="jantar-status">390 kcal · Prot 35.8g · Carb 36.5g</div>
+        </div>
+        <div class="meal-check" id="check-jantar" onclick="event.stopPropagation();toggleCheck('jantar')">✓</div>
+        <div class="meal-expand-icon">▼</div>
+      </div>
+      <div class="meal-body" id="body-jantar">
+        <div class="food-item" onclick="openSwap('Proteína','jantar',[['Filé de frango grelhado 2 bifes (100g)','principal'],['Ovo + frango desfiado (2 unid + 50g)','opção'],['Alcatra sem gordura grelhada (100g)','opção'],['Pescada branca grelhada (150g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Filé de frango grelhado</span>
+          <span class="food-item-qty">2 bifes (100g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Carboidrato','jantar',[['Batata inglesa cozida 6 col (180g)','principal'],['Batata doce cozida 3 fatias (120g)','opção'],['Inhame cozido 3 fatias (90g)','opção'],['Arroz branco 3 col (75g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Batata inglesa cozida</span>
+          <span class="food-item-qty">6 col sopa (180g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item" onclick="openSwap('Leguminosa','jantar',[['Feijão preto 1 concha (65g)','principal'],['Grão de bico 1 col arroz (45g)','opção'],['Ervilha em vagem 3 col sopa (90g)','opção']])">
+          <span class="food-item-dot"></span>
+          <span class="food-item-name">Feijão preto cozido</span>
+          <span class="food-item-qty">1 concha (65g)</span>
+          <button class="swap-btn">trocar</button>
+        </div>
+        <div class="food-item">
+          <span class="food-item-dot" style="background:var(--mint-deep)"></span>
+          <span class="food-item-name">Alface + brócolis cozido</span>
+          <span class="food-item-qty">à vontade</span>
+        </div>
+        <div class="recipe-toggle" onclick="toggleRecipe('jantar')">
+          🍳 Ver receita extra: Omelete de Frango com Salada
+        </div>
+        <div class="recipe-content" id="recipe-jantar">
+          <strong>Omelete de Frango com Salada:</strong> 2 ovos + 60g frango cozido + 150g salada de legumes cozidos.<br><br>
+          1. Bata os ovos até ponto de omelete.<br>
+          2. Adicione frango desfiado e doure na frigideira (unte com manteiga ou azeite).<br>
+          3. Sirva com 250g de legumes cozidos à escolha.
+        </div>
+      </div>
+    </div>
+
+    <!-- RECEITA DOCE EXTRA -->
+    <div class="meal-card" style="border: 1.5px dashed var(--rose);">
+      <div class="meal-header" onclick="toggleMeal('doce')">
+        <div class="meal-icon" style="background:linear-gradient(135deg,#fce0ec,#f8c8dc)">🍫</div>
+        <div class="meal-info">
+          <div class="meal-name">Vontade de doce?</div>
+          <div class="meal-kcal">Receita extra · 244 kcal · opcional</div>
+        </div>
+        <div class="meal-expand-icon">▼</div>
+      </div>
+      <div class="meal-body" id="body-doce">
+        <div class="food-item"><span class="food-item-dot" style="background:#c060a0"></span><span class="food-item-name">Trufa de Uva</span></div>
+        <div class="recipe-content show" style="margin-top:6px">
+          <strong>Ingredientes:</strong> 2 doses whey 100% (30g) + 1 col sopa leite em pó desnatado (10g) + 2 col sopa creme de leite (30g) + 5 uvas pequenas + 1 quadradinho chocolate 60%.<br><br>
+          <strong>Modo:</strong> Misture whey + leite em pó + creme de leite até virar creme firme. Molde em bola com uma uva dentro. Passe no leite em pó, coloque raspas de chocolate. Congele 10 min.<br><br>
+          <em style="color:var(--rose-deep)">⚠️ Não substitui uma refeição — é um extra.</em>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end tab hoje -->
+
+  <!-- TAB: SUBSTITUIÇÕES -->
+  <div class="tab-panel" id="tab-substituicoes">
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" id="subSearch" placeholder="Buscar alimento para substituir..." oninput="filterSubs()">
+    </div>
+
+    <div id="subList">
+      <div class="group-title">🥩 Grupo 4 · Carnes e Proteínas <span style="font-size:11px;color:var(--text-muted);font-weight:400">(1 porção)</span></div>
+      <div class="habit-card" style="padding:10px 14px">
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Filé de frango grelhado</span><span class="food-item-qty">1 bife peq (50g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Ovo de galinha cozido</span><span class="food-item-qty">2 unid grandes (110g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Ovo frito/mexido</span><span class="food-item-qty">2 unid médias (100g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Contrafilé sem gordura</span><span class="food-item-qty">1 bife peq (40g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Alcatra sem gordura</span><span class="food-item-qty">0.5 bife médio (50g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Patinho grelhado</span><span class="food-item-qty">1 bife peq (40g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Pescada branca grelhada</span><span class="food-item-qty">0.5 posta peq (75g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Filé de salmão grelhado</span><span class="food-item-qty">0.5 filé peq (60g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Atum natural assado</span><span class="food-item-qty">0.5 unid média (45g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Peito de frango desfiado</span><span class="food-item-qty">2 col sopa (50g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Sobrecoxa sem pele assada</span><span class="food-item-qty">1 unid peq (50g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#c05070"></span><span class="food-item-name">Picanha sem gordura grelhada</span><span class="food-item-qty">1 bife peq (50g)</span></div>
+      </div>
+
+      <div class="group-title">🌾 Grupo 5 · Cereais e Tubérculos <span style="font-size:11px;color:var(--text-muted);font-weight:400">(1 porção = 25g)</span></div>
+      <div class="habit-card" style="padding:10px 14px">
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Arroz branco cozido</span><span class="food-item-qty">1 col sopa (25g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Arroz integral cozido</span><span class="food-item-qty">1 col sopa (25g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Batata doce cozida</span><span class="food-item-qty">1 fatia peq (40g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Batata inglesa cozida</span><span class="food-item-qty">2 col sopa (60g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Inhame cozido</span><span class="food-item-qty">1 fatia peq (30g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Mandioca/aipim cozido</span><span class="food-item-qty">1 col sopa (25g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Quinoa cozida</span><span class="food-item-qty">2 col sopa (40g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Macarrão integral cozido</span><span class="food-item-qty">1 col arroz (25g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#e0a040"></span><span class="food-item-name">Mandioquinha/batata baroa</span><span class="food-item-qty">1 col arroz (35g)</span></div>
+      </div>
+
+      <div class="group-title">🫘 Grupo 6 · Feijão e Leguminosas</div>
+      <div class="habit-card" style="padding:10px 14px">
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#8060c0"></span><span class="food-item-name">Feijão preto cozido</span><span class="food-item-qty">1 concha peq (65g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#8060c0"></span><span class="food-item-name">Feijão carioca cozido</span><span class="food-item-qty">1 concha peq (65g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#8060c0"></span><span class="food-item-name">Grão de bico cozido</span><span class="food-item-qty">1 col arroz (45g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#8060c0"></span><span class="food-item-name">Lentilha cozida</span><span class="food-item-qty">1 col arroz (35g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#8060c0"></span><span class="food-item-name">Ervilha em vagem cozida</span><span class="food-item-qty">3 col sopa (90g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#8060c0"></span><span class="food-item-name">Feijão fradinho cozido</span><span class="food-item-qty">1 concha peq (65g)</span></div>
+      </div>
+
+      <div class="group-title">🍌 Grupo 9 · Frutas</div>
+      <div class="habit-card" style="padding:10px 14px">
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Banana prata</span><span class="food-item-qty">1 unid grande (55g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Maçã Fuji</span><span class="food-item-qty">1 unid peq (90g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Morango</span><span class="food-item-qty">10 unid (200g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Melão</span><span class="food-item-qty">2 fatias grandes (230g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Mamão formosa</span><span class="food-item-qty">1 fatia média (170g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Abacaxi</span><span class="food-item-qty">2 fatias peq (150g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Uva Rubi/Itália</span><span class="food-item-qty">15 unid (120g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Manga Tommy</span><span class="food-item-qty">1 unid média (140g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Melancia</span><span class="food-item-qty">1 fatia média (200g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Kiwi</span><span class="food-item-qty">2 unid peq (130g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Mirtilo/Blueberry</span><span class="food-item-qty">1 xícara (100g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#80c040"></span><span class="food-item-name">Pêssego</span><span class="food-item-qty">2 unid médias (120g)</span></div>
+      </div>
+
+      <div class="group-title">🧀 Grupo 13 · Laticínios</div>
+      <div class="habit-card" style="padding:10px 14px">
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Iogurte natural desnatado</span><span class="food-item-qty">1 unid (170ml)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Iogurte grego desnatado</span><span class="food-item-qty">1 unid (100g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Queijo minas frescal</span><span class="food-item-qty">2 fatias peq (40g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Queijo tipo cottage</span><span class="food-item-qty">4 col sopa (60g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Queijo tipo ricota</span><span class="food-item-qty">2 fatias médias (70g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Creme de ricota light</span><span class="food-item-qty">3 col sopa (60g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Coalhada desnatada</span><span class="food-item-qty">6 col sopa (180g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#f0a060"></span><span class="food-item-name">Queijo muçarela</span><span class="food-item-qty">1 fatia grande (30g)</span></div>
+      </div>
+
+      <div class="group-title">🌰 Grupo 11 · Nozes e Sementes</div>
+      <div class="habit-card" style="padding:10px 14px">
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#a07040"></span><span class="food-item-name">Pasta de amendoim integral</span><span class="food-item-qty">1 col sopa (20g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#a07040"></span><span class="food-item-name">Castanha-do-Pará</span><span class="food-item-qty">4 unid (16g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#a07040"></span><span class="food-item-name">Amêndoa</span><span class="food-item-qty">20 unid (20g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#a07040"></span><span class="food-item-name">Semente de chia</span><span class="food-item-qty">2 col sopa (30g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#a07040"></span><span class="food-item-name">Semente de linhaça</span><span class="food-item-qty">2 col sopa (30g)</span></div>
+        <div class="food-item sub-item"><span class="food-item-dot" style="background:#a07040"></span><span class="food-item-name">Mix de castanhas</span><span class="food-item-qty">2 col sopa (25g)</span></div>
+      </div>
+    </div>
+  </div><!-- end substituicoes -->
+
+  <!-- TAB: HÁBITOS -->
+  <div class="tab-panel" id="tab-habitos">
+
+    <!-- ÁGUA -->
+    <div class="water-card">
+      <div class="water-title">💧 Água do dia</div>
+      <div class="water-glasses" id="glasses">
+        <span class="glass" onclick="fillGlass(0)">🥤</span>
+        <span class="glass" onclick="fillGlass(1)">🥤</span>
+        <span class="glass" onclick="fillGlass(2)">🥤</span>
+        <span class="glass" onclick="fillGlass(3)">🥤</span>
+        <span class="glass" onclick="fillGlass(4)">🥤</span>
+        <span class="glass" onclick="fillGlass(5)">🥤</span>
+        <span class="glass" onclick="fillGlass(6)">🥤</span>
+        <span class="glass" onclick="fillGlass(7)">🥤</span>
+      </div>
+      <div class="water-count" id="waterCount">0 de 8 copos (0 ml / 2000ml)</div>
+    </div>
+
+    <!-- STREAK -->
+    <div class="streak-card">
+      <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase">Sequência atual</div>
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-label">dias seguindo a dieta 🔥</div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button onclick="addStreak()" style="background:var(--rose);border:none;color:white;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">+ Registrar hoje</button>
+        <button onclick="resetStreak()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.7);padding:8px 16px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">Resetar</button>
+      </div>
+    </div>
+
+    <!-- HÁBITOS -->
+    <div class="section-label">Hábitos diários intestinais</div>
+    <div class="habit-card">
+      <div class="habit-row" onclick="toggleHabit('h1')">
+        <div class="habit-icon">🦶</div>
+        <div class="habit-text">
+          <div class="habit-name">Caminhar 10 min após almoço</div>
+          <div class="habit-desc">Estimula o trânsito intestinal</div>
+        </div>
+        <div class="habit-toggle" id="h1"></div>
+      </div>
+      <div class="habit-row" onclick="toggleHabit('h2')">
+        <div class="habit-icon">🍵</div>
+        <div class="habit-text">
+          <div class="habit-name">Chá digestivo (gengibre/erva-doce)</div>
+          <div class="habit-desc">20 min após as refeições</div>
+        </div>
+        <div class="habit-toggle" id="h2"></div>
+      </div>
+      <div class="habit-row" onclick="toggleHabit('h3')">
+        <div class="habit-icon">🥢</div>
+        <div class="habit-text">
+          <div class="habit-name">Mastigar devagar</div>
+          <div class="habit-desc">Reduz fermentação intestinal</div>
+        </div>
+        <div class="habit-toggle" id="h3"></div>
+      </div>
+      <div class="habit-row" onclick="toggleHabit('h4')">
+        <div class="habit-icon">🚫</div>
+        <div class="habit-text">
+          <div class="habit-name">Sem líquido durante refeição</div>
+          <div class="habit-desc">Melhora digestão enzimática</div>
+        </div>
+        <div class="habit-toggle" id="h4"></div>
+      </div>
+      <div class="habit-row" onclick="toggleHabit('h5')">
+        <div class="habit-icon">💊</div>
+        <div class="habit-text">
+          <div class="habit-name">Suplementos tomados</div>
+          <div class="habit-desc">Magnésio, Omega 3, Vit D, B12, C</div>
+        </div>
+        <div class="habit-toggle" id="h5"></div>
+      </div>
+      <div class="habit-row" onclick="toggleHabit('h6')">
+        <div class="habit-icon">🦠</div>
+        <div class="habit-text">
+          <div class="habit-name">Probiótico ou kefir / iogurte natural</div>
+          <div class="habit-desc">Reequilibra microbiota</div>
+        </div>
+        <div class="habit-toggle" id="h6"></div>
+      </div>
+      <div class="habit-row" onclick="toggleHabit('h7')">
+        <div class="habit-icon">😴</div>
+        <div class="habit-text">
+          <div class="habit-name">Dormiu bem (7-8h)</div>
+          <div class="habit-desc">A microbiota tem ritmo circadiano</div>
+        </div>
+        <div class="habit-toggle" id="h7"></div>
+      </div>
+      <div class="habit-row" onclick="toggleHabit('h8')">
+        <div class="habit-icon">🏃</div>
+        <div class="habit-text">
+          <div class="habit-name">Treino / Caminhada longa</div>
+          <div class="habit-desc">Ativa o trânsito intestinal</div>
+        </div>
+        <div class="habit-toggle" id="h8"></div>
+      </div>
+    </div>
+
+    <!-- GÁS/ESTUFAMENTO -->
+    <div class="section-label">Como está meu intestino hoje?</div>
+    <div class="gas-card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:6px">Nível de gases / estufamento</div>
+      <div class="gas-scale">
+        <button class="gas-btn" onclick="selectGas(this,1)"><span class="gas-emoji">😊</span>Ótimo</button>
+        <button class="gas-btn" onclick="selectGas(this,2)"><span class="gas-emoji">😐</span>Leve</button>
+        <button class="gas-btn" onclick="selectGas(this,3)"><span class="gas-emoji">😣</span>Médio</button>
+        <button class="gas-btn" onclick="selectGas(this,4)"><span class="gas-emoji">😖</span>Forte</button>
+      </div>
+    </div>
+
+  </div><!-- end habitos -->
+
+  <!-- TAB: DIÁRIO -->
+  <div class="tab-panel" id="tab-diario">
+    <div class="section-label">Registrar o dia</div>
+    <div class="habit-card">
+      <div style="font-size:14px;font-weight:500;margin-bottom:4px">📝 Como foi sua alimentação hoje?</div>
+      <div style="font-size:12px;color:var(--text-soft)">Anote o que comeu fora da dieta, como se sentiu, gases, etc.</div>
+      <textarea class="note-area" id="diaryNote" rows="4" placeholder="Ex: Segui bem o café e almoço. À noite comi uma fatia de pizza. Senti bastante gases à noite..."></textarea>
+      <button class="save-btn" onclick="saveLog()">💾 Salvar registro</button>
+    </div>
+
+    <div class="section-label">Histórico</div>
+    <div class="habit-card" id="logList">
+      <div class="empty-state">
+        <div class="es-icon">📖</div>
+        <p>Seu histórico aparecerá aqui.<br>Comece registrando o dia de hoje!</p>
+      </div>
+    </div>
+  </div><!-- end diário -->
+
+  <!-- TAB: DICAS -->
+  <div class="tab-panel" id="tab-dicas">
+
+    <div class="section-label">🌿 Para os seus gases e estufamento</div>
+
+    <div class="tip-card">
+      <div class="tip-icon">🍵</div>
+      <div class="tip-text"><strong>Chá de erva-doce ou anis</strong>Tome após as refeições. Relaxa a musculatura intestinal e libera gases presos. Melhor efeito com 10 min de infusão.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🫚</div>
+      <div class="tip-text"><strong>Massagem abdominal matinal</strong>Ao acordar, massageie a barriga em movimentos circulares no sentido horário por 2-3 minutos ainda deitada. Ajuda a mover gases acumulados durante o sono.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🚶</div>
+      <div class="tip-text"><strong>10 min de caminhada pós-almoço</strong>É o hábito mais simples e eficaz para ativar o trânsito intestinal. Evite sentar ou deitar imediatamente após comer.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🧄</div>
+      <div class="tip-text"><strong>Reduza cebola e alho crus por 2 semanas</strong>São os maiores causadores de fermentação. Cozidos em pequena quantidade são toleráveis — crus fermentam muito mais.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🥛</div>
+      <div class="tip-text"><strong>Atenção à lactose</strong>Com SOP, sua digestão pode ser mais sensível. Prefira iogurte natural (tem lactobacilos que ajudam a digerir a lactose), queijos curados e versões zero lactose quando possível.</div>
+    </div>
+
+    <div class="section-label">🦠 Para equilibrar a microbiota</div>
+
+    <div class="tip-card" style="background:linear-gradient(135deg,#e8f4ec,#d8eee0);border-color:#90d0a0">
+      <div class="tip-icon">🥛</div>
+      <div class="tip-text"><strong>Kefir — o melhor probiótico alimentar</strong>Comece com 50ml por dia e aumente gradualmente. Tem dezenas de cepas de bactérias e leveduras benéficas. Bem melhor e mais barato que cápsula.</div>
+    </div>
+    <div class="tip-card" style="background:linear-gradient(135deg,#e8f4ec,#d8eee0);border-color:#90d0a0">
+      <div class="tip-icon">🍌</div>
+      <div class="tip-text"><strong>Banana levemente verde (prebiótico)</strong>Tem amido resistente que alimenta as bactérias boas. Quanto mais verde, mais amido resistente. Uma por dia é ótimo.</div>
+    </div>
+    <div class="tip-card" style="background:linear-gradient(135deg,#e8f4ec,#d8eee0);border-color:#90d0a0">
+      <div class="tip-icon">🥣</div>
+      <div class="tip-text"><strong>Aveia todo dia (já está no seu cardápio!)</strong>A beta-glucana da aveia é um excelente prebiótico. Já está no seu café da manhã — ótimo! Mantenha esse hábito consistentemente.</div>
+    </div>
+    <div class="tip-card" style="background:linear-gradient(135deg,#e8f4ec,#d8eee0);border-color:#90d0a0">
+      <div class="tip-icon">🌈</div>
+      <div class="tip-text"><strong>Variedade de vegetais</strong>Tente incluir pelo menos 5-7 vegetais diferentes por semana. Varie as cores no prato — cada cor tem fibras e polifenóis que alimentam cepas bacterianas diferentes.</div>
+    </div>
+
+    <div class="section-label">⚠️ O que evitar (principalmente para SOP)</div>
+
+    <div class="tip-card" style="background:linear-gradient(135deg,#fef0e0,#fde8d0);border-color:#f0c080">
+      <div class="tip-icon">🍬</div>
+      <div class="tip-text"><strong>Açúcar e ultraprocessados</strong>Com SOP e resistência à insulina, o açúcar te afeta mais do que afetaria outra pessoa. Pizza, hambúrguer e bolachas alimentam bactérias ruins e causam inflamação.</div>
+    </div>
+    <div class="tip-card" style="background:linear-gradient(135deg,#fef0e0,#fde8d0);border-color:#f0c080">
+      <div class="tip-icon">🥤</div>
+      <div class="tip-text"><strong>Adoçantes artificiais (sorbitol, manitol)</strong>Encontrados em produtos "diet" e "zero". Fermentam muito no intestino, causando exatamente o tipo de gás que você sente.</div>
+    </div>
+    <div class="tip-card" style="background:linear-gradient(135deg,#fef0e0,#fde8d0);border-color:#f0c080">
+      <div class="tip-icon">😤</div>
+      <div class="tip-text"><strong>Estresse crônico</strong>O eixo intestino-cérebro é real. Cortisol elevado altera diretamente a motilidade e a composição da microbiota. Considere 10 min de respiração ou meditação por dia.</div>
+    </div>
+
+    <div class="section-label">🩺 Quando consultar um médico</div>
+    <div style="background:var(--card);border-radius:16px;padding:14px 16px;border:1.5px solid var(--rose);margin-bottom:10px;font-size:13px;color:var(--text);line-height:1.7">
+      Lembre-se: você tem sintomas há anos + piora recente + SOP. A dieta e os hábitos vão ajudar muito, mas o ideal é <strong>priorizar a consulta</strong> para investigar SIBO, intolerâncias e confirmar o diagnóstico. Exame de hidrogênio expirado + calprotectina fecal são os mais indicados.<br><br>
+      <span style="color:var(--rose-deep);font-weight:600">Se em 2 semanas seguindo a dieta não melhorar, priorize o médico! 💙</span>
+    </div>
+  </div><!-- end dicas -->
+
+</div><!-- end main -->
+
+<!-- SWAP MODAL -->
+<div class="modal-overlay" id="swapModal" onclick="closeModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">Trocar alimento</div>
+    <div class="modal-subtitle" id="modalSubtitle">Escolha uma substituição equivalente</div>
+    <div id="modalOptions"></div>
+    <button class="confirm-swap-btn" onclick="confirmSwap()">✓ Confirmar substituição</button>
+  </div>
+</div>
+
+<script>
+  // STATE
+  let state = {
+    checkedMeals: {},
+    water: 0,
+    streak: 0,
+    habits: {},
+    gasLevel: 0,
+    logs: [],
+    currentSwap: null,
+    selectedSwapOption: null
+  };
+
+  // Load from localStorage if available
+  try {
+    const saved = localStorage.getItem('dietaAmanda');
+    if (saved) state = {...state, ...JSON.parse(saved)};
+  } catch(e) {}
+
+  function save() {
+    try { localStorage.setItem('dietaAmanda', JSON.stringify(state)); } catch(e) {}
+  }
+
+  // DATE
+  const days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const now = new Date();
+  document.getElementById('headerDate').textContent = 
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  // TABS
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  }
+
+  // MEAL TOGGLE
+  function toggleMeal(id) {
+    const card = document.getElementById('meal-'+id);
+    card.classList.toggle('expanded');
+  }
+
+  // MEAL CHECK
+  const mealKcal = {cafe:307, almoco:421, lanche:272, jantar:390};
+  const mealProt = {cafe:24.4, almoco:36, lanche:17.1, jantar:35.8};
+  const mealCarb = {cafe:29, almoco:44.5, lanche:34.6, jantar:36.5};
+
+  function toggleCheck(id) {
+    state.checkedMeals[id] = !state.checkedMeals[id];
+    const el = document.getElementById('check-'+id);
+    if (state.checkedMeals[id]) {
+      el.classList.add('done');
+      el.classList.add('pop');
+      setTimeout(() => el.classList.remove('pop'), 300);
+    } else {
+      el.classList.remove('done');
+    }
+    updateMacros();
+    save();
+  }
+
+  function updateMacros() {
+    let kcal=0, prot=0, carb=0;
+    for (let m of ['cafe','almoco','lanche','jantar']) {
+      if (state.checkedMeals[m]) {
+        kcal += mealKcal[m]; prot += mealProt[m]; carb += mealCarb[m];
+      }
+    }
+    document.getElementById('totalKcal').textContent = Math.round(kcal);
+    document.getElementById('totalProt').textContent = Math.round(prot*10)/10;
+    document.getElementById('totalCarb').textContent = Math.round(carb*10)/10;
+    document.getElementById('kcalBar').style.width = Math.min(100,(kcal/1500)*100)+'%';
+    document.getElementById('protBar').style.width = Math.min(100,(prot/121.7)*100)+'%';
+    document.getElementById('carbBar').style.width = Math.min(100,(carb/159.4)*100)+'%';
+    document.getElementById('kcalBar-label').textContent = `${Math.round(kcal)} / 1500 kcal`;
+    document.getElementById('protBar-label').textContent = `${Math.round(prot*10)/10} / 121.7g`;
+    document.getElementById('carbBar-label').textContent = `${Math.round(carb*10)/10} / 159.4g`;
+  }
+
+  // RECIPE TOGGLE
+  function toggleRecipe(id) {
+    const el = document.getElementById('recipe-'+id);
+    el.classList.toggle('show');
+  }
+
+  // SWAP MODAL
+  function openSwap(name, meal, options) {
+    state.currentSwap = {name, meal, options};
+    state.selectedSwapOption = null;
+    document.getElementById('modalTitle').textContent = `Substituir: ${name}`;
+    document.getElementById('modalSubtitle').textContent = 'Toque para selecionar uma opção equivalente';
+    const html = options.map((o,i) => 
+      `<div class="swap-option" onclick="selectSwap(this,${i})">
+        <div>
+          <div class="swap-option-name">${o[0]}</div>
+          <div class="swap-option-qty">${o[1]}</div>
+        </div>
+        ${i===0 ? '<span style="font-size:10px;background:var(--rose-light);color:var(--rose-deep);padding:2px 6px;border-radius:6px;font-weight:600">atual</span>' : ''}
+      </div>`
+    ).join('');
+    document.getElementById('modalOptions').innerHTML = html;
+    document.getElementById('swapModal').classList.add('show');
+  }
+
+  function selectSwap(el, i) {
+    document.querySelectorAll('.swap-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state.selectedSwapOption = i;
+  }
+
+  function confirmSwap() {
+    if (state.selectedSwapOption === null) {
+      document.getElementById('swapModal').classList.remove('show');
+      return;
+    }
+    document.getElementById('swapModal').classList.remove('show');
+    // Show a small toast
+    showToast('✓ Substituição aplicada!');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('swapModal')) {
+      document.getElementById('swapModal').classList.remove('show');
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2d2420;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;z-index:200;animation:fadeIn 0.2s ease';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2000);
+  }
+
+  // WATER
+  function fillGlass(i) {
+    const glasses = document.querySelectorAll('.glass');
+    // Toggle: if clicking last filled, unfill
+    if (state.water === i+1) {
+      state.water = i;
+    } else {
+      state.water = i+1;
+    }
+    glasses.forEach((g,idx) => {
+      if (idx < state.water) g.classList.add('filled');
+      else g.classList.remove('filled');
+    });
+    document.getElementById('waterCount').textContent = 
+      `${state.water} de 8 copos (${state.water*250}ml / 2000ml)`;
+    save();
+  }
+
+  // STREAK
+  function addStreak() {
+    state.streak++;
+    document.getElementById('streakNum').textContent = state.streak;
+    showToast('🔥 +1 dia! Continue assim!');
+    save();
+  }
+  function resetStreak() {
+    if(confirm('Resetar streak?')) {
+      state.streak = 0;
+      document.getElementById('streakNum').textContent = 0;
+      save();
+    }
+  }
+
+  // HABITS
+  function toggleHabit(id) {
+    state.habits[id] = !state.habits[id];
+    const el = document.getElementById(id);
+    if (state.habits[id]) el.classList.add('on');
+    else el.classList.remove('on');
+    save();
+  }
+
+  // GAS
+  function selectGas(btn, level) {
+    document.querySelectorAll('.gas-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.gasLevel = level;
+    save();
+  }
+
+  // DIARY
+  function saveLog() {
+    const note = document.getElementById('diaryNote').value.trim();
+    if (!note) return showToast('Escreva algo primeiro 😊');
+    const entry = {
+      date: `${now.getDate()}/${now.getMonth()+1}`,
+      text: note,
+      gas: state.gasLevel,
+      habits: Object.values(state.habits).filter(Boolean).length
+    };
+    state.logs.unshift(entry);
+    document.getElementById('diaryNote').value = '';
+    renderLogs();
+    save();
+    showToast('✓ Registro salvo!');
+  }
+
+  function renderLogs() {
+    const el = document.getElementById('logList');
+    if (!state.logs.length) {
+      el.innerHTML = `<div class="empty-state"><div class="es-icon">📖</div><p>Seu histórico aparecerá aqui.<br>Comece registrando o dia de hoje!</p></div>`;
+      return;
+    }
+    const gasLabels = ['','😊 Ótimo','😐 Leve','😣 Médio','😖 Forte'];
+    el.innerHTML = state.logs.map(l => `
+      <div class="log-item">
+        <div class="log-date">${l.date}</div>
+        <div style="flex:1">
+          <div class="log-text">${l.text}</div>
+          <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap">
+            ${l.gas ? `<span class="log-badge badge-warn">${gasLabels[l.gas]}</span>` : ''}
+            <span class="log-badge badge-good">✅ ${l.habits} hábitos</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // SEARCH SUBSTITUTIONS
+  function filterSubs() {
+    const q = document.getElementById('subSearch').value.toLowerCase();
+    document.querySelectorAll('.sub-item').forEach(item => {
+      const name = item.querySelector('.food-item-name').textContent.toLowerCase();
+      item.style.display = name.includes(q) ? '' : 'none';
+    });
+  }
+
+  // RESTORE STATE
+  function restoreState() {
+    // Checked meals
+    for (let m of ['cafe','almoco','lanche','jantar']) {
+      if (state.checkedMeals[m]) {
+        const el = document.getElementById('check-'+m);
+        if (el) el.classList.add('done');
+      }
+    }
+    // Water
+    document.querySelectorAll('.glass').forEach((g,i) => {
+      if (i < state.water) g.classList.add('filled');
+    });
+    document.getElementById('waterCount').textContent = 
+      `${state.water} de 8 copos (${state.water*250}ml / 2000ml)`;
+    // Streak
+    document.getElementById('streakNum').textContent = state.streak;
+    // Habits
+    for (let h in state.habits) {
+      if (state.habits[h]) {
+        const el = document.getElementById(h);
+        if (el) el.classList.add('on');
+      }
+    }
+    // Gas
+    if (state.gasLevel) {
+      const btns = document.querySelectorAll('.gas-btn');
+      if (btns[state.gasLevel-1]) btns[state.gasLevel-1].classList.add('selected');
+    }
+    // Logs
+    renderLogs();
+    updateMacros();
+  }
+
+  restoreState();
+</script>
+
+</body>
+</html>
