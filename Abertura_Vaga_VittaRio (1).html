@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abertura de Vaga — Vitta Rio</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gd:#0F6E56;--gm:#1D9E75;--gl:#E1F5EE;--gb:#5DCAA5;
+  --bl:#E6F1FB;--bm:#185FA5;--bd:#0C447C;
+  --al:#FAEEDA;--am:#854F0B;--ab:#EF9F27;
+  --rl:#FCEBEB;--rm:#A32D2D;--rb:#F09595;
+  --pl:#EEEDFE;--pm:#534AB7;
+  --bg:#F7F6F2;--lg:#F1EFE8;--bo:#D3D1C7;
+  --tx:#5F5E5A;--mu:#888780;--bk:#2C2C2A;--wh:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--bk);min-height:100vh}
+
+.topbar{background:var(--wh);border-bottom:1px solid var(--bo);padding:0;position:sticky;top:0;z-index:200}
+.topbar-inner{max-width:820px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px;padding:13px 0}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--gm);color:var(--wh);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-title{font-size:14px;font-weight:500;color:var(--bk)}
+.brand-sub{font-size:12px;color:var(--tx)}
+.rh-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--bo);border-radius:8px;font-size:12px;font-weight:500;color:var(--tx);background:var(--wh);cursor:pointer;font-family:inherit;transition:all .15s}
+.rh-btn:hover{background:var(--lg);color:var(--bk)}
+.rh-btn.active{background:var(--gl);color:var(--gd);border-color:var(--gb)}
+
+.page{max-width:820px;margin:0 auto;padding:2rem 2rem 5rem}
+
+/* ── VIEWS ── */
+.view{display:none}.view.active{display:block}
+
+/* ── MODAL SENHA ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:var(--wh);border-radius:14px;padding:28px 28px 24px;width:100%;max-width:360px;margin:1rem}
+.modal-title{font-size:16px;font-weight:500;color:var(--bk);margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--tx);margin-bottom:18px;line-height:1.6}
+.modal input{width:100%;padding:9px 11px;border:1px solid var(--bo);border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;letter-spacing:.1em}
+.modal input:focus{border-color:var(--gb)}
+.modal-err{font-size:12px;color:var(--rm);margin-top:6px;display:none}
+.modal-err.show{display:block}
+.modal-btns{display:flex;gap:8px;margin-top:16px}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;background:var(--gm);color:var(--wh);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-primary:hover{opacity:.87}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;background:transparent;color:var(--tx);border:1px solid var(--bo);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-ghost:hover{background:var(--lg)}
+
+/* ── FORMULÁRIO LÍDER ── */
+.hero{background:var(--wh);border:1px solid var(--bo);border-left:4px solid var(--gm);border-radius:0 12px 12px 0;padding:22px 26px;margin-bottom:1.5rem}
+.hero-title{font-size:20px;font-weight:500;color:var(--bk);margin-bottom:5px}
+.hero-sub{font-size:13px;color:var(--tx);line-height:1.7}
+.req-note{font-size:12px;color:var(--tx);margin-top:8px}
+.req-note span{color:var(--rm)}
+
+.success-wrap{display:none;flex-direction:column;align-items:center;text-align:center;padding:3rem 2rem;background:var(--wh);border:1px solid var(--gb);border-radius:14px}
+.success-wrap.show{display:flex}
+.s-circle{width:64px;height:64px;border-radius:50%;background:var(--gl);color:var(--gm);font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.s-title{font-size:18px;font-weight:500;color:var(--bk);margin-bottom:6px}
+.s-sub{font-size:13px;color:var(--tx);line-height:1.7;max-width:420px}
+.s-resumo{margin-top:16px;width:100%;background:var(--gl);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--tx);line-height:1.8;text-align:left}
+
+.form-wrap{}
+.form-wrap.hidden{display:none}
+.fsec{background:var(--wh);border:1px solid var(--bo);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+.slabel{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bo)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+.fgrid:last-child{margin-bottom:0}
+.fg2{grid-template-columns:repeat(2,1fr)}
+.fg3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.fg2,.fg3{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+label.lbl{font-size:12px;font-weight:500;color:var(--tx)}
+label.lbl .req{color:var(--rm)}
+label.lbl .hint{font-weight:400;color:var(--mu);font-size:11px}
+input[type=text],input[type=number],select,textarea{width:100%;font-size:13px;padding:9px 11px;border:1px solid var(--bo);border-radius:8px;background:var(--wh);color:var(--bk);outline:none;transition:border-color .15s;font-family:inherit;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--gb);box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+input.ef,select.ef,textarea.ef{border-color:var(--rb)}
+textarea{resize:vertical;min-height:88px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+.emsg{font-size:11px;color:var(--rm);margin-top:2px;display:none}
+.emsg.show{display:block}
+.rgroup{display:flex;gap:7px;flex-wrap:wrap;margin-top:1px}
+.ropt{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--bk);cursor:pointer;padding:7px 12px;border:1px solid var(--bo);border-radius:8px;background:var(--wh);transition:all .15s;user-select:none}
+.ropt:hover{background:var(--lg)}
+.ropt.s{border-color:var(--gb);background:var(--gl);color:var(--gd)}
+.ropt.sa{border-color:var(--rb);background:var(--rl);color:var(--rm)}
+.ropt.sm{border-color:var(--ab);background:var(--al);color:var(--am)}
+.ropt input{display:none}
+.cond{display:none;margin-top:14px}.cond.show{display:block}
+.submit-btn{width:100%;padding:13px;background:var(--gm);color:var(--wh);border:none;border-radius:9px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;margin-top:4px}
+.submit-btn:hover{opacity:.87}
+
+/* ── RH: TABS ── */
+.rh-tabs{display:flex;gap:0;border-bottom:1px solid var(--bo);margin-bottom:1.5rem}
+.rtab{padding:10px 18px;font-size:13px;font-weight:500;color:var(--tx);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;display:flex;align-items:center;gap:6px}
+.rtab.active{color:var(--gd);border-bottom-color:var(--gd)}
+.rtab:hover:not(.active){color:var(--bk)}
+.tbadge{font-size:11px;background:var(--lg);padding:1px 7px;border-radius:10px;color:var(--tx)}
+.rtab.active .tbadge{background:var(--gl);color:var(--gd)}
+.rview{display:none}.rview.active{display:block}
+
+/* ── DASHBOARD ── */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:1.5rem}
+.scard{background:var(--wh);border:1px solid var(--bo);border-radius:12px;padding:16px 18px}
+.slb{font-size:11px;color:var(--tx);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.sval{font-size:28px;font-weight:500;color:var(--bk)}
+.sval.d{color:var(--rm)}.sval.w{color:var(--am)}.sval.s{color:var(--gd)}.sval.i{color:var(--bd)}
+.ssub{font-size:11px;color:var(--mu);margin-top:3px}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem}
+@media(max-width:640px){.dgrid{grid-template-columns:1fr}}
+.dcard{background:var(--wh);border:1px solid var(--bo);border-radius:12px;padding:18px 20px}
+.dctitle{font-size:13px;font-weight:500;color:var(--bk);margin-bottom:12px}
+.brow{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
+.blbl{width:120px;color:var(--tx);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btrack{flex:1;height:7px;background:var(--lg);border-radius:4px;overflow:hidden}
+.bfill{height:100%;border-radius:4px;transition:width .4s}
+.bnum{width:20px;text-align:right;color:var(--mu);font-weight:500}
+.litem{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:.5px solid var(--bo);font-size:13px}
+.litem:last-child{border-bottom:none}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ldot.a{background:var(--rm)}.ldot.m{background:var(--ab)}.ldot.b{background:var(--gm)}
+.lcargo{font-weight:500;color:var(--bk);line-height:1.3}
+.lmeta{font-size:11px;color:var(--mu);margin-top:1px}
+
+/* ── HISTÓRICO ── */
+.hcontrols{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.swrap{flex:1;min-width:180px;position:relative}
+.swrap input{width:100%;padding:8px 10px 8px 32px;border:1px solid var(--bo);border-radius:8px;font-size:13px;background:var(--wh);color:var(--bk);font-family:inherit;outline:none;transition:border-color .15s}
+.swrap input:focus{border-color:var(--gb)}
+.sico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--mu)}
+.ssort{padding:8px 26px 8px 10px;border:1px solid var(--bo);border-radius:8px;font-size:12px;font-family:inherit;background:var(--wh);color:var(--tx);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.frow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.fb{padding:5px 13px;border:1px solid var(--bo);border-radius:20px;font-size:12px;font-weight:500;color:var(--tx);background:var(--wh);cursor:pointer;font-family:inherit;transition:all .15s}
+.fb:hover{background:var(--lg)}
+.fb.active{background:var(--lg);color:var(--bk);border-color:var(--mu)}
+.empty{text-align:center;padding:4rem 1rem;color:var(--tx)}
+.empty-ico{font-size:40px;margin-bottom:12px;opacity:.3}
+.empty-t{font-size:15px;font-weight:500;color:var(--bk);margin-bottom:4px}
+.empty-s{font-size:13px}
+
+/* VAGA CARD */
+.vcard{background:var(--wh);border:1px solid var(--bo);border-radius:12px;padding:16px 20px;margin-bottom:10px;transition:border-color .15s}
+.vcard:hover{border-color:var(--mu)}
+.vtop{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.avt{width:40px;height:40px;border-radius:50%;background:var(--bl);color:var(--bd);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.vcargo{font-size:15px;font-weight:500;color:var(--bk);margin-bottom:2px}
+.vmeta{font-size:12px;color:var(--tx)}
+.vtags{display:flex;gap:5px;flex-wrap:wrap;margin-left:auto;align-items:flex-start}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:3px 9px;border-radius:10px}
+.pa{background:var(--rl);color:var(--rm)}
+.pm{background:var(--al);color:var(--am)}
+.pb{background:var(--gl);color:var(--gd)}
+.pn{background:var(--lg);color:var(--tx)}
+.pc{background:var(--pl);color:var(--pm)}
+.pst-novo{background:var(--bl);color:var(--bd)}
+.pst-em-andamento{background:var(--al);color:var(--am)}
+.pst-concluido{background:var(--gl);color:var(--gd)}
+.pst-cancelado{background:var(--lg);color:var(--tx)}
+.vdet{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;border-top:1px solid var(--bo);padding-top:12px;margin-bottom:10px}
+.vdlbl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.vdval{font-size:12px;color:var(--bk);font-weight:500;margin-top:2px}
+.vacts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--bo);padding-top:10px}
+.stsel{font-size:12px;padding:5px 26px 5px 10px;border:1px solid var(--bo);border-radius:6px;background:var(--wh);color:var(--bk);cursor:pointer;font-family:inherit;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.abtn{font-size:12px;padding:5px 12px;border:1px solid var(--bo);border-radius:6px;background:var(--wh);color:var(--tx);cursor:pointer;font-family:inherit;transition:background .15s;display:inline-flex;align-items:center;gap:4px}
+.abtn:hover{background:var(--lg)}
+.abtn.del:hover{background:var(--rl);color:var(--rm);border-color:var(--rb)}
+.xbtn{font-size:12px;color:var(--mu);cursor:pointer;border:none;background:none;font-family:inherit;margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 0;transition:color .15s}
+.xbtn:hover{color:var(--bk)}
+.vextra{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--bo)}
+.vextra.open{display:block}
+.xgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:12px}
+.xblk{background:var(--lg);border-radius:8px;padding:11px 14px}
+.xlbl{font-size:10px;font-weight:500;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.xtxt{font-size:13px;color:var(--tx);line-height:1.6}
+.notelbl{font-size:11px;color:var(--mu);margin-bottom:5px;margin-top:12px}
+.noteinput{width:100%;font-size:12px;padding:8px 10px;border:1px solid var(--bo);border-radius:6px;font-family:inherit;background:var(--wh);color:var(--bk);resize:none;min-height:56px;transition:border-color .15s;line-height:1.5}
+.noteinput:focus{outline:none;border-color:var(--gb)}
+.notesave{font-size:11px;padding:4px 10px;border:1px solid var(--gb);border-radius:5px;background:var(--gl);color:var(--gd);cursor:pointer;font-family:inherit;margin-top:5px;transition:opacity .15s}
+.notesave:hover{opacity:.8}
+.notedone{font-size:11px;color:var(--gd);margin-top:4px;display:none}
+.notedone.show{display:block}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">VR</div>
+      <div>
+        <div class="brand-title">Vitta Rio</div>
+        <div class="brand-sub">Solicitação de abertura de vaga</div>
+      </div>
+    </div>
+    <button class="rh-btn" id="rh-btn" onclick="openRH()">🔒 Acesso RH</button>
+  </div>
+</div>
+
+<!-- MODAL SENHA -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-title">Área restrita — RH</div>
+    <div class="modal-sub">Digite a senha para acessar o painel de RH com histórico e gestão de vagas.</div>
+    <input type="password" id="senha-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkSenha()">
+    <div class="modal-err" id="modal-err">Senha incorreta. Tente novamente.</div>
+    <div class="modal-btns">
+      <button class="btn-primary" onclick="checkSenha()">Entrar</button>
+      <button class="btn-ghost" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ══ VIEW: FORMULÁRIO LÍDER ══ -->
+  <div id="view-form" class="view active">
+    <div class="hero">
+      <div class="hero-title">Precisa de um novo colaborador?</div>
+      <div class="hero-sub">Preencha este formulário para que o RH possa iniciar o processo de recrutamento e seleção por competências. Quanto mais detalhes, mais rápido e assertivo será o processo.</div>
+      <div class="req-note">Campos com <span>*</span> são obrigatórios.</div>
+    </div>
+
+    <div id="success-wrap" class="success-wrap">
+      <div class="s-circle">✓</div>
+      <div class="s-title">Solicitação enviada com sucesso!</div>
+      <div class="s-sub">O RH recebeu sua solicitação e entrará em contato em breve para alinhar os próximos passos.</div>
+      <div class="s-resumo" id="s-resumo"></div>
+      <button class="btn-ghost" onclick="novaVaga()" style="margin-top:16px">+ Nova solicitação</button>
+    </div>
+
+    <div id="form-wrap" class="form-wrap">
+      <!-- BLOCO 1 -->
+      <div class="fsec">
+        <div class="slabel">1 · Informações gerais</div>
+        <div class="fgrid fg2">
+          <div class="fgrp">
+            <label class="lbl">Cargo <span class="req">*</span></label>
+            <input type="text" id="f-cargo" placeholder="Ex.: Assistente Administrativo I">
+            <div class="emsg" id="e-cargo">Informe o nome do cargo.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Seu nome — líder responsável <span class="req">*</span></label>
+            <input type="text" id="f-lider" placeholder="Nome completo">
+            <div class="emsg" id="e-lider">Informe seu nome.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Departamento / setor <span class="req">*</span></label>
+            <select id="f-depto">
+              <option value="">Selecionar...</option>
+              <option>Expedição</option><option>Estoque</option><option>Qualidade</option>
+              <option>Transporte / Logística</option><option>Cozinha / Refeitório</option>
+              <option>Administrativo</option><option>Financeiro</option>
+              <option>Comercial / Televendas</option><option>Compras</option>
+              <option>RH / DP</option><option>TI</option><option>Outro</option>
+            </select>
+            <div class="emsg" id="e-depto">Selecione o departamento.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Número de vagas <span class="req">*</span></label>
+            <input type="number" id="f-num" min="1" value="1" style="max-width:130px">
+          </div>
+        </div>
+        <div class="fgrid fg3">
+          <div class="fgrp full">
+            <label class="lbl">Motivo da abertura <span class="req">*</span></label>
+            <div class="rgroup" id="rg-motivo">
+              <label class="ropt" onclick="pick('rg-motivo',this,'Aumento de quadro','s');showCond('cond-subst',false);showCond('cond-cargo-novo',false)"><input type="radio"> Aumento de quadro</label>
+              <label class="ropt" onclick="pick('rg-motivo',this,'Substituição','s');showCond('cond-subst',true);showCond('cond-cargo-novo',false)"><input type="radio"> Substituição</label>
+              <label class="ropt" onclick="pick('rg-motivo',this,'Transferência','s');showCond('cond-subst',false);showCond('cond-cargo-novo',false)"><input type="radio"> Transferência</label>
+              <label class="ropt" onclick="pick('rg-motivo',this,'Novo cargo','s');showCond('cond-subst',false);showCond('cond-cargo-novo',true)"><input type="radio"> Novo cargo</label>
+              <label class="ropt" onclick="pick('rg-motivo',this,'Outros','s');showCond('cond-subst',false);showCond('cond-cargo-novo',false)"><input type="radio"> Outros</label>
+            </div>
+            <div class="emsg" id="e-motivo">Selecione o motivo.</div>
+          </div>
+          <div class="fgrp full" style="margin-top:14px">
+            <label class="lbl">Justificativa da solicitação <span class="req">*</span> <span class="hint">(descreva claramente o motivo desta abertura)</span></label>
+            <textarea id="f-justificativa" placeholder="Ex.: colaborador solicitou demissão em 15/06, cargo essencial para operação do setor de transportes..." style="min-height:88px"></textarea>
+            <div class="emsg" id="e-justificativa">Descreva a justificativa da solicitação.</div>
+          </div>
+          <div class="cond" id="cond-cargo-novo" style="margin-top:10px">
+            <div style="background:var(--al);border:1px solid var(--ab);border-left:4px solid var(--ab);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--am);line-height:1.7">
+              ⚠️ <strong>Atenção — inclusão de novo cargo:</strong> para abertura de um cargo que ainda não existe no quadro de colaboradores, será necessário apresentar um <strong>projeto detalhado</strong> para análise e aprovação da Diretoria antes do início do processo seletivo. Entre em contato com o RH para alinhar os próximos passos.
+            </div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Nível de urgência <span class="req">*</span></label>
+            <div class="rgroup" id="rg-urgencia">
+              <label class="ropt" onclick="pick('rg-urgencia',this,'Baixo','s')"><input type="radio"> Baixo</label>
+              <label class="ropt" onclick="pick('rg-urgencia',this,'Médio','sm')"><input type="radio"> Médio</label>
+              <label class="ropt" onclick="pick('rg-urgencia',this,'Alto','sa')"><input type="radio"> Alto</label>
+            </div>
+            <div class="emsg" id="e-urgencia">Selecione a urgência.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Contratação confidencial? <span class="req">*</span></label>
+            <div class="rgroup" id="rg-conf">
+              <label class="ropt" onclick="pick('rg-conf',this,'Não','s')"><input type="radio"> Não</label>
+              <label class="ropt" onclick="pick('rg-conf',this,'Sim','s')"><input type="radio"> Sim</label>
+            </div>
+            <div class="emsg" id="e-conf">Selecione uma opção.</div>
+          </div>
+        </div>
+        <div class="cond" id="cond-subst">
+          <div class="fgrp">
+            <label class="lbl">Colaborador sendo substituído <span class="req">*</span> <span class="hint">(nome + motivo)</span></label>
+            <input type="text" id="f-subst" placeholder="Ex.: João Silva — desligamento">
+            <div class="emsg" id="e-subst">Informe o colaborador substituído.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCO 2 -->
+      <div class="fsec">
+        <div class="slabel">2 · Condições de trabalho e remuneração</div>
+        <div class="fgrid fg2">
+          <div class="fgrp">
+            <label class="lbl">Faixa salarial prevista <span class="req">*</span></label>
+            <input type="text" id="f-salario" placeholder="Ex.: R$ 1.800 – R$ 2.200">
+            <div class="emsg" id="e-salario">Informe a faixa salarial.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Tipo de contrato <span class="req">*</span></label>
+            <select id="f-contrato">
+              <option value="">Selecionar...</option>
+              <option>CLT</option><option>PJ</option><option>Temporário</option>
+              <option>Estágio</option><option>Jovem Aprendiz</option>
+            </select>
+            <div class="emsg" id="e-contrato">Selecione o contrato.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Local de trabalho <span class="req">*</span></label>
+            <input type="text" id="f-local" placeholder="Ex.: Sede Rio de Janeiro">
+            <div class="emsg" id="e-local">Informe o local.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Turno <span class="req">*</span></label>
+            <div class="rgroup" id="rg-turno">
+              <label class="ropt" onclick="pick('rg-turno',this,'Diurno','s')"><input type="radio"> Diurno</label>
+              <label class="ropt" onclick="pick('rg-turno',this,'Noturno','s')"><input type="radio"> Noturno</label>
+              <label class="ropt" onclick="pick('rg-turno',this,'Misto','s')"><input type="radio"> Misto</label>
+              <label class="ropt" onclick="pick('rg-turno',this,'A definir','s')"><input type="radio"> A definir</label>
+            </div>
+            <div class="emsg" id="e-turno">Selecione o turno.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Carga horária <span class="req">*</span></label>
+            <input type="text" id="f-carga" placeholder="Ex.: 44h semanais">
+            <div class="emsg" id="e-carga">Informe a carga horária.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Escala <span class="req">*</span></label>
+            <input type="text" id="f-escala" placeholder="Ex.: Segunda a sábado / 6x1">
+            <div class="emsg" id="e-escala">Informe a escala.</div>
+          </div>
+          <div class="fgrp full">
+            <label class="lbl">Benefícios específicos desta vaga <span class="hint">(além dos benefícios padrão)</span></label>
+            <input type="text" id="f-benef" placeholder="Ex.: adicional noturno, insalubridade, comissão...">
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Prazo ideal para preenchimento <span class="req">*</span></label>
+            <select id="f-prazo">
+              <option value="">Selecionar...</option>
+              <option>Imediato (até 1 semana)</option>
+              <option>Urgente (até 2 semanas)</option>
+              <option>Normal (até 30 dias)</option>
+              <option>Sem urgência (30+ dias)</option>
+            </select>
+            <div class="emsg" id="e-prazo">Selecione o prazo.</div>
+          </div>
+          <div class="fgrp">
+            <label class="lbl">Data prevista de início</label>
+            <input type="text" id="f-inicio" placeholder="Ex.: 01/07/2025 ou a combinar">
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCO 3 -->
+      <div class="fsec">
+        <div class="slabel">3 · Perfil e competências</div>
+        <div class="fgrid">
+          <div class="fgrp full">
+            <label class="lbl">Existe Descrição de Cargo (DC) para esta vaga? <span class="req">*</span></label>
+            <div class="rgroup" id="rg-dc">
+              <label class="ropt" onclick="pick('rg-dc',this,'Sim','s');showCond('cond-ativ',false)"><input type="radio"> Sim, existe DC</label>
+              <label class="ropt" onclick="pick('rg-dc',this,'Não — cargo novo','s');showCond('cond-ativ',true)"><input type="radio"> Não — é cargo novo</label>
+            </div>
+            <div class="emsg" id="e-dc">Indique se há Descrição de Cargo.</div>
+          </div>
+        </div>
+        <div class="cond" id="cond-ativ">
+          <div class="fgrp">
+            <label class="lbl">Principais atividades do cargo <span class="req">*</span> <span class="hint">(descreva detalhadamente)</span></label>
+            <textarea id="f-ativ" placeholder="Liste as responsabilidades e tarefas do dia a dia desta função." style="min-height:100px"></textarea>
+            <div class="emsg" id="e-ativ">Descreva as atividades do cargo.</div>
+          </div>
+        </div>
+        <div class="fgrid" style="margin-top:14px">
+          <div class="fgrp full">
+            <label class="lbl">Competências técnicas obrigatórias <span class="req">*</span></label>
+            <textarea id="f-comp-tec" placeholder="Ex.: domínio de ERP, Excel intermediário, CNH categoria B..."></textarea>
+            <div class="emsg" id="e-comp-tec">Informe as competências técnicas.</div>
+          </div>
+          <div class="fgrp full">
+            <label class="lbl">Competências comportamentais importantes <span class="req">*</span></label>
+            <textarea id="f-comp-comp" placeholder="Ex.: organização, comunicação assertiva, trabalho em equipe, proatividade..."></textarea>
+            <div class="emsg" id="e-comp-comp">Informe as competências comportamentais.</div>
+          </div>
+          <div class="fgrp full">
+            <label class="lbl">Particularidades do perfil <span class="hint">(algo específico além da DC?)</span></label>
+            <textarea id="f-perfil" placeholder="Ex.: perfil para crescer para liderança, experiência em operação noturna..."></textarea>
+          </div>
+          <div class="fgrp full">
+            <label class="lbl">Observações adicionais para o RH</label>
+            <textarea id="f-obs" placeholder="Contexto da abertura, restrições de horário para entrevistas, informações sobre a equipe..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="submitForm()">Enviar solicitação para o RH →</button>
+      <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--mu)">Ao enviar, o RH da Vitta Rio receberá todas as informações acima.</div>
+    </div>
+  </div>
+
+  <!-- ══ VIEW: PAINEL RH ══ -->
+  <div id="view-rh" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-size:20px;font-weight:500;color:var(--bk)">Painel de RH</div>
+        <div style="font-size:13px;color:var(--tx)" id="rh-date"></div>
+      </div>
+      <button class="btn-ghost" onclick="sairRH()">← Sair do painel</button>
+    </div>
+
+    <div class="rh-tabs">
+      <div class="rtab active" id="rt-dash" onclick="showRHTab('dash')">Dashboard</div>
+      <div class="rtab" id="rt-hist" onclick="showRHTab('hist')">Vagas <span class="tbadge" id="tbadge">0</span></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="rview-dash" class="rview active">
+      <div class="sgrid" id="sgrid"></div>
+      <div class="dgrid">
+        <div class="dcard"><div class="dctitle">Vagas por setor</div><div id="bar-setores"></div></div>
+        <div class="dcard"><div class="dctitle">Urgência alta em aberto</div><div id="list-urg"></div></div>
+      </div>
+      <div class="dcard" style="margin-bottom:1rem">
+        <div class="dctitle">Últimas solicitações recebidas</div>
+        <div id="list-rec"></div>
+      </div>
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div id="rview-hist" class="rview">
+      <div class="hcontrols">
+        <div class="swrap">
+          <span class="sico">🔍</span>
+          <input type="text" id="h-search" placeholder="Buscar por cargo, setor ou líder..." oninput="applyF()">
+        </div>
+        <select class="ssort" id="h-sort" onchange="applyF()">
+          <option value="rec">Mais recentes</option>
+          <option value="ant">Mais antigos</option>
+          <option value="urg">Urgência (alta→baixa)</option>
+          <option value="az">Cargo (A-Z)</option>
+        </select>
+      </div>
+      <div class="frow">
+        <button class="fb active" onclick="setF('all',this)">Todas</button>
+        <button class="fb" onclick="setF('novo',this)">Em aberto</button>
+        <button class="fb" onclick="setF('em-andamento',this)">Em andamento</button>
+        <button class="fb" onclick="setF('concluido',this)">Concluídas</button>
+        <button class="fb" onclick="setF('urg-alto',this)">Urgência alta</button>
+        <button class="fb" onclick="setF('subst',this)">Substituição</button>
+        <button class="fb" onclick="setF('conf',this)">Confidenciais</button>
+      </div>
+      <div id="hist-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var vagas=[], radios={}, activeF='all', dcActive=null, substActive=false;
+var SENHA='vitta2025';
+
+function openRH(){document.getElementById('modal-bg').classList.add('show');setTimeout(function(){document.getElementById('senha-input').focus()},100);}
+function closeModal(){document.getElementById('modal-bg').classList.remove('show');document.getElementById('senha-input').value='';document.getElementById('modal-err').classList.remove('show');}
+function checkSenha(){
+  if(document.getElementById('senha-input').value===SENHA){
+    closeModal();
+    document.getElementById('view-form').classList.remove('active');
+    document.getElementById('view-rh').classList.add('active');
+    document.getElementById('rh-btn').classList.add('active');
+    document.getElementById('rh-btn').textContent='🔓 Painel RH';
+    updateDash(); applyF();
+    document.getElementById('rh-date').textContent='Atualizado em '+new Date().toLocaleDateString('pt-BR')+' às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  } else {
+    document.getElementById('modal-err').classList.add('show');
+    document.getElementById('senha-input').value='';
+    document.getElementById('senha-input').focus();
+  }
+}
+function sairRH(){
+  document.getElementById('view-rh').classList.remove('active');
+  document.getElementById('view-form').classList.add('active');
+  document.getElementById('rh-btn').classList.remove('active');
+  document.getElementById('rh-btn').textContent='🔒 Acesso RH';
+}
+
+function pick(g,el,val,cls){
+  document.querySelectorAll('#'+g+' .ropt').forEach(function(o){o.classList.remove('s','sa','sm')});
+  el.classList.add(cls); radios[g]=val;
+  var m={'rg-motivo':'e-motivo','rg-urgencia':'e-urgencia','rg-conf':'e-conf','rg-turno':'e-turno','rg-dc':'e-dc'};
+  if(m[g]){var e=document.getElementById(m[g]);if(e)e.classList.remove('show');}
+  if(g==='rg-motivo'){substActive=(val==='Substituição');if(!substActive){document.getElementById('f-subst').value='';setE('f-subst','e-subst',false);}}
+  if(g==='rg-dc'){dcActive=(val==='Sim');if(dcActive){document.getElementById('f-ativ').value='';setE('f-ativ','e-ativ',false);}}
+}
+function showCond(id,show){document.getElementById(id).classList.toggle('show',show);}
+function setE(fid,eid,show){
+  var f=document.getElementById(fid),e=document.getElementById(eid);
+  if(f)f.classList.toggle('ef',show);if(e)e.classList.toggle('show',show);
+}
+
+function validate(){
+  var ok=true;
+  [['f-cargo','e-cargo'],['f-lider','e-lider'],['f-salario','e-salario'],['f-local','e-local'],['f-carga','e-carga'],['f-escala','e-escala'],['f-comp-tec','e-comp-tec'],['f-comp-comp','e-comp-comp'],['f-justificativa','e-justificativa']
+  ].forEach(function(p){var mt=!document.getElementById(p[0]).value.trim();setE(p[0],p[1],mt);if(mt)ok=false;});
+  [['f-depto','e-depto'],['f-contrato','e-contrato'],['f-prazo','e-prazo']].forEach(function(p){var mt=!document.getElementById(p[0]).value;setE(p[0],p[1],mt);if(mt)ok=false;});
+  ['rg-motivo','rg-urgencia','rg-conf','rg-turno','rg-dc'].forEach(function(g){
+    var m={'rg-motivo':'e-motivo','rg-urgencia':'e-urgencia','rg-conf':'e-conf','rg-turno':'e-turno','rg-dc':'e-dc'};
+    if(!radios[g]){document.getElementById(m[g]).classList.add('show');ok=false;}
+  });
+  if(substActive){var mt=!document.getElementById('f-subst').value.trim();setE('f-subst','e-subst',mt);if(mt)ok=false;}
+  if(dcActive===false){var mt2=!document.getElementById('f-ativ').value.trim();setE('f-ativ','e-ativ',mt2);if(mt2)ok=false;}
+  if(dcActive===null){document.getElementById('e-dc').classList.add('show');ok=false;}
+  return ok;
+}
+
+function submitForm(){
+  if(!validate()){var f=document.querySelector('.emsg.show,.ef');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  var now=new Date();
+  var v={
+    id:Date.now(),
+    date:now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    cargo:document.getElementById('f-cargo').value.trim(),
+    lider:document.getElementById('f-lider').value.trim(),
+    depto:document.getElementById('f-depto').value,
+    num:document.getElementById('f-num').value||'1',
+    motivo:radios['rg-motivo']||'',urgencia:radios['rg-urgencia']||'',conf:radios['rg-conf']||'Não',
+    justificativa:document.getElementById('f-justificativa').value.trim(),
+    subst:document.getElementById('f-subst').value.trim(),
+    salario:document.getElementById('f-salario').value.trim(),
+    contrato:document.getElementById('f-contrato').value,
+    local:document.getElementById('f-local').value.trim(),
+    turno:radios['rg-turno']||'',
+    carga:document.getElementById('f-carga').value.trim(),
+    escala:document.getElementById('f-escala').value.trim(),
+    benef:document.getElementById('f-benef').value.trim(),
+    prazo:document.getElementById('f-prazo').value,
+    inicio:document.getElementById('f-inicio').value.trim(),
+    dc:radios['rg-dc']||'',
+    ativ:document.getElementById('f-ativ').value.trim(),
+    compTec:document.getElementById('f-comp-tec').value.trim(),
+    compComp:document.getElementById('f-comp-comp').value.trim(),
+    perfil:document.getElementById('f-perfil').value.trim(),
+    obs:document.getElementById('f-obs').value.trim(),
+    status:'novo',rhNote:''
+  };
+  vagas.unshift(v);
+  document.getElementById('tbadge').textContent=vagas.length;
+  var rows=[['Cargo',v.cargo],['Líder',v.lider],['Setor',v.depto],['Vagas',v.num],['Motivo',v.motivo+(v.subst?' — '+v.subst:'')],['Justificativa',v.justificativa],['Urgência',v.urgencia],['Contrato',v.contrato],['Turno',v.turno],['Salário',v.salario],['Prazo',v.prazo],['DC',v.dc]];
+  document.getElementById('s-resumo').innerHTML='<strong style="color:var(--bk);display:block;margin-bottom:6px">Resumo da solicitação — '+v.date+'</strong>'+rows.filter(function(r){return r[1]}).map(function(r){return '<span style="color:var(--mu)">'+r[0]+':</span> '+r[1]}).join('<br>');
+  document.getElementById('form-wrap').classList.add('hidden');
+  document.getElementById('success-wrap').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function novaVaga(){
+  document.getElementById('success-wrap').classList.remove('show');
+  document.getElementById('form-wrap').classList.remove('hidden');
+  radios={};substActive=false;dcActive=null;
+  document.querySelectorAll('#form-wrap input[type=text],#form-wrap textarea').forEach(function(el){el.value='';});
+  document.getElementById('f-num').value='1';
+  document.querySelectorAll('#form-wrap select').forEach(function(el){el.value='';});
+  document.querySelectorAll('#form-wrap .ropt').forEach(function(el){el.classList.remove('s','sa','sm')});
+  document.querySelectorAll('#form-wrap .emsg').forEach(function(el){el.classList.remove('show')});
+  document.querySelectorAll('#form-wrap .ef').forEach(function(el){el.classList.remove('ef')});
+  document.querySelectorAll('.cond').forEach(function(el){el.classList.remove('show')});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showRHTab(t){
+  document.querySelectorAll('.rview').forEach(function(el){el.classList.remove('active')});
+  document.querySelectorAll('.rtab').forEach(function(el){el.classList.remove('active')});
+  document.getElementById('rview-'+t).classList.add('active');
+  document.getElementById('rt-'+t).classList.add('active');
+  if(t==='hist')applyF();
+  if(t==='dash')updateDash();
+}
+
+function setF(f,btn){
+  activeF=f;
+  document.querySelectorAll('.fb').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');applyF();
+}
+
+function applyF(){
+  var q=(document.getElementById('h-search').value||'').toLowerCase();
+  var sort=document.getElementById('h-sort').value;
+  var filtered=vagas.filter(function(v){
+    if(activeF==='novo'&&v.status!=='novo')return false;
+    if(activeF==='em-andamento'&&v.status!=='em-andamento')return false;
+    if(activeF==='concluido'&&v.status!=='concluido')return false;
+    if(activeF==='urg-alto'&&v.urgencia!=='Alto')return false;
+    if(activeF==='subst'&&v.motivo!=='Substituição')return false;
+    if(activeF==='conf'&&v.conf!=='Sim')return false;
+    if(q&&!(v.cargo+v.depto+v.lider).toLowerCase().includes(q))return false;
+    return true;
+  });
+  var uo={'Alto':0,'Médio':1,'Baixo':2};
+  if(sort==='rec')filtered.sort(function(a,b){return b.id-a.id});
+  else if(sort==='ant')filtered.sort(function(a,b){return a.id-b.id});
+  else if(sort==='urg')filtered.sort(function(a,b){return (uo[a.urgencia]||2)-(uo[b.urgencia]||2)});
+  else if(sort==='az')filtered.sort(function(a,b){return a.cargo.localeCompare(b.cargo)});
+  renderHist(filtered);
+}
+
+function renderHist(list){
+  var el=document.getElementById('hist-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-ico">📂</div><div class="empty-t">Nenhuma vaga encontrada</div><div class="empty-s">Ajuste os filtros ou aguarde novas solicitações.</div></div>';return;}
+  var stl={'novo':'Em aberto','em-andamento':'Em andamento','concluido':'Concluído','cancelado':'Cancelado'};
+  el.innerHTML=list.map(function(v){
+    var ini=v.lider.split(' ').slice(0,2).map(function(n){return n[0]||''}).join('').toUpperCase();
+    var uc=v.urgencia==='Alto'?'pa':v.urgencia==='Médio'?'pm':'pb';
+    var sc='pst-'+(v.status||'novo');
+    return '<div class="vcard" id="vc-'+v.id+'">'+
+      '<div class="vtop">'+
+        '<div class="avt">'+ini+'</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div class="vcargo">'+v.cargo+'</div>'+
+          '<div class="vmeta">'+v.depto+' · '+v.lider+' · '+v.date+'</div>'+
+        '</div>'+
+        '<div class="vtags">'+
+          '<span class="pill '+sc+'">'+(stl[v.status||'novo'])+'</span>'+
+          '<span class="pill '+uc+'">'+v.urgencia+'</span>'+
+          '<span class="pill pn">'+v.motivo+'</span>'+
+          (v.conf==='Sim'?'<span class="pill pc">Confidencial</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="vdet">'+
+        (v.num?'<div><div class="vdlbl">Vagas</div><div class="vdval">'+v.num+'</div></div>':'')+
+        (v.salario?'<div><div class="vdlbl">Faixa salarial</div><div class="vdval">'+v.salario+'</div></div>':'')+
+        (v.contrato?'<div><div class="vdlbl">Contrato</div><div class="vdval">'+v.contrato+'</div></div>':'')+
+        (v.turno?'<div><div class="vdlbl">Turno</div><div class="vdval">'+v.turno+'</div></div>':'')+
+        (v.carga?'<div><div class="vdlbl">Carga horária</div><div class="vdval">'+v.carga+'</div></div>':'')+
+        (v.escala?'<div><div class="vdlbl">Escala</div><div class="vdval">'+v.escala+'</div></div>':'')+
+        (v.prazo?'<div><div class="vdlbl">Prazo</div><div class="vdval">'+v.prazo+'</div></div>':'')+
+        (v.dc?'<div><div class="vdlbl">Desc. de cargo</div><div class="vdval">'+v.dc+'</div></div>':'')+
+        (v.inicio?'<div><div class="vdlbl">Início previsto</div><div class="vdval">'+v.inicio+'</div></div>':'')+
+      '</div>'+
+      '<div class="vacts">'+
+        '<label style="font-size:12px;color:var(--mu);margin-right:2px">Status:</label>'+
+        '<select class="stsel" onchange="updStatus('+v.id+',this.value)">'+
+          ['novo','em-andamento','concluido','cancelado'].map(function(s){return '<option value="'+s+'"'+(v.status===s?' selected':'')+'>'+stl[s]+'</option>';}).join('')+
+        '</select>'+
+        '<button class="abtn" onclick="toggleExtra(this)">▾ Ver detalhes</button>'+
+        '<button class="abtn del" onclick="delVaga('+v.id+')">🗑 Excluir</button>'+
+      '</div>'+
+      '<div class="vextra">'+
+        '<div class="xgrid">'+
+          (v.compTec?'<div class="xblk"><div class="xlbl">Competências técnicas</div><div class="xtxt">'+v.compTec+'</div></div>':'')+
+          (v.compComp?'<div class="xblk"><div class="xlbl">Competências comportamentais</div><div class="xtxt">'+v.compComp+'</div></div>':'')+
+          (v.justificativa?'<div class="xblk full" style="grid-column:1/-1"><div class="xlbl">Justificativa da solicitação</div><div class="xtxt">'+v.justificativa+'</div></div>':'')+
+          (v.perfil?'<div class="xblk"><div class="xlbl">Particularidades do perfil</div><div class="xtxt">'+v.perfil+'</div></div>':'')+
+          (v.ativ?'<div class="xblk"><div class="xlbl">Atividades do cargo</div><div class="xtxt">'+v.ativ+'</div></div>':'')+
+          (v.benef?'<div class="xblk"><div class="xlbl">Benefícios específicos</div><div class="xtxt">'+v.benef+'</div></div>':'')+
+          (v.subst?'<div class="xblk"><div class="xlbl">Colaborador substituído</div><div class="xtxt">'+v.subst+'</div></div>':'')+
+          (v.obs?'<div class="xblk"><div class="xlbl">Observações</div><div class="xtxt">'+v.obs+'</div></div>':'')+
+        '</div>'+
+        '<div class="notelbl">📝 Notas internas do RH</div>'+
+        '<textarea class="noteinput" id="note-'+v.id+'" placeholder="Candidatos em análise, entrevistas agendadas, decisões pendentes...">'+( v.rhNote||'')+'</textarea>'+
+        '<button class="notesave" onclick="saveNote('+v.id+')">Salvar nota</button>'+
+        '<div class="notedone" id="nd-'+v.id+'">✓ Nota salva</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function toggleExtra(btn){
+  var card=btn.closest('.vcard');
+  var ex=card.querySelector('.vextra');
+  var open=ex.classList.contains('open');
+  ex.classList.toggle('open');
+  btn.textContent=open?'▾ Ver detalhes':'▴ Ocultar detalhes';
+}
+function updStatus(id,st){
+  var v=vagas.find(function(x){return x.id===id});
+  if(v){v.status=st;updateDash();}
+}
+function delVaga(id){
+  if(!confirm('Excluir esta solicitação? Esta ação não pode ser desfeita.'))return;
+  vagas=vagas.filter(function(v){return v.id!==id});
+  document.getElementById('tbadge').textContent=vagas.length;
+  applyF();updateDash();
+}
+function saveNote(id){
+  var v=vagas.find(function(x){return x.id===id});
+  if(v){
+    v.rhNote=document.getElementById('note-'+id).value;
+    var nd=document.getElementById('nd-'+id);nd.classList.add('show');
+    setTimeout(function(){nd.classList.remove('show')},2000);
+  }
+}
+
+function updateDash(){
+  document.getElementById('tbadge').textContent=vagas.length;
+  var ab=vagas.filter(function(v){return !v.status||v.status==='novo'}).length;
+  var and=vagas.filter(function(v){return v.status==='em-andamento'}).length;
+  var con=vagas.filter(function(v){return v.status==='concluido'}).length;
+  var alt=vagas.filter(function(v){return v.urgencia==='Alto'&&(v.status==='novo'||v.status==='em-andamento'||!v.status)}).length;
+  document.getElementById('sgrid').innerHTML=
+    '<div class="scard"><div class="slb">Total de vagas</div><div class="sval">'+vagas.length+'</div><div class="ssub">solicitações registradas</div></div>'+
+    '<div class="scard"><div class="slb">Em aberto</div><div class="sval i">'+ab+'</div><div class="ssub">aguardando preenchimento</div></div>'+
+    '<div class="scard"><div class="slb">Em andamento</div><div class="sval w">'+and+'</div><div class="ssub">processo em curso</div></div>'+
+    '<div class="scard"><div class="slb">Concluídas</div><div class="sval s">'+con+'</div><div class="ssub">colaborador contratado</div></div>'+
+    '<div class="scard"><div class="slb">Urgência alta</div><div class="sval d">'+alt+'</div><div class="ssub">atenção imediata</div></div>';
+
+  var sc={};vagas.forEach(function(v){sc[v.depto]=(sc[v.depto]||0)+1});
+  var ses=Object.entries(sc).sort(function(a,b){return b[1]-a[1]}).slice(0,7);
+  var mx=ses.length?ses[0][1]:1;
+  var cls=['#1D9E75','#185FA5','#854F0B','#534AB7','#A32D2D','#3B6D11','#0C447C'];
+  document.getElementById('bar-setores').innerHTML=ses.length?
+    ses.map(function(s,i){return '<div class="brow"><div class="blbl">'+s[0]+'</div><div class="btrack"><div class="bfill" style="width:'+Math.round(s[1]/mx*100)+'%;background:'+cls[i%cls.length]+'"></div></div><div class="bnum">'+s[1]+'</div></div>';}).join(''):
+    '<div style="font-size:13px;color:var(--mu);padding:1rem 0">Nenhuma vaga ainda.</div>';
+
+  var urg=vagas.filter(function(v){return v.urgencia==='Alto'&&(v.status==='novo'||!v.status||v.status==='em-andamento')}).slice(0,5);
+  document.getElementById('list-urg').innerHTML=urg.length?
+    urg.map(function(v){return '<div class="litem"><div class="ldot a"></div><div><div class="lcargo">'+v.cargo+'</div><div class="lmeta">'+v.depto+' · '+v.lider+'</div></div></div>';}).join(''):
+    '<div style="font-size:13px;color:var(--mu);padding:1rem 0">Nenhuma vaga urgente em aberto. ✓</div>';
+
+  var rec=vagas.slice(0,5);
+  document.getElementById('list-rec').innerHTML=rec.length?
+    rec.map(function(v){var dc=v.urgencia==='Alto'?'a':v.urgencia==='Médio'?'m':'b';return '<div class="litem"><div class="ldot '+dc+'"></div><div style="flex:1"><div class="lcargo">'+v.cargo+'</div><div class="lmeta">'+v.depto+' · '+v.date+'</div></div><span class="pill pn" style="font-size:10px">'+v.urgencia+'</span></div>';}).join(''):
+    '<div style="font-size:13px;color:var(--mu);padding:1rem 0">Nenhuma solicitação ainda.</div>';
+}
+</script>
+</body>
+</html>
