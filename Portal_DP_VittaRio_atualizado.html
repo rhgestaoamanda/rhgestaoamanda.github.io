@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal DP | VittaRio</title>
+  <style>
+    /* ── RESET & BASE ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:   #1a5c38;
+      --green-mid:    #27ae60;
+      --green-light:  #d5f5e3;
+      --green-pale:   #f0faf5;
+      --orange:       #e67e22;
+      --orange-light: #fdebd0;
+      --blue:         #2980b9;
+      --blue-light:   #d6eaf8;
+      --red:          #e74c3c;
+      --red-light:    #fadbd8;
+      --yellow:       #f9e79f;
+      --yellow-dark:  #7d6608;
+      --gray-dark:    #2c3e50;
+      --gray-mid:     #566573;
+      --gray-light:   #ecf0f1;
+      --gray-pale:    #f8f9fa;
+      --white:        #ffffff;
+      --purple:       #8e44ad;
+      --purple-light: #e8daef;
+      --teal:         #117a65;
+      --teal-light:   #d1f2eb;
+
+      --font-main:   'Segoe UI', system-ui, sans-serif;
+      --radius:      10px;
+      --shadow:      0 2px 12px rgba(0,0,0,.08);
+      --shadow-lg:   0 4px 24px rgba(0,0,0,.13);
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--gray-pale);
+      color: var(--gray-dark);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ────────────────────────────────────────────────────────────── */
+    .header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, #2d7a50 100%);
+      color: var(--white);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,.2);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+    .header-logo span { color: var(--green-light); }
+    .header-sub {
+      font-size: 13px;
+      opacity: .75;
+      margin-left: auto;
+      font-weight: 500;
+    }
+
+    /* ── NAV TABS ──────────────────────────────────────────────────────────── */
+    .nav-tabs {
+      background: var(--white);
+      border-bottom: 2px solid var(--gray-light);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .nav-tabs-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      padding: 0 20px;
+    }
+    .nav-tab {
+      padding: 13px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-mid);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .nav-tab:hover { color: var(--green-dark); background: var(--green-pale); }
+    .nav-tab.active { color: var(--green-dark); border-bottom-color: var(--green-dark); }
+
+    /* ── MAIN ──────────────────────────────────────────────────────────────── */
+    .main { max-width: 1200px; margin: 0 auto; padding: 28px 20px; }
+
+    /* ── TAB PANELS ────────────────────────────────────────────────────────── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── SECTION TITLE ─────────────────────────────────────────────────────── */
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── TODAY PANEL ────────────────────────────────────────────────────────── */
+    .today-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .today-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .today-header h2 { font-size: 16px; font-weight: 700; color: var(--gray-dark); }
+    .progress-bar-wrap {
+      background: var(--gray-light);
+      border-radius: 99px;
+      height: 8px;
+      margin-bottom: 8px;
+    }
+    .progress-bar-fill {
+      background: var(--green-mid);
+      height: 8px;
+      border-radius: 99px;
+      width: 0%;
+      transition: width .4s;
+    }
+    .progress-label { font-size: 12px; color: var(--gray-mid); margin-bottom: 16px; }
+    .clear-btn {
+      background: none;
+      border: 1px solid var(--gray-light);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--gray-mid);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── ROUTINES ────────────────────────────────────────────────────────────── */
+    .routine-group { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
+    .routine-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      border-left: 4px solid var(--green-mid);
+      transition: background .15s;
+    }
+    .routine-header:hover { background: var(--green-pale); }
+    .routine-icon { font-size: 20px; }
+    .routine-label { font-weight: 700; font-size: 14px; color: var(--gray-dark); }
+    .routine-count { font-size: 12px; color: var(--gray-mid); margin-left: auto; }
+    .routine-chevron { font-size: 12px; color: var(--gray-mid); margin-left: 8px; transition: transform .25s; }
+    .routine-header.open .routine-chevron { transform: rotate(180deg); }
+    .routine-items { display: none; padding: 0 20px 16px; }
+    .routine-items.open { display: block; }
+    .routine-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .routine-item:last-child { border-bottom: none; }
+    .routine-item input[type=checkbox] { margin-top: 2px; accent-color: var(--green-mid); cursor: pointer; width: 16px; height: 16px; flex-shrink: 0; }
+    .routine-item label { font-size: 13.5px; line-height: 1.5; cursor: pointer; }
+    .routine-item label .sub { font-size: 12px; color: var(--gray-mid); display: block; margin-top: 2px; }
+    .routine-item label .warn { font-size: 11.5px; color: var(--orange); display: block; margin-top: 3px; font-weight: 600; }
+
+    /* ── FLOWS ───────────────────────────────────────────────────────────────── */
+    .flow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .flow-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border-top: 4px solid var(--green-mid);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .flow-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .flow-card-header { padding: 18px 20px 12px; display: flex; align-items: center; gap: 12px; }
+    .flow-icon { font-size: 24px; }
+    .flow-title { font-size: 15px; font-weight: 700; color: var(--gray-dark); }
+    .flow-subtitle { font-size: 12px; color: var(--gray-mid); margin-top: 2px; }
+    .flow-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 99px;
+    }
+    .badge-active    { background: var(--green-light); color: var(--green-dark); }
+    .badge-building  { background: var(--yellow); color: var(--yellow-dark); }
+    .badge-new       { background: var(--blue-light); color: var(--blue); }
+    .badge-todo      { background: var(--gray-light); color: var(--gray-mid); }
+
+    /* ── FLOW DETAIL (modal-style drawer) ────────────────────────────────────── */
+    .flow-detail-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      display: none;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    .flow-detail-overlay.open { display: flex; }
+    .flow-detail-drawer {
+      background: var(--white);
+      width: min(680px, 96vw);
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: -6px 0 40px rgba(0,0,0,.18);
+      padding: 0;
+      animation: slideIn .28s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+    .drawer-header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .drawer-close {
+      margin-left: auto;
+      background: rgba(255,255,255,.15);
+      border: none;
+      color: var(--white);
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .drawer-close:hover { background: rgba(255,255,255,.3); }
+    .drawer-body { padding: 28px 24px; }
+
+    /* ── FLOW STEPS ────────────────────────────────────────────────────────── */
+    .flow-steps { list-style: none; }
+    .flow-step {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 0 16px;
+      margin-bottom: 0;
+      position: relative;
+    }
+    .flow-step::before {
+      content: '';
+      position: absolute;
+      left: 21px; top: 46px;
+      bottom: -8px;
+      width: 2px;
+      background: var(--gray-light);
+    }
+    .flow-step:last-child::before { display: none; }
+
+    .step-num {
+      width: 44px; height: 44px;
+      background: var(--green-dark);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      position: relative; z-index: 1;
+    }
+    .step-body {
+      background: var(--white);
+      border: 1px solid var(--gray-light);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+    }
+    .step-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--gray-dark);
+      margin-bottom: 6px;
+    }
+    .step-desc {
+      font-size: 13px;
+      color: var(--gray-mid);
+      line-height: 1.6;
+    }
+    .step-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-top: 8px;
+    }
+    .tag-msg    { background: #e3f6e8; color: #1a5c38; }
+    .tag-doc    { background: var(--purple-light); color: var(--purple); }
+    .tag-system { background: var(--blue-light); color: var(--blue); }
+    .tag-action { background: var(--orange-light); color: var(--orange); }
+    .tag-alert  { background: var(--red-light); color: var(--red); }
+    .tag-check  { background: var(--teal-light); color: var(--teal); }
+
+    .step-highlight {
+      background: var(--green-pale);
+      border-left: 3px solid var(--green-mid);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--gray-dark);
+      line-height: 1.6;
+      font-style: italic;
+    }
+    .step-highlight strong { font-style: normal; color: var(--green-dark); }
+
+    .step-warn {
+      background: var(--orange-light);
+      border-left: 3px solid var(--orange);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: #7d4800;
+      line-height: 1.6;
+    }
+
+    /* Phase separator inside drawer */
+    .phase-label {
+      display: flex; align-items: center; gap: 10px;
+      margin: 24px 0 16px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-mid);
+    }
+    .phase-label::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--gray-light);
+    }
+
+    /* ── PLACEHOLDER ─────────────────────────────────────────────────────── */
+    .placeholder {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--gray-mid);
+    }
+    .placeholder-icon { font-size: 40px; margin-bottom: 12px; }
+    .placeholder p { font-size: 14px; line-height: 1.6; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .header-inner { padding: 14px 16px; }
+      .main { padding: 16px 12px; }
+      .flow-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-logo">Vitta<span>Rio</span></div>
+    <div style="font-size:13px;opacity:.7;margin-left:8px;">Portal Operacional de DP</div>
+    <div class="header-sub">Recursos Humanos & Departamento Pessoal</div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav-tabs">
+  <div class="nav-tabs-inner">
+    <div class="nav-tab active" data-tab="today">📋 Hoje</div>
+    <div class="nav-tab" data-tab="routines">🔄 Rotinas</div>
+    <div class="nav-tab" data-tab="flows">📌 Fluxos</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ── TODAY ──────────────────────────────────────────────────────────── -->
+  <section class="tab-panel active" id="tab-today">
+    <div class="today-card">
+      <div class="today-header">
+        <h2>✅ Tarefas de hoje</h2>
+        <button class="clear-btn" onclick="clearToday()">Limpar marcações de hoje</button>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label">0 de 0 tarefas concluídas</div>
+      <div id="today-tasks">
+        <!-- Populated by JS based on day of week -->
+        <div style="color:var(--gray-mid);font-size:13px;text-align:center;padding:24px 0;">
+          Carregando tarefas do dia...
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ROUTINES ───────────────────────────────────────────────────────── -->
+  <section class="tab-panel" id="tab-routines">
+    <div class="section-title">🔄 Rotinas do Departamento</div>
+
+    <!-- Semanais -->
+    <div style="font-size:13px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">Rotinas Semanais</div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📅</span>
+        <div>
+          <div class="routine-label">Toda Segunda-feira</div>
+        </div>
+        <span class="routine-count">6 atividades</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Alinhamento com a Elaine sobre as pernoites<span class="sub">Verificar viagens com pernoite da semana</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Solicitar as pernoites para pagamento<span class="sub">Com base no alinhamento feito com a Elaine</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Controle do ponto e enviar anomalias<span class="sub">Verificar marcações faltantes e divergências no Control ID</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Coletas de caixas<span class="warn">⚠ Solicitar na segunda, para quinta — disponibilizar só na sexta-feira</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Pagamento de R$ 500,00 para Luiz Antônio (motorista de caminhão)</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Pegar pasta com José Luis e Franklin<span class="sub">Folha de ponto dos motoristas → tirar cópias → incluir no ponto eletrônico</span><span class="sub">Solicitar folhas de pontos das diárias fixas dos extras/chapas</span></label></div>
+      </div>
+    </div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📅</span>
+        <div><div class="routine-label">Toda Terça-feira</div></div>
+        <span class="routine-count">2 atividades</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Enviar diárias fixas dos extras/chapas para o Financeiro<span class="sub">Com base nas folhas coletadas na segunda</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Solicitar ao Franklin os pagamentos extras dos motoristas nas folgas de 12x36</label></div>
+      </div>
+    </div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📅</span>
+        <div><div class="routine-label">Toda Quarta-feira</div></div>
+        <span class="routine-count">1 atividade</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Gestão das horas extras e banco de horas<span class="sub">Analisar a necessidade da hora extra de cada colaborador junto aos seus gestores</span></label></div>
+      </div>
+    </div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📅</span>
+        <div><div class="routine-label">Toda Sexta-feira</div></div>
+        <span class="routine-count">6 atividades</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Pagamento das pernoites</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Atualizar o Trello</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Solicitar folhas de ponto dos colaboradores externos</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Verificar as bombinas dos pontos eletrônicos das 3 empresas<span class="sub">Garantir funcionamento correto dos equipamentos</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Enviar planilha de acompanhamento de processo seletivo e processo trabalhista</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Arquivar documentos</label></div>
+      </div>
+    </div>
+
+    <!-- Mensais -->
+    <div style="font-size:13px;font-weight:700;color:var(--gray-mid);text-transform:uppercase;letter-spacing:.07em;margin:24px 0 10px;">Rotinas Mensais</div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📆</span>
+        <div><div class="routine-label">Todo dia 05 (5º dia útil)</div></div>
+        <span class="routine-count">3 atividades</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Avaliação de desempenho ADM — incluir Flash</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Complemento salarial do Fernando Pereira de Araújo</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Tratar o ponto e enviar relatórios para Diretoria, Gerência e Lideranças + imprimir contracheques e entregar às lideranças</label></div>
+      </div>
+    </div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📆</span>
+        <div><div class="routine-label">Todo dia 15</div></div>
+        <span class="routine-count">6 atividades</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Enviar alimentação 01 a 15 — Jairo, Leonardo e Mercílio</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Enviar faltas para a Contabilidade<span class="sub">Referente ao período apurado</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Conferir no site os empréstimos consignados dos colaboradores</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Preparar adiantamento para enviar ao Financeiro</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Pagamento quinzenal da comissão de frete dos motoristas de viagens</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Pagamento quinzenal do Alves (Vigilante)</label></div>
+      </div>
+    </div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📆</span>
+        <div><div class="routine-label">Todo dia 25</div></div>
+        <span class="routine-count">7 atividades</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Preparar Vale Transporte<span class="warn">⚠ Atenção às faltas (justificadas e sem justificativa), folgas e atestados a descontar</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Preparar planilha de Folha de Pagamento<span class="warn">⚠ Atenção: multas, faltas, horas extras, adicional noturno e afins a descontar</span></label></div>
+        <div class="routine-item"><input type="checkbox"><label>Solicitar premiações para as lideranças</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Relatório do ponto</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Abater no último dia do mês as horas extras ou feriados pagos aos funcionários</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Cobrar boletos da UNISUAM e Estácio de Sá aos funcionários</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Cobrar do Júnior a comissão de frete do Éder e do Alex</label></div>
+      </div>
+    </div>
+
+    <div class="routine-group">
+      <div class="routine-header" onclick="toggleRoutine(this)">
+        <span class="routine-icon">📆</span>
+        <div><div class="routine-label">Todo dia 30</div></div>
+        <span class="routine-count">5 atividades</span>
+        <span class="routine-chevron">▾</span>
+      </div>
+      <div class="routine-items">
+        <div class="routine-item"><input type="checkbox"><label>Enviar alimentação 16 a 30 — Jairo, Leonardo e Mercílio</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Preparar pagamento da Folha de Pagamento (quinto dia útil) na planilha</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Enviar conta bancária da pensão alimentícia dos funcionários para a Greici (Financeiro)</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Pagamento quinzenal da comissão de frete dos motoristas de viagens</label></div>
+        <div class="routine-item"><input type="checkbox"><label>Pagamento das premiações dos separadores, estoquistas e motoristas</label></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FLOWS ──────────────────────────────────────────────────────────── -->
+  <section class="tab-panel" id="tab-flows">
+    <div class="section-title">📌 Fluxos Operacionais</div>
+    <div class="flow-grid">
+
+      <!-- Controle de Ponto -->
+      <div class="flow-card" onclick="openFlow('ponto')">
+        <div class="flow-card-header">
+          <span class="flow-icon">🕐</span>
+          <div>
+            <div class="flow-title">Controle de Ponto</div>
+            <div class="flow-subtitle">Anomalias, marcações e faltas</div>
+          </div>
+          <span class="flow-badge badge-active">Ativo</span>
+        </div>
+      </div>
+
+      <!-- Banco de Horas -->
+      <div class="flow-card" onclick="openFlow('banco')">
+        <div class="flow-card-header">
+          <span class="flow-icon">⏱</span>
+          <div>
+            <div class="flow-title">Banco de Horas</div>
+            <div class="flow-subtitle">Controle de horas extras, feriados e descontos</div>
+          </div>
+          <span class="flow-badge badge-active">Ativo</span>
+        </div>
+      </div>
+
+      <!-- R&S -->
+      <div class="flow-card" onclick="openFlow('rs')">
+        <div class="flow-card-header">
+          <span class="flow-icon">👥</span>
+          <div>
+            <div class="flow-title">Recrutamento e Seleção</div>
+            <div class="flow-subtitle">Fluxo em construção</div>
+          </div>
+          <span class="flow-badge badge-building">Em construção</span>
+        </div>
+      </div>
+
+      <!-- ADMISSÃO — NOVO ✨ -->
+      <div class="flow-card" onclick="openFlow('admissao')" style="border-top-color: var(--green-dark);">
+        <div class="flow-card-header">
+          <span class="flow-icon">📝</span>
+          <div>
+            <div class="flow-title">Admissão</div>
+            <div class="flow-subtitle">Da proposta ao primeiro dia</div>
+          </div>
+          <span class="flow-badge badge-new">✨ Novo</span>
+        </div>
+      </div>
+
+      <!-- Desligamento -->
+      <div class="flow-card" onclick="openFlow('desligamento')">
+        <div class="flow-card-header">
+          <span class="flow-icon">🚪</span>
+          <div>
+            <div class="flow-title">Desligamento</div>
+            <div class="flow-subtitle">Fluxo a documentar</div>
+          </div>
+          <span class="flow-badge badge-todo">A documentar</span>
+        </div>
+      </div>
+
+      <!-- Folha -->
+      <div class="flow-card" onclick="openFlow('folha')">
+        <div class="flow-card-header">
+          <span class="flow-icon">💰</span>
+          <div>
+            <div class="flow-title">Folha de Pagamento</div>
+            <div class="flow-subtitle">Fluxo a documentar</div>
+          </div>
+          <span class="flow-badge badge-todo">A documentar</span>
+        </div>
+      </div>
+
+      <!-- Benefícios -->
+      <div class="flow-card" onclick="openFlow('beneficios')">
+        <div class="flow-card-header">
+          <span class="flow-icon">🎁</span>
+          <div>
+            <div class="flow-title">Benefícios</div>
+            <div class="flow-subtitle">Fluxo a documentar</div>
+          </div>
+          <span class="flow-badge badge-todo">A documentar</span>
+        </div>
+      </div>
+
+      <!-- Férias -->
+      <div class="flow-card" onclick="openFlow('ferias')">
+        <div class="flow-card-header">
+          <span class="flow-icon">🏖</span>
+          <div>
+            <div class="flow-title">Férias</div>
+            <div class="flow-subtitle">Fluxo a documentar</div>
+          </div>
+          <span class="flow-badge badge-todo">A documentar</span>
+        </div>
+      </div>
+
+      <!-- Afastamento -->
+      <div class="flow-card" onclick="openFlow('afastamento')">
+        <div class="flow-card-header">
+          <span class="flow-icon">🏥</span>
+          <div>
+            <div class="flow-title">Afastamento</div>
+            <div class="flow-subtitle">Fluxo a documentar</div>
+          </div>
+          <span class="flow-badge badge-todo">A documentar</span>
+        </div>
+      </div>
+
+      <!-- Atendimento -->
+      <div class="flow-card" onclick="openFlow('atendimento')">
+        <div class="flow-card-header">
+          <span class="flow-icon">🤝</span>
+          <div>
+            <div class="flow-title">Atendimento ao Colaborador</div>
+            <div class="flow-subtitle">Fluxo a documentar</div>
+          </div>
+          <span class="flow-badge badge-todo">A documentar</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- ── FLOW DETAIL DRAWER ────────────────────────────────────────────────── -->
+<div class="flow-detail-overlay" id="flow-overlay" onclick="closeFlowIfOverlay(event)">
+  <div class="flow-detail-drawer" id="flow-drawer">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   NAV TABS
+══════════════════════════════════════════════════════════ */
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════
+   TODAY TASKS
+══════════════════════════════════════════════════════════ */
+const DAILY = {
+  0: [], // domingo — sem tarefas
+  1: [ // segunda
+    { text: 'Alinhamento com a Elaine sobre as pernoites', sub: 'Verificar viagens com pernoite da semana' },
+    { text: 'Solicitar as pernoites para pagamento', sub: 'Com base no alinhamento feito com a Elaine' },
+    { text: 'Controle do ponto e enviar anomalias', sub: 'Verificar marcações faltantes e divergências no Control ID' },
+    { text: 'Coletas de caixas', warn: '⚠ Solicitar na segunda, para quinta — disponibilizar só na sexta-feira' },
+    { text: 'Pagamento de R$ 500,00 para Luiz Antônio (motorista de caminhão)' },
+    { text: 'Pegar pasta com José Luis e Franklin', sub: 'Folha de ponto dos motoristas → tirar cópias → incluir no ponto eletrônico' },
+  ],
+  2: [ // terça
+    { text: 'Enviar diárias fixas dos extras/chapas para o Financeiro', sub: 'Com base nas folhas coletadas na segunda' },
+    { text: 'Solicitar ao Franklin os pagamentos extras dos motoristas nas folgas de 12x36' },
+  ],
+  3: [ // quarta
+    { text: 'Gestão das horas extras e banco de horas', sub: 'Analisar a necessidade da hora extra de cada colaborador junto aos seus gestores' },
+  ],
+  4: [], // quinta
+  5: [ // sexta
+    { text: 'Pagamento das pernoites' },
+    { text: 'Atualizar o Trello' },
+    { text: 'Solicitar folhas de ponto dos colaboradores externos' },
+    { text: 'Verificar as bombinas dos pontos eletrônicos das 3 empresas', sub: 'Garantir funcionamento correto dos equipamentos' },
+    { text: 'Enviar planilha de acompanhamento de processo seletivo e processo trabalhista' },
+    { text: 'Arquivar documentos' },
+  ],
+  6: [], // sábado
+};
+
+function buildToday() {
+  const day = new Date().getDay();
+  const tasks = DAILY[day] || [];
+  const container = document.getElementById('today-tasks');
+  if (!tasks.length) {
+    container.innerHTML = '<div style="text-align:center;color:var(--gray-mid);padding:32px;font-size:14px;">Nenhuma rotina fixa para hoje. Verifique pendências avulsas! 🎉</div>';
+    return;
+  }
+  const key = 'today_' + new Date().toDateString();
+  const saved = JSON.parse(localStorage.getItem(key) || '[]');
+  container.innerHTML = tasks.map((t, i) => `
+    <div class="routine-item">
+      <input type="checkbox" id="td${i}" ${saved.includes(i) ? 'checked' : ''} onchange="saveTodayCheck(${i})">
+      <label for="td${i}">${t.text}
+        ${t.sub ? `<span class="sub">${t.sub}</span>` : ''}
+        ${t.warn ? `<span class="warn">${t.warn}</span>` : ''}
+      </label>
+    </div>
+  `).join('');
+  updateProgress();
+}
+
+function saveTodayCheck(i) {
+  const key = 'today_' + new Date().toDateString();
+  const saved = JSON.parse(localStorage.getItem(key) || '[]');
+  if (saved.includes(i)) saved.splice(saved.indexOf(i), 1); else saved.push(i);
+  localStorage.setItem(key, JSON.stringify(saved));
+  updateProgress();
+}
+
+function updateProgress() {
+  const boxes = document.querySelectorAll('#today-tasks input[type=checkbox]');
+  const checked = [...boxes].filter(b => b.checked).length;
+  const pct = boxes.length ? Math.round(checked / boxes.length * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${checked} de ${boxes.length} tarefas concluídas`;
+}
+
+function clearToday() {
+  const key = 'today_' + new Date().toDateString();
+  localStorage.removeItem(key);
+  buildToday();
+}
+
+buildToday();
+
+/* ══════════════════════════════════════════════════════════
+   ROUTINES TOGGLE
+══════════════════════════════════════════════════════════ */
+function toggleRoutine(header) {
+  header.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('open');
+}
+
+/* ══════════════════════════════════════════════════════════
+   FLOW CONTENT DATA
+══════════════════════════════════════════════════════════ */
+const FLOWS = {
+
+  ponto: {
+    icon: '🕐', title: 'Controle de Ponto', sub: 'Anomalias, marcações e faltas', badge: 'Ativo',
+    html: `
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">1</div><div class="step-body">
+          <div class="step-title">Visualizar funcionários sem marcação</div>
+          <div class="step-desc">Acessar o sistema Control ID → identificar colaboradores com falta ou marcação incompleta.</div>
+          <span class="step-tag tag-system">Sistema Control ID</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">2</div><div class="step-body">
+          <div class="step-title">Cobrar justificativa do colaborador</div>
+          <div class="step-desc">Contatar o colaborador e solicitar o horário trabalhado + justificativa para a ausência de marcação.</div>
+          <span class="step-tag tag-action">Contato direto</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">3</div><div class="step-body">
+          <div class="step-title">Incluir marcação manual no ponto</div>
+          <div class="step-desc">Com o horário informado pelo colaborador, incluir no sistema com a justificativa correspondente.</div>
+          <span class="step-tag tag-system">Sistema Control ID</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">4</div><div class="step-body">
+          <div class="step-title">Alimentar a planilha ANOMALIA</div>
+          <div class="step-desc">Registrar todas as pendências de marcação na planilha "ANOMALIA" para controle e rastreabilidade.</div>
+          <span class="step-tag tag-doc">Planilha</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">5</div><div class="step-body">
+          <div class="step-title">Enviar e-mail para Diretoria e Lideranças</div>
+          <div class="step-desc">Comunicar as faltas ocorridas para que as lideranças avaliem: falta justificada, abono por atestado, licença ou banco de horas.</div>
+          <span class="step-tag tag-action">E-mail</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">6</div><div class="step-body">
+          <div class="step-title">Receber retorno e ajustar</div>
+          <div class="step-desc">Com base no retorno das lideranças, ajustar a planilha ANOMALIA e o registro no sistema de ponto.</div>
+          <span class="step-tag tag-doc">Planilha + Sistema</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">7</div><div class="step-body">
+          <div class="step-title">Falta sem justificativa → Advertência</div>
+          <div class="step-desc">Se a falta não tiver nenhuma justificativa aceita, aplicar advertência conforme procedimento disciplinar.</div>
+          <div class="step-warn">Planilha de controle de advertências (verbais, escritas e suspensões) já criada — acessar na pasta DP no Google Drive.</div>
+          <span class="step-tag tag-alert">Procedimento disciplinar</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">8</div><div class="step-body">
+          <div class="step-title">Atestados físicos recebidos</div>
+          <div class="step-desc">Escanear o atestado → nomear o arquivo corretamente → incluir na pasta da folha de pagamento → registrar também no sistema de ponto.</div>
+          <div class="step-warn">Criar pasta individual de cada colaborador no Google Drive (pendente).</div>
+          <span class="step-tag tag-doc">Digitalização</span>
+        </div></li>
+      </ol>
+    `
+  },
+
+  banco: {
+    icon: '⏱', title: 'Banco de Horas', sub: 'Horas extras, feriados e descontos', badge: 'Ativo',
+    html: `
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">1</div><div class="step-body">
+          <div class="step-title">Verificar faltas injustificadas descontadas (dia 6 ou 7)</div>
+          <div class="step-desc">No quinto dia útil de cada mês → abrir sistema de ponto → Apuração de Ponto → selecionar intervalo de datas do mês → buscar todas as empresas. Incluir "não banco" no sistema para faltas já descontadas no contracheque.</div>
+          <span class="step-tag tag-system">Sistema de Ponto</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">2</div><div class="step-body">
+          <div class="step-title">Colaborador trabalhou no feriado → recebe folga</div>
+          <div class="step-desc">Incluir "banco" no sistema de ponto para registrar a folga compensatória gerada pelo feriado trabalhado.</div>
+          <span class="step-tag tag-system">Sistema de Ponto</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">3</div><div class="step-body">
+          <div class="step-title">Hora extra paga até 12h → retirar do banco</div>
+          <div class="step-desc">No último dia do mês trabalhado pelo colaborador → Ajuste Banco → trocar "+" por "-" → incluir a hora paga no contracheque.</div>
+          <div class="step-warn">⚠ A troca deve ser feita no último dia trabalhado do mês, não no dia do pagamento.</div>
+          <span class="step-tag tag-alert">Atenção ao prazo</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">4</div><div class="step-body">
+          <div class="step-title">Feriado pago em espécie (Flash) → zerar horas do dia</div>
+          <div class="step-desc">Quando o feriado é pago em espécie via Flash: retirar as horas produzidas → Ajuste Banco → colocar "-" e zerar o dia trabalhado para não acumular com o banco de horas.</div>
+          <div class="step-warn">⚠ Não zerar o dia pode gerar acumulação indevida no banco de horas do colaborador.</div>
+          <span class="step-tag tag-alert">Crítico</span>
+        </div></li>
+      </ol>
+    `
+  },
+
+  rs: {
+    icon: '👥', title: 'Recrutamento e Seleção', sub: 'Fluxo em construção', badge: 'Em construção',
+    html: `
+      <div class="placeholder">
+        <div class="placeholder-icon">🚧</div>
+        <p>Este fluxo está sendo estruturado.<br><br>
+        <strong>Situação atual:</strong> Vagas publicadas no LinkedIn, Rio Vagas e Catho. Currículos chegando por e-mail de forma descentralizada. Sem processo padronizado de triagem, entrevista ou feedback.<br><br>
+        <strong>Próximos passos:</strong> definir funil de seleção, centralizar candidaturas e implementar gestão por competências.</p>
+      </div>
+    `
+  },
+
+  /* ─── ADMISSÃO — FLUXO COMPLETO ──────────────────────────────────────── */
+  admissao: {
+    icon: '📝', title: 'Admissão', sub: 'Da proposta ao primeiro dia', badge: '✨ Novo',
+    html: `
+
+      <div class="phase-label">① PROPOSTA</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">1</div><div class="step-body">
+          <div class="step-title">Enviar a proposta ao candidato aprovado</div>
+          <div class="step-desc">Entrar em contato com o candidato via WhatsApp informando a aprovação, o salário, benefícios e horário da vaga.</div>
+          <div class="step-highlight">
+            <strong>Modelo de mensagem:</strong><br>
+            "Boa tarde, [Nome]! Tudo bem? 🎉<br>
+            Temos uma ótima notícia: você foi aprovado(a) para a vaga de <strong>[CARGO]</strong>. Parabéns!<br><br>
+            Segue a proposta:<br>
+            • <strong>Salário:</strong> R$ [valor]<br>
+            • <strong>Benefícios:</strong> Vale-Transporte e refeição no local<br>
+            • <strong>Horário:</strong> [dias e horário]<br><br>
+            Ficamos muito felizes com a possibilidade de ter você na equipe! Podemos seguir com o processo de admissão?"
+          </div>
+          <span class="step-tag tag-msg">WhatsApp</span>
+        </div></li>
+      </ol>
+
+      <div class="phase-label">② ACEITE</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">2</div><div class="step-body">
+          <div class="step-title">Aguardar confirmação do candidato</div>
+          <div class="step-desc">Registrar o aceite na planilha de Controle de Admissões. Somente após a confirmação, prosseguir para o envio dos documentos e encaminhamento do ASO.</div>
+          <span class="step-tag tag-doc">Planilha de Admissões</span>
+        </div></li>
+      </ol>
+
+      <div class="phase-label">③ DOCUMENTOS + ENCAMINHAMENTO ASO (enviados juntos)</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">3</div><div class="step-body">
+          <div class="step-title">Enviar checklist de documentos admissionais</div>
+          <div class="step-desc">Encaminhar ao candidato a lista completa de documentos que deverá trazer em xerox no dia do comparecimento à empresa:</div>
+          <div class="step-highlight">
+            <strong>Documentos necessários:</strong><br>
+            • RG / CNH<br>
+            • CPF<br>
+            • Comprovante de residência<br>
+            • Carteira de Trabalho (física ou digital)<br>
+            • Certificado de escolaridade<br>
+            • Foto 3x4<br>
+            • PIS / PASEP<br>
+            • Certidão de reservista (homens)<br>
+            • Outros conforme a vaga
+          </div>
+          <span class="step-tag tag-msg">WhatsApp</span>
+          <span class="step-tag tag-doc">Checklist</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">4</div><div class="step-body">
+          <div class="step-title">Enviar encaminhamento do ASO (Exame Admissional)</div>
+          <div class="step-desc">Ajustar o modelo de encaminhamento com as informações do candidato e da empresa. Enviar junto com o checklist de documentos.</div>
+          <div class="step-highlight">
+            <strong>Modelo de mensagem:</strong><br>
+            "Segue o encaminhamento do ASO admissional e as orientações para realizar o exame:<br><br>
+            É só apresentar esse documento na clínica e aguardar o atendimento (ordem de chegada).<br><br>
+            📌 Função: [Cargo]<br>
+            📅 Data: [data] ([dia da semana])<br>
+            ⏰ Horário: 08h às 12h<br>
+            📍 Local: DELF MEDICINA OCUPACIONAL<br>
+            📞 Telefone: 21 2450-2005<br>
+            📌 Ponto de referência: Próximo à Praça das Nações, entre a loja South e o banco Itaú.<br><br>
+            ⚠️ Importante:<br>
+            • A clínica funciona de segunda a quinta-feira, das 08h às 12h.<br>
+            • Não há atendimento às sextas-feiras.<br><br>
+            Tipo de exame: ✅ Admissional"
+          </div>
+          <div class="step-warn">⚠ A clínica só funciona de segunda a quinta, das 08h às 12h. Não agendar para sexta-feira.</div>
+          <span class="step-tag tag-msg">WhatsApp</span>
+          <span class="step-tag tag-doc">Encaminhamento ASO</span>
+        </div></li>
+      </ol>
+
+      <div class="phase-label">④ EXAME ADMISSIONAL</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">5</div><div class="step-body">
+          <div class="step-title">Acompanhar realização do exame</div>
+          <div class="step-desc">Confirmar com o candidato que o exame foi realizado. Aguardar o resultado do ASO por e-mail da clínica.</div>
+          <span class="step-tag tag-check">Aguardar resultado</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">6</div><div class="step-body">
+          <div class="step-title">Receber resultado do ASO e encaminhar à contabilidade</div>
+          <div class="step-desc">Recebido o resultado do exame admissional por e-mail, encaminhar para a contabilidade junto com os documentos admissionais do novo colaborador.</div>
+          <span class="step-tag tag-action">E-mail para Contabilidade</span>
+        </div></li>
+      </ol>
+
+      <div class="phase-label">⑤ DOCUMENTOS</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">7</div><div class="step-body">
+          <div class="step-title">Receber documentos e confirmar valor do VT</div>
+          <div class="step-desc">No dia do comparecimento do candidato à empresa: receber todos os documentos em xerox, confirmar o valor diário do Vale-Transporte e coletar o Pix do candidato (qualquer conta).</div>
+          <span class="step-tag tag-doc">Documentos físicos</span>
+          <span class="step-tag tag-action">Coletar Pix</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">8</div><div class="step-body">
+          <div class="step-title">Verificar completude dos documentos</div>
+          <div class="step-desc">Conferir o checklist completo. Documentos faltantes: solicitar prazo para entrega. Atualizar a planilha de Controle de Admissões.</div>
+          <span class="step-tag tag-doc">Planilha de Admissões</span>
+        </div></li>
+      </ol>
+
+      <div class="phase-label">⑥ CONTRATO</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">9</div><div class="step-body">
+          <div class="step-title">Assinar contrato de trabalho</div>
+          <div class="step-desc">Formalizar a contratação com a assinatura do contrato de trabalho pelo novo colaborador e pela empresa.</div>
+          <span class="step-tag tag-doc">Contrato CLT</span>
+        </div></li>
+      </ol>
+
+      <div class="phase-label">⑦ BENEFÍCIOS — FLASH/VT</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">10</div><div class="step-body">
+          <div class="step-title">Incluir na planilha de ajuda de custo</div>
+          <div class="step-desc">Registrar na planilha "Ajuda de Custo": valor diário e mensal do VT + dados do novo colaborador + dados da empresa.</div>
+          <span class="step-tag tag-doc">Planilha ajuda de custo</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">11</div><div class="step-body">
+          <div class="step-title">Cadastrar colaborador no site do Flash</div>
+          <div class="step-desc">Acessar o site do Flash → selecionar a empresa correta → fazer o cadastro do colaborador (nome, CPF, telefone e data de nascimento) → realizar o pedido do cartão.</div>
+          <span class="step-tag tag-system">Site Flash</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">12</div><div class="step-body">
+          <div class="step-title">Enviar e-mail ao Financeiro para pagamento do Flash</div>
+          <div class="step-desc">Enviar ao Financeiro:</div>
+          <div class="step-highlight">
+            <strong>Incluir no e-mail:</strong><br>
+            • Código Pix do pedido Flash<br>
+            • Data de vencimento do pedido<br>
+            • Cálculo do VT mensal<br>
+            • Print do QR Code<br>
+            • Relatório de compra gerado pelo site do Flash<br>
+            • Planilha "Ajuda de Custo" atualizada
+          </div>
+          <span class="step-tag tag-action">E-mail para Financeiro</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">13</div><div class="step-body">
+          <div class="step-title">Imprimir QR Code e relatório de compra</div>
+          <div class="step-desc">Imprimir o QR Code do pedido Flash e o relatório de compra para arquivo físico.</div>
+          <span class="step-tag tag-doc">Impressão</span>
+        </div></li>
+        <li class="flow-step"><div class="step-num">14</div><div class="step-body">
+          <div class="step-title">Incluir pagamento no sistema do Financeiro</div>
+          <div class="step-desc">No sistema do Financeiro → filtrar a empresa do novo colaborador → incluir esse pagamento.</div>
+          <span class="step-tag tag-system">Sistema Financeiro</span>
+        </div></li>
+      </ol>
+
+      <div class="phase-label">⑧ PLANILHA DE CONTROLE</div>
+      <ol class="flow-steps">
+        <li class="flow-step"><div class="step-num">15</div><div class="step-body">
+          <div class="step-title">Atualizar status na Planilha de Controle de Admissões</div>
+          <div class="step-desc">Marcar todas as etapas concluídas e atualizar o status geral do candidato para "✅ Em Admissão". A planilha alimenta automaticamente o Painel Admissional.</div>
+          <span class="step-tag tag-doc">Planilha de Admissões</span>
+          <span class="step-tag tag-check">Concluído</span>
+        </div></li>
+      </ol>
+    `
+  },
+
+  desligamento: {
+    icon: '🚪', title: 'Desligamento', sub: 'A documentar', badge: 'A documentar',
+    html: `<div class="placeholder"><div class="placeholder-icon">📋</div><p>Fluxo ainda não documentado.<br>Adicione os passos conforme o processo for mapeado com a equipe.</p></div>`
+  },
+  folha: {
+    icon: '💰', title: 'Folha de Pagamento', sub: 'A documentar', badge: 'A documentar',
+    html: `<div class="placeholder"><div class="placeholder-icon">📋</div><p>Fluxo ainda não documentado.<br>Adicione os passos conforme o processo for mapeado com a equipe.</p></div>`
+  },
+  beneficios: {
+    icon: '🎁', title: 'Benefícios', sub: 'A documentar', badge: 'A documentar',
+    html: `<div class="placeholder"><div class="placeholder-icon">📋</div><p>Fluxo ainda não documentado.<br>Adicione os passos conforme o processo for mapeado com a equipe.</p></div>`
+  },
+  ferias: {
+    icon: '🏖', title: 'Férias', sub: 'A documentar', badge: 'A documentar',
+    html: `<div class="placeholder"><div class="placeholder-icon">📋</div><p>Fluxo ainda não documentado.<br>Adicione os passos conforme o processo for mapeado com a equipe.</p></div>`
+  },
+  afastamento: {
+    icon: '🏥', title: 'Afastamento', sub: 'A documentar', badge: 'A documentar',
+    html: `<div class="placeholder"><div class="placeholder-icon">📋</div><p>Fluxo ainda não documentado.<br>Adicione os passos conforme o processo for mapeado com a equipe.</p></div>`
+  },
+  atendimento: {
+    icon: '🤝', title: 'Atendimento ao Colaborador', sub: 'A documentar', badge: 'A documentar',
+    html: `<div class="placeholder"><div class="placeholder-icon">📋</div><p>Fluxo ainda não documentado.<br>Adicione os passos conforme o processo for mapeado com a equipe.</p></div>`
+  },
+};
+
+/* ══════════════════════════════════════════════════════════
+   FLOW DRAWER
+══════════════════════════════════════════════════════════ */
+function openFlow(key) {
+  const f = FLOWS[key];
+  if (!f) return;
+  const badgeClass = {
+    'Ativo': 'badge-active', 'Em construção': 'badge-building',
+    '✨ Novo': 'badge-new', 'A documentar': 'badge-todo'
+  }[f.badge] || 'badge-todo';
+
+  document.getElementById('flow-drawer').innerHTML = `
+    <div class="drawer-header">
+      <span style="font-size:28px">${f.icon}</span>
+      <div>
+        <div style="font-size:17px;font-weight:800;">${f.title}</div>
+        <div style="font-size:12px;opacity:.75;margin-top:2px;">${f.sub}</div>
+      </div>
+      <span class="flow-badge ${badgeClass}" style="margin-left:auto;margin-right:12px;">${f.badge}</span>
+      <button class="drawer-close" onclick="closeFlow()">✕</button>
+    </div>
+    <div class="drawer-body">${f.html}</div>
+  `;
+  document.getElementById('flow-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFlow() {
+  document.getElementById('flow-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeFlowIfOverlay(e) {
+  if (e.target === document.getElementById('flow-overlay')) closeFlow();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFlow(); });
+</script>
+</body>
+</html>
