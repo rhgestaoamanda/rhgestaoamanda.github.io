@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxo de Admissão — Vitta Rio RH</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #0F6E56; --green-mid: #1D9E75; --green-light: #E1F5EE; --green-border: #5DCAA5;
+    --blue-light: #E6F1FB; --blue-mid: #185FA5; --blue-dark: #0C447C;
+    --amber-light: #FAEEDA; --amber-mid: #854F0B; --amber-border: #EF9F27;
+    --purple-light: #EEEDFE; --purple-mid: #534AB7;
+    --gray-bg: #F7F6F2; --gray-light: #F1EFE8; --gray-border: #D3D1C7;
+    --gray-text: #5F5E5A; --gray-muted: #888780; --black: #2C2C2A; --white: #ffffff;
+    --info-bg: #E6F1FB; --info-text: #0C447C; --info-border: #85B7EB;
+    --warn-bg: #FAEEDA; --warn-text: #633806; --warn-border: #EF9F27;
+    --success-bg: #E1F5EE; --success-text: #0F6E56; --success-border: #5DCAA5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--black); min-height: 100vh; padding: 0; }
+
+  /* STICKY HEADER */
+  .sticky-header { position: sticky; top: 0; z-index: 100; background: var(--gray-bg); border-bottom: 1px solid var(--gray-border); padding: 10px 0; }
+  .sticky-inner { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+  .progress-label { font-size: 12px; color: var(--gray-text); display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .progress-track { height: 4px; background: var(--gray-border); border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green-mid); border-radius: 10px; width: 0%; transition: width .4s ease; }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+  /* HEADER */
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); margin-bottom: 14px; }
+  .main-title { font-family: 'DM Serif Display', serif; font-size: 30px; color: var(--black); line-height: 1.25; margin-bottom: 8px; }
+  .main-subtitle { font-size: 14px; color: var(--gray-text); line-height: 1.7; margin-bottom: 24px; }
+  .divider { height: 1px; background: var(--gray-border); margin: 0 0 24px; }
+
+  /* CONTEXT */
+  .context-box { background: var(--success-bg); border-left: 3px solid var(--green-mid); border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 24px; font-size: 14px; color: var(--success-text); line-height: 1.7; }
+  .context-box strong { color: var(--black); }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-text); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-rh     { background: var(--info-bg); border: 1.5px solid var(--info-text); }
+  .dot-dp     { background: var(--purple-light); border: 1.5px solid var(--purple-mid); }
+  .dot-shared { background: var(--success-bg); border: 1.5px solid var(--green-border); }
+
+  /* STEPS */
+  .rs-step { display: flex; gap: 0; cursor: pointer; }
+  .rs-step-left { display: flex; flex-direction: column; align-items: center; width: 40px; flex-shrink: 0; }
+  .rs-step-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; flex-shrink: 0; transition: all .2s; border: 1px solid var(--gray-border); background: var(--gray-light); color: var(--gray-text); }
+  .rs-step.active .rs-step-circle { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+  .rs-step-line { width: 2px; flex: 1; min-height: 14px; background: var(--gray-border); margin: 3px 0; }
+  .rs-step:last-child .rs-step-line { display: none; }
+  .rs-step-content { padding: 0 0 20px 16px; flex: 1; min-width: 0; }
+  .rs-step-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rs-step-name { font-size: 15px; font-weight: 500; color: var(--black); }
+  .rs-step.active .rs-step-name { color: var(--success-text); }
+  .rs-step-tag { font-size: 10px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; padding: 2px 9px; border-radius: 10px; }
+  .tag-rh     { background: var(--info-bg); color: var(--info-text); }
+  .tag-dp     { background: var(--purple-light); color: var(--purple-mid); }
+  .tag-shared { background: var(--success-bg); color: var(--success-text); }
+  .rs-step-desc { font-size: 13px; color: var(--gray-text); line-height: 1.6; margin-top: 3px; }
+  .rs-step-arrow { margin-left: auto; color: var(--gray-muted); font-size: 18px; transition: transform .2s; line-height: 1; }
+  .rs-step.active .rs-step-arrow { transform: rotate(90deg); color: var(--success-text); }
+
+  /* PANEL */
+  .rs-panel { overflow: hidden; max-height: 0; transition: max-height .4s ease; }
+  .rs-panel.open { max-height: 4000px; }
+  .rs-panel-inner { padding: 12px 0 4px; }
+
+  /* CARDS */
+  .card { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--black); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .card-title .icon { font-size: 17px; }
+  .card-body { font-size: 13px; color: var(--gray-text); line-height: 1.7; }
+  .card-body ul { padding-left: 1.3rem; }
+  .card-body ul li { margin-bottom: 5px; }
+  .card-body p + p { margin-top: 8px; }
+
+  /* CALLOUTS */
+  .tip      { background: var(--success-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--success-text); line-height: 1.6; }
+  .tip strong { color: #085041; }
+  .warn     { background: var(--warn-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--warn-text); line-height: 1.6; }
+  .warn strong { color: #412402; }
+  .info-box { background: var(--info-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--info-text); line-height: 1.6; }
+  .info-box strong { color: var(--blue-dark); }
+
+  /* MENSAGEM WPP */
+  .msg-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: #166534;
+    line-height: 1.75;
+    white-space: pre-line;
+    font-style: italic;
+  }
+  .msg-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-style: normal;
+  }
+
+  /* STEP LIST */
+  .step-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  .step-list li { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--gray-border); font-size: 13px; color: var(--gray-text); line-height: 1.6; align-items: flex-start; }
+  .step-list li:last-child { border-bottom: none; }
+  .snum { min-width: 22px; height: 22px; border-radius: 50%; background: var(--gray-light); border: 1px solid var(--gray-border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--gray-text); flex-shrink: 0; margin-top: 1px; }
+
+  /* DOC LIST */
+  .doc-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  .doc-list li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--gray-border); font-size: 13px; color: var(--gray-text); }
+  .doc-list li:last-child { border-bottom: none; }
+  .doc-list li::before { content: '📄'; font-size: 13px; flex-shrink: 0; }
+
+  /* FINAL NOTE */
+  .final-note { background: var(--success-bg); border: 1px solid var(--success-border); border-radius: 12px; padding: 18px 22px; text-align: center; font-size: 14px; color: var(--success-text); line-height: 1.7; margin-top: 8px; }
+  .final-note strong { color: var(--black); }
+
+  @media(max-width:480px) {
+    .page { padding: 1.5rem 1rem 4rem; }
+    .main-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div class="sticky-inner">
+    <div class="progress-label">
+      <span>Seu progresso no guia</span>
+      <span id="prog-text">0 de 8 etapas abertas</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div style="margin-bottom:28px">
+    <div class="badge">Vitta Rio · DP</div>
+    <h1 class="main-title">Fluxo de admissão<br>passo a passo</h1>
+    <p class="main-subtitle">Guia completo para conduzir o processo admissional — da proposta ao cadastro de benefícios. Clique em cada etapa para expandir o conteúdo.</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="context-box">
+    <strong>Antes de começar:</strong> O processo de admissão começa imediatamente após o candidato ser aprovado na etapa com o líder. A partir desse momento, o DP assume a condução — com agilidade, organização e sem deixar nenhuma informação solta. Tudo deve ser registrado na <strong>Planilha de Controle de Admissões</strong> a cada passo concluído.
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-rh"></div> Responsabilidade do RH</div>
+    <div class="legend-item"><div class="legend-dot dot-dp"></div> Responsabilidade do DP</div>
+    <div class="legend-item"><div class="legend-dot dot-shared"></div> RH + Financeiro</div>
+  </div>
+
+
+  <!-- ── ETAPA 1 — PROPOSTA ─────────────────────────────────────────────── -->
+  <div class="rs-step" data-step="1" onclick="toggleStep(1, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">1</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Envio da proposta</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Primeiro contato com o candidato aprovado — comunicar a boa notícia com clareza e entusiasmo.</div>
+      <div class="rs-panel" id="panel-1">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">💡 O que fazer e como fazer</div>
+            <div class="card-body">
+              <p>Assim que o líder confirmar a aprovação, entre em contato com o candidato via WhatsApp. A mensagem deve ser calorosa, clara e conter <strong>todas as informações da proposta</strong> — salário, benefícios e horário. Isso evita dúvidas e demonstra profissionalismo.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">💬 Modelo de mensagem — proposta</div>
+            <div class="card-body">
+              <div class="msg-label">📱 WhatsApp</div>
+              <div class="msg-box">Boa tarde, [Nome]! Tudo bem? 😊
+
+Temos uma ótima notícia: você foi aprovado(a) para a vaga de *[CARGO]*. Parabéns pela sua aprovação!
+
+Segue abaixo a proposta:
+
+• *Salário:* R$ [valor]
+• *Benefícios:* Vale-Transporte e refeição no local
+• *Horário:* [dias da semana], das [horário]
+
+Ficamos muito felizes com a possibilidade de ter você na equipe!
+
+Podemos seguir com o processo de admissão?</div>
+              <div class="tip"><strong>Dica:</strong> Se o candidato demorar mais de 24h para responder, faça um contato de acompanhamento. O silêncio pode significar dúvida ou desistência — melhor identificar logo para não perder tempo.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Após o envio, marque <strong>"Sim"</strong> na coluna <em>Proposta Enviada</em> e registre a data. Só avance para a próxima etapa após o aceite do candidato.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 2 — ACEITE ────────────────────────────────────────────────── -->
+  <div class="rs-step" data-step="2" onclick="toggleStep(2, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">2</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Aceite do candidato</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Confirmar que o candidato aceita a proposta antes de qualquer próximo passo.</div>
+      <div class="rs-panel" id="panel-2">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">✅ O que fazer quando o candidato aceitar</div>
+            <div class="card-body">
+              <ul>
+                <li>Registrar o aceite na planilha: coluna <em>Candidato Aceitou</em> → <strong>"Sim"</strong> + data</li>
+                <li>Atualizar o status geral para <em>"✅ Proposta Aceita"</em></li>
+                <li>Avisar o líder da área que o candidato aceitou e está em processo de admissão</li>
+                <li>Seguir imediatamente para a próxima etapa — envio de docs e encaminhamento do ASO</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚠️ E se o candidato recusar ou não responder?</div>
+            <div class="card-body">
+              <ul>
+                <li><strong>Recusa:</strong> Entender o motivo (salário? horário? outra proposta?), registrar na planilha e avisar o líder. Avaliar se retomam o processo com outro candidato do banco ou reabrem a vaga.</li>
+                <li><strong>Sem resposta em 48h:</strong> Fazer uma tentativa de contato por ligação. Se ainda sem resposta, considerar desistência e seguir para o próximo candidato.</li>
+              </ul>
+              <div class="warn"><strong>Atenção:</strong> Nunca inicie o processo de admissão (coleta de documentos, ASO) sem a confirmação expressa do candidato. Isso evita retrabalho e constrangimentos.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 3 — DOCS + ASO ───────────────────────────────────────────── -->
+  <div class="rs-step" data-step="3" onclick="toggleStep(3, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">3</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Envio de documentos + encaminhamento do ASO</div>
+        <span class="rs-step-tag tag-dp">DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Esses dois envios acontecem juntos, na mesma mensagem — checklist de documentos e encaminhamento para o exame.</div>
+      <div class="rs-panel" id="panel-3">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📋 Checklist de documentos admissionais</div>
+            <div class="card-body">
+              <p>Enviar a lista completa de documentos que o candidato deverá trazer em <strong>xerox</strong> no dia do comparecimento à empresa:</p>
+              <ul class="doc-list">
+                <li>RG ou CNH (documento de identidade com foto)</li>
+                <li>CPF</li>
+                <li>Comprovante de residência (últimos 3 meses)</li>
+                <li>Carteira de Trabalho — física ou número da CTPS digital</li>
+                <li>Certificado de escolaridade (último grau concluído)</li>
+                <li>Foto 3x4 recente</li>
+                <li>PIS / PASEP (número do NIS)</li>
+                <li>Certidão de reservista (homens com até 45 anos)</li>
+              </ul>
+              <div class="info-box"><strong>Documentos adicionais conforme a vaga:</strong> habilitação (motoristas), certidão de nascimento dos filhos para plano de saúde, comprovante de conta bancária para depósito, etc. Sempre conferir com o líder se há alguma exigência específica da função.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🏥 Encaminhamento do ASO — o que é e como preparar</div>
+            <div class="card-body">
+              <p>O ASO (Atestado de Saúde Ocupacional) é o exame admissional obrigatório por lei. O candidato precisa realizá-lo <strong>antes</strong> de iniciar as atividades na empresa.</p>
+              <p>Antes de enviar a mensagem, preencha o modelo com as informações corretas do candidato e da vaga. Não esqueça de verificar a data disponível na clínica.</p>
+              <div class="warn"><strong>⚠ Atenção ao horário da clínica (DELF):</strong> funciona de <strong>segunda a quinta-feira, das 08h às 12h</strong>. Não há atendimento às sextas-feiras. Sempre agende para um dia dentro desse período.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">💬 Modelo de mensagem — encaminhamento do ASO</div>
+            <div class="card-body">
+              <div class="msg-label">📱 WhatsApp</div>
+              <div class="msg-box">Segue o encaminhamento do ASO admissional e as orientações para realizar o exame:
+
+É só apresentar esse documento na clínica e aguardar o atendimento — o atendimento é por ordem de chegada.
+
+📌 Função: [Cargo]
+📅 Data: [data por extenso — ex.: 05/06/2026, quinta-feira]
+⏰ Horário: 08h às 12h
+📍 Local: DELF MEDICINA OCUPACIONAL
+📞 Telefone: 21 2450-2005
+📌 Ponto de referência: Próximo à Praça das Nações, entre a loja South e o banco Itaú.
+
+⚠️ Importante:
+• A clínica funciona de segunda a quinta-feira, das 08h às 12h.
+• Não há atendimento às sextas-feiras.
+
+Tipo de exame: ✅ Admissional
+
+Qualquer dúvida, é só me chamar! 😊</div>
+              <div class="tip"><strong>Dica:</strong> Envie o documento do encaminhamento como arquivo PDF junto com essa mensagem. Assim o candidato pode imprimir ou mostrar na clínica diretamente pelo celular.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Após o envio conjunto, marque <strong>"Sim"</strong> nas colunas <em>Docs Solicitados</em> e <em>Encam. ASO Enviado</em>, registrando a data. Atualizar o status para <em>"📋 Docs + ASO Enviados"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 4 — EXAME ADMISSIONAL ───────────────────────────────────── -->
+  <div class="rs-step" data-step="4" onclick="toggleStep(4, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">4</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Exame admissional (ASO)</div>
+        <span class="rs-step-tag tag-dp">DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Acompanhar a realização do exame e receber o resultado — etapa obrigatória antes do início das atividades.</div>
+      <div class="rs-panel" id="panel-4">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">💡 Por que o ASO é obrigatório?</div>
+            <div class="card-body">
+              <p>O exame admissional é exigido pela <strong>NR-7 (Programa de Controle Médico de Saúde Ocupacional)</strong>. Ele garante que o colaborador tem condições de saúde para exercer as funções do cargo. Sem o ASO com resultado <em>"Apto"</em>, o colaborador não pode iniciar as atividades — isso expõe a empresa a risco trabalhista.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 O que fazer após o exame</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Confirmar com o candidato que o exame foi realizado</div></li>
+                <li><div class="snum">2</div><div>Aguardar o resultado por <strong>e-mail da clínica</strong> (DELF envia o laudo por e-mail)</div></li>
+                <li><div class="snum">3</div><div>Verificar se o resultado é <strong>"Apto"</strong> — se for "Inapto", comunicar imediatamente à Amanda para decisão</div></li>
+                <li><div class="snum">4</div><div>Encaminhar o resultado do ASO por e-mail para a <strong>Contabilidade</strong>, junto com os documentos admissionais do novo colaborador</div></li>
+              </ul>
+              <div class="warn"><strong>Se o candidato não comparecer ao exame:</strong> Entrar em contato para entender o motivo e reagendar. Se houver duas faltas sem justificativa, comunicar à Amanda — pode ser sinal de desistência.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marque <strong>"Sim"</strong> na coluna <em>Exame Agendado</em>, registre a data do exame e, após o resultado, preencha a coluna <em>Resultado Exame</em> com "Apto" ou "Inapto". Atualizar o status para <em>"🏥 Exame Agendado"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 5 — DOCUMENTOS ───────────────────────────────────────────── -->
+  <div class="rs-step" data-step="5" onclick="toggleStep(5, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">5</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Recebimento e conferência dos documentos</div>
+        <span class="rs-step-tag tag-dp">DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">O candidato comparece à empresa com os documentos em xerox — este é o momento de conferir tudo e coletar informações de benefício.</div>
+      <div class="rs-panel" id="panel-5">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📥 O que fazer no dia do comparecimento</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Receber todos os documentos em xerox e conferir com o checklist</div></li>
+                <li><div class="snum">2</div><div>Confirmar o <strong>valor diário do Vale-Transporte</strong> — perguntar o trajeto e calcular ou confirmar o valor já estimado</div></li>
+                <li><div class="snum">3</div><div>Coletar a <strong>chave Pix do candidato</strong> para eventuais depósitos (pode ser de qualquer banco)</div></li>
+                <li><div class="snum">4</div><div>Se algum documento estiver faltando, registrar e combinar prazo para entrega</div></li>
+                <li><div class="snum">5</div><div>Atualizar o Checklist de Documentos na planilha — marcar cada item como ✅ Recebido</div></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">✔️ Como verificar se os docs estão completos</div>
+            <div class="card-body">
+              <p>Use a <strong>aba "Checklist de Documentos"</strong> na Planilha de Controle de Admissões. A coluna <em>% Docs OK</em> calcula automaticamente a completude. Só considere a etapa encerrada com 100% — ou com os itens faltantes registrados com prazo definido.</p>
+              <div class="tip"><strong>Dica:</strong> Faça a conferência dos documentos no momento em que o candidato está presente. Se houver divergência (ex.: endereço diferente no comprovante), resolva na hora — não acumule para depois.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marque <strong>"Sim"</strong> nas colunas <em>Docs Recebidos</em> e <em>Docs Completos</em> + data. Atualizar o status para <em>"📥 Docs Recebidos"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 6 — CONTRATO ─────────────────────────────────────────────── -->
+  <div class="rs-step" data-step="6" onclick="toggleStep(6, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">6</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Assinatura do contrato</div>
+        <span class="rs-step-tag tag-dp">DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Formalização legal da contratação — o vínculo empregatício começa a existir a partir da assinatura.</div>
+      <div class="rs-panel" id="panel-6">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📄 O que fazer nessa etapa</div>
+            <div class="card-body">
+              <ul>
+                <li>Preparar o contrato de trabalho com os dados corretos: cargo, salário, data de início, regime, jornada</li>
+                <li>Apresentar o contrato ao colaborador — explicar os pontos principais em linguagem simples</li>
+                <li>Colher a assinatura do colaborador e da empresa</li>
+                <li>Entregar uma via ao colaborador e arquivar uma via no DP</li>
+              </ul>
+              <div class="info-box"><strong>O que deve constar no contrato:</strong> nome completo e CPF das partes, cargo, CBO, data de admissão, salário, jornada de trabalho, período de experiência (45+45 dias ou conforme combinado), local de trabalho e cláusulas padrão CLT.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marque <strong>"Sim"</strong> na coluna <em>Contrato Assinado</em> + data. Atualizar o status para <em>"✍️ Contrato Assinado"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 7 — FLASH / VT ───────────────────────────────────────────── -->
+  <div class="rs-step" data-step="7" onclick="toggleStep(7, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">7</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Cadastro no Flash e ativação do VT</div>
+        <span class="rs-step-tag tag-shared">DP + Financeiro</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Ativar o Vale-Transporte do novo colaborador no sistema Flash e comunicar o Financeiro para pagamento.</div>
+      <div class="rs-panel" id="panel-7">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📊 Passo 1 — Planilha de ajuda de custo</div>
+            <div class="card-body">
+              <p>Antes de acessar o Flash, atualize a planilha <strong>"Ajuda de Custo"</strong> com os dados do novo colaborador:</p>
+              <ul>
+                <li>Nome completo</li>
+                <li>Empresa contratante</li>
+                <li>Valor diário do VT (confirmado no dia do comparecimento)</li>
+                <li>Valor mensal do VT (dias úteis × valor diário)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚡ Passo 2 — Cadastrar no site do Flash</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Acessar o site do Flash e <strong>selecionar a empresa correta</strong> do novo colaborador</div></li>
+                <li><div class="snum">2</div><div>Criar o cadastro do colaborador: <strong>nome completo, CPF, telefone e data de nascimento</strong></div></li>
+                <li><div class="snum">3</div><div>Realizar o pedido do cartão com o valor de VT calculado</div></li>
+                <li><div class="snum">4</div><div>Copiar o <strong>código Pix do pedido</strong> e a data de vencimento</div></li>
+              </ul>
+              <div class="warn"><strong>Atenção:</strong> Selecione sempre a empresa certa no sistema — cada empresa tem seu próprio contrato com o Flash. Pedido feito na empresa errada gera retrabalho e atraso no cartão.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📧 Passo 3 — E-mail para o Financeiro</div>
+            <div class="card-body">
+              <p>Encaminhe ao Financeiro o e-mail com tudo o que precisa para o pagamento. Inclua:</p>
+              <ul>
+                <li>Código Pix do pedido Flash</li>
+                <li>Data de vencimento do pedido</li>
+                <li>Cálculo do VT mensal</li>
+                <li>Print do QR Code</li>
+                <li>Relatório de compra gerado pelo site do Flash</li>
+                <li>Planilha "Ajuda de Custo" atualizada</li>
+              </ul>
+              <div class="tip"><strong>Boas práticas:</strong> Imprima o QR Code e o relatório de compra para o arquivo físico do DP. E no sistema do Financeiro, filtre a empresa do novo colaborador e registre esse pagamento.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marque <strong>"Sim"</strong> na coluna <em>Flash Cadastrado</em> + data. Atualizar o status para <em>"⚡ Flash Cadastrado"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 8 — FECHAMENTO ───────────────────────────────────────────── -->
+  <div class="rs-step" data-step="8" onclick="toggleStep(8, 8)">
+    <div class="rs-step-left"><div class="rs-step-circle">8</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Fechamento da admissão e primeiro dia</div>
+        <span class="rs-step-tag tag-shared">RH + DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Última etapa — garantir que tudo esteja pronto para receber bem o novo colaborador.</div>
+      <div class="rs-panel" id="panel-8">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">✅ Checklist de fechamento</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">✔</div><div>ASO com resultado "Apto" recebido e encaminhado à contabilidade</div></li>
+                <li><div class="snum">✔</div><div>Todos os documentos admissionais recebidos (ou prazo definido para pendências)</div></li>
+                <li><div class="snum">✔</div><div>Contrato assinado e arquivado</div></li>
+                <li><div class="snum">✔</div><div>Flash cadastrado e pedido de VT enviado ao Financeiro</div></li>
+                <li><div class="snum">✔</div><div>Data de início confirmada com o colaborador e com o líder</div></li>
+                <li><div class="snum">✔</div><div>Planilha de Controle de Admissões 100% atualizada</div></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🚀 Preparar o primeiro dia</div>
+            <div class="card-body">
+              <p>Antes do primeiro dia, alinhe com o líder:</p>
+              <ul>
+                <li>Horário de chegada e com quem o colaborador deve se apresentar</li>
+                <li>Se há uniforme ou EPI a entregar</li>
+                <li>Quem fará a apresentação à equipe</li>
+                <li>Se há algum treinamento inicial previsto</li>
+              </ul>
+              <div class="tip"><strong>Dica:</strong> Um "boas-vindas" bem feito reduz significativamente a evasão nos primeiros dias. Algo simples como o líder esperando o novo colaborador na portaria já faz diferença.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Encerrar na planilha</div>
+            <div class="card-body">
+              <p>Com tudo concluído, atualize o status final do candidato para <strong>"✅ Em Admissão"</strong> na Planilha de Controle de Admissões. O Painel Admissional será atualizado automaticamente.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:1px; background:var(--gray-border); margin:1.5rem 0;"></div>
+
+  <div class="final-note">
+    <strong>Lembre-se:</strong> cada etapa concluída deve ser registrada na planilha imediatamente — isso garante que a equipe inteira saiba o status de cada admissão, sem precisar perguntar. Em caso de dúvida em qualquer etapa, consulte a Amanda antes de avançar.
+  </div>
+
+</div>
+
+<script>
+  var opened = new Set();
+  function toggleStep(n, total) {
+    var panel = document.getElementById('panel-' + n);
+    var step  = document.querySelector('[data-step="' + n + '"]');
+    var isOpen = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+      step.classList.remove('active');
+      opened.delete(n);
+    } else {
+      panel.classList.add('open');
+      step.classList.add('active');
+      opened.add(n);
+    }
+    var pct = Math.round((opened.size / total) * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = opened.size + ' de ' + total + ' etapas abertas';
+  }
+</script>
+</body>
+</html>
