@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxo de Desligamento — Vitta Rio RH</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #0F6E56; --green-mid: #1D9E75; --green-light: #E1F5EE; --green-border: #5DCAA5;
+    --blue-light: #E6F1FB; --blue-mid: #185FA5; --blue-dark: #0C447C;
+    --amber-light: #FAEEDA; --amber-mid: #854F0B; --amber-border: #EF9F27;
+    --red-light: #FEF2F2; --red-mid: #B91C1C; --red-border: #FCA5A5;
+    --purple-light: #EEEDFE; --purple-mid: #534AB7;
+    --gray-bg: #F7F6F2; --gray-light: #F1EFE8; --gray-border: #D3D1C7;
+    --gray-text: #5F5E5A; --gray-muted: #888780; --black: #2C2C2A; --white: #ffffff;
+    --info-bg: #E6F1FB; --info-text: #0C447C; --info-border: #85B7EB;
+    --warn-bg: #FAEEDA; --warn-text: #633806; --warn-border: #EF9F27;
+    --success-bg: #E1F5EE; --success-text: #0F6E56; --success-border: #5DCAA5;
+    --danger-bg: #FEF2F2; --danger-text: #B91C1C; --danger-border: #FCA5A5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: var(--black); min-height: 100vh; padding: 0; }
+
+  .sticky-header { position: sticky; top: 0; z-index: 100; background: var(--gray-bg); border-bottom: 1px solid var(--gray-border); padding: 10px 0; }
+  .sticky-inner { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+  .progress-label { font-size: 12px; color: var(--gray-text); display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .progress-track { height: 4px; background: var(--gray-border); border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--amber-border); border-radius: 10px; width: 0%; transition: width .4s ease; }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; background: var(--amber-light); color: var(--amber-mid); border: 1px solid var(--amber-border); margin-bottom: 14px; }
+  .main-title { font-family: 'DM Serif Display', serif; font-size: 30px; color: var(--black); line-height: 1.25; margin-bottom: 8px; }
+  .main-subtitle { font-size: 14px; color: var(--gray-text); line-height: 1.7; margin-bottom: 24px; }
+  .divider { height: 1px; background: var(--gray-border); margin: 0 0 24px; }
+
+  .context-box { background: var(--warn-bg); border-left: 3px solid var(--amber-border); border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 24px; font-size: 14px; color: var(--warn-text); line-height: 1.7; }
+  .context-box strong { color: var(--black); }
+
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-text); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-rh     { background: var(--info-bg); border: 1.5px solid var(--info-text); }
+  .dot-dp     { background: var(--purple-light); border: 1.5px solid var(--purple-mid); }
+  .dot-shared { background: var(--success-bg); border: 1.5px solid var(--green-border); }
+  .dot-legal  { background: var(--danger-bg); border: 1.5px solid var(--red-mid); }
+
+  .rs-step { display: flex; gap: 0; cursor: pointer; }
+  .rs-step-left { display: flex; flex-direction: column; align-items: center; width: 40px; flex-shrink: 0; }
+  .rs-step-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; flex-shrink: 0; transition: all .2s; border: 1px solid var(--gray-border); background: var(--gray-light); color: var(--gray-text); }
+  .rs-step.active .rs-step-circle { background: var(--amber-light); color: var(--amber-mid); border-color: var(--amber-border); }
+  .rs-step-line { width: 2px; flex: 1; min-height: 14px; background: var(--gray-border); margin: 3px 0; }
+  .rs-step:last-child .rs-step-line { display: none; }
+  .rs-step-content { padding: 0 0 20px 16px; flex: 1; min-width: 0; }
+  .rs-step-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rs-step-name { font-size: 15px; font-weight: 500; color: var(--black); }
+  .rs-step.active .rs-step-name { color: var(--amber-mid); }
+  .rs-step-tag { font-size: 10px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; padding: 2px 9px; border-radius: 10px; }
+  .tag-rh     { background: var(--info-bg); color: var(--info-text); }
+  .tag-dp     { background: var(--purple-light); color: var(--purple-mid); }
+  .tag-shared { background: var(--success-bg); color: var(--success-text); }
+  .tag-legal  { background: var(--danger-bg); color: var(--red-mid); }
+  .rs-step-desc { font-size: 13px; color: var(--gray-text); line-height: 1.6; margin-top: 3px; }
+  .rs-step-arrow { margin-left: auto; color: var(--gray-muted); font-size: 18px; transition: transform .2s; line-height: 1; }
+  .rs-step.active .rs-step-arrow { transform: rotate(90deg); color: var(--amber-mid); }
+
+  .rs-panel { overflow: hidden; max-height: 0; transition: max-height .4s ease; }
+  .rs-panel.open { max-height: 5000px; }
+  .rs-panel-inner { padding: 12px 0 4px; }
+
+  .card { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--black); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .card-title .icon { font-size: 17px; }
+  .card-body { font-size: 13px; color: var(--gray-text); line-height: 1.7; }
+  .card-body ul { padding-left: 1.3rem; }
+  .card-body ul li { margin-bottom: 5px; }
+  .card-body p + p { margin-top: 8px; }
+
+  .tip  { background: var(--success-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--success-text); line-height: 1.6; }
+  .tip strong { color: #085041; }
+  .warn { background: var(--warn-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--warn-text); line-height: 1.6; }
+  .warn strong { color: #412402; }
+  .info-box { background: var(--info-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--info-text); line-height: 1.6; }
+  .info-box strong { color: var(--blue-dark); }
+  .danger-box { background: var(--danger-bg); border-radius: 8px; padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--red-mid); line-height: 1.6; }
+  .danger-box strong { color: #7F1D1D; }
+
+  .msg-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px 16px; margin-top: 12px; font-size: 12.5px; color: #166534; line-height: 1.75; white-space: pre-line; font-style: italic; }
+  .msg-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--green-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-style: normal; }
+
+  .step-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  .step-list li { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--gray-border); font-size: 13px; color: var(--gray-text); line-height: 1.6; align-items: flex-start; }
+  .step-list li:last-child { border-bottom: none; }
+  .snum { min-width: 22px; height: 22px; border-radius: 50%; background: var(--gray-light); border: 1px solid var(--gray-border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--gray-text); flex-shrink: 0; margin-top: 1px; }
+
+  .doc-list { list-style: none; padding: 0; margin: 8px 0 0; }
+  .doc-list li { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--gray-border); font-size: 13px; color: var(--gray-text); }
+  .doc-list li:last-child { border-bottom: none; }
+  .doc-list li::before { content: '📄'; font-size: 13px; flex-shrink: 0; }
+
+  .prazo-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12.5px; }
+  .prazo-table th { background: var(--amber-light); color: var(--amber-mid); font-weight: 500; text-align: left; padding: 7px 10px; border: 1px solid var(--amber-border); }
+  .prazo-table td { padding: 7px 10px; border: 1px solid var(--gray-border); color: var(--gray-text); vertical-align: top; }
+  .prazo-table tr:nth-child(even) td { background: var(--gray-bg); }
+
+  .final-note { background: var(--warn-bg); border: 1px solid var(--amber-border); border-radius: 12px; padding: 18px 22px; text-align: center; font-size: 14px; color: var(--warn-text); line-height: 1.7; margin-top: 8px; }
+  .final-note strong { color: var(--black); }
+
+  @media(max-width:480px) {
+    .page { padding: 1.5rem 1rem 4rem; }
+    .main-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div class="sticky-inner">
+    <div class="progress-label">
+      <span>Seu progresso no guia</span>
+      <span id="prog-text">0 de 9 etapas abertas</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div style="margin-bottom:28px">
+    <div class="badge">Vitta Rio · RH + DP</div>
+    <h1 class="main-title">Fluxo de desligamento<br>passo a passo</h1>
+    <p class="main-subtitle">Guia completo para conduzir o processo de desligamento — da comunicação à homologação e entrevista de saída. Clique em cada etapa para expandir o conteúdo.</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="context-box">
+    <strong>Antes de começar:</strong> Todo desligamento — independente do motivo — deve ser comunicado ao RH <strong>antes</strong> de qualquer ação com o colaborador. A partir do aviso, o DP assume a condução dos cálculos e prazos legais, enquanto o RH conduz a entrevista de saída e a comunicação humana do processo. Cada etapa concluída deve ser registrada na <strong>Planilha de Controle de Desligamentos</strong>.
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-rh"></div> Responsabilidade do RH</div>
+    <div class="legend-item"><div class="legend-dot dot-dp"></div> Responsabilidade do DP</div>
+    <div class="legend-item"><div class="legend-dot dot-shared"></div> RH + DP</div>
+    <div class="legend-item"><div class="legend-dot dot-legal"></div> DP + Jurídico / Contabilidade</div>
+  </div>
+
+
+  <!-- ── ETAPA 1 — COMUNICAÇÃO INTERNA ─────────────────────────────────── -->
+  <div class="rs-step" data-step="1" onclick="toggleStep(1, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">1</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Comunicação interna ao RH</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Primeiro passo obrigatório — nenhuma ação pode ser tomada sem que o RH esteja ciente e alinhado.</div>
+      <div class="rs-panel" id="panel-1">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📌 Quem comunica e como</div>
+            <div class="card-body">
+              <p>A comunicação deve vir do <strong>gestor direto ou da diretoria</strong> para o RH, sempre antes de qualquer conversa com o colaborador. O RH precisa estar alinhado para:</p>
+              <ul>
+                <li>Orientar o gestor sobre como conduzir a conversa de desligamento</li>
+                <li>Verificar se há pendências contratuais ou documentais</li>
+                <li>Avaliar o tipo de desligamento e os impactos legais</li>
+                <li>Iniciar o acionamento do DP para os cálculos rescisórios</li>
+              </ul>
+              <div class="danger-box"><strong>Nunca:</strong> o gestor não deve comunicar o desligamento ao colaborador sem antes falar com o RH. Desligamentos "surpresa" sem alinhamento expõem a empresa a riscos trabalhistas e geram constrangimentos desnecessários.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🔍 Tipo de desligamento — identificar logo</div>
+            <div class="card-body">
+              <table class="prazo-table">
+                <tr>
+                  <th>Tipo</th>
+                  <th>Característica</th>
+                  <th>Impacto imediato</th>
+                </tr>
+                <tr>
+                  <td><strong>Demissão sem justa causa</strong></td>
+                  <td>Empresa decide encerrar o vínculo</td>
+                  <td>Aviso prévio, FGTS + multa 40%, seguro-desemprego</td>
+                </tr>
+                <tr>
+                  <td><strong>Pedido de demissão</strong></td>
+                  <td>Colaborador solicita saída</td>
+                  <td>Sem multa FGTS, sem seguro-desemprego; aviso prévio pode ser descontado</td>
+                </tr>
+                <tr>
+                  <td><strong>Demissão por justa causa</strong></td>
+                  <td>Falta grave comprovada</td>
+                  <td>Sem aviso, sem multa FGTS, sem seguro-desemprego — exige documentação robusta</td>
+                </tr>
+                <tr>
+                  <td><strong>Acordo mútuo (art. 484-A CLT)</strong></td>
+                  <td>Ambas as partes concordam</td>
+                  <td>Metade do aviso, metade da multa FGTS, não tem seguro-desemprego</td>
+                </tr>
+              </table>
+              <div class="warn"><strong>Justa causa:</strong> só aplicar com respaldo jurídico. Sempre consultar a Dra. Araçari antes — uma justa causa mal fundamentada pode ser revertida na Justiça do Trabalho, com custos altos para a empresa.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Abrir o registro do colaborador na <strong>Planilha de Controle de Desligamentos</strong>: nome, cargo, setor, tipo de desligamento e data da comunicação interna. Status: <em>"🔔 Comunicado ao RH"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 2 — AVISO PRÉVIO ─────────────────────────────────────────── -->
+  <div class="rs-step" data-step="2" onclick="toggleStep(2, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">2</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Aviso prévio</div>
+        <span class="rs-step-tag tag-dp">DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Formalizar o aviso prévio corretamente — o prazo começa a contar a partir da data de comunicação ao colaborador.</div>
+      <div class="rs-panel" id="panel-2">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📅 Regras do aviso prévio</div>
+            <div class="card-body">
+              <p>O aviso prévio mínimo é de <strong>30 dias</strong>, acrescido de 3 dias por ano trabalhado, até o máximo de 90 dias. O DP deve calcular o período exato com base na data de admissão.</p>
+              <ul>
+                <li><strong>Trabalhado:</strong> o colaborador cumpre o aviso no trabalho normalmente. Tem direito a 2h de redução diária ou 7 dias corridos de dispensa no final do período para buscar novo emprego.</li>
+                <li><strong>Indenizado:</strong> a empresa opta por não exigir o cumprimento — paga o período como indenização. O colaborador deixa imediatamente.</li>
+              </ul>
+              <div class="info-box"><strong>Na demissão sem justa causa:</strong> a empresa escolhe se o aviso será trabalhado ou indenizado. <strong>No pedido de demissão:</strong> o colaborador deve cumprir — se não cumprir, o valor correspondente pode ser descontado da rescisão.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📄 Carta de aviso prévio</div>
+            <div class="card-body">
+              <p>Preparar a carta de aviso prévio com:</p>
+              <ul>
+                <li>Nome completo e cargo do colaborador</li>
+                <li>Data de início e término do aviso prévio</li>
+                <li>Tipo: trabalhado ou indenizado</li>
+                <li>Assinatura do responsável da empresa e do colaborador (via de recusa: registrar testemunhas)</li>
+              </ul>
+              <div class="warn"><strong>Se o colaborador se recusar a assinar:</strong> não insistir. Registrar a recusa com data, hora e duas testemunhas. O documento ainda tem validade jurídica.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Preencher: data de início do aviso, data prevista do último dia, tipo de aviso (trabalhado/indenizado) e se a carta foi assinada. Status: <em>"📅 Aviso Prévio em Curso"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 3 — ACIONAMENTO DA CONTABILIDADE ─────────────────────────── -->
+  <div class="rs-step" data-step="3" onclick="toggleStep(3, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">3</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Acionamento da contabilidade</div>
+        <span class="rs-step-tag tag-legal">DP + Contabilidade</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Comunicar a contabilidade para que iniciem o cálculo da rescisão dentro dos prazos legais.</div>
+      <div class="rs-panel" id="panel-3">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📧 O que enviar para a contabilidade</div>
+            <div class="card-body">
+              <p>Encaminhar por e-mail, com cópia para a Amanda:</p>
+              <ul class="doc-list">
+                <li>Nome completo, CPF e matrícula do colaborador</li>
+                <li>Cargo e data de admissão</li>
+                <li>Tipo de desligamento (sem justa causa, pedido, acordo, justa causa)</li>
+                <li>Data do aviso prévio e tipo (trabalhado ou indenizado)</li>
+                <li>Data prevista do último dia de trabalho</li>
+                <li>Informações de horas extras, banco de horas e pendências de folha (se houver)</li>
+              </ul>
+              <div class="tip"><strong>Prazo para a rescisão:</strong> o pagamento deve ser feito em até <strong>10 dias corridos</strong> a partir do término do contrato. A contabilidade precisa do aviso com antecedência para calcular e preparar o TRCT (Termo de Rescisão).</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">⚠️ Pendências que impactam o cálculo</div>
+            <div class="card-body">
+              <p>Antes de acionar a contabilidade, verificar com o gestor e o DP:</p>
+              <ul>
+                <li>Há <strong>horas extras a pagar</strong>? Checar espelho de ponto do colaborador no ControlId</li>
+                <li>Há <strong>banco de horas negativo</strong>? Pode ser descontado (dentro dos limites legais)</li>
+                <li>Há <strong>adiantamento de salário</strong> a ser abatido?</li>
+                <li>Há <strong>vale-transporte</strong> a ser proporcionalizado no mês de saída?</li>
+                <li>O colaborador tem <strong>férias vencidas ou proporcionais</strong>?</li>
+              </ul>
+              <div class="info-box"><strong>Horas extras:</strong> conforme diagnóstico organizacional da Vitta Rio, este é um ponto crítico. Checar com atenção o espelho de ponto antes de enviar à contabilidade — erros aqui geram passivo trabalhista.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marcar data do acionamento da contabilidade e confirmar recebimento. Status: <em>"⚙️ Rescisão em Cálculo"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 4 — ENTREVISTA DE DESLIGAMENTO ───────────────────────────── -->
+  <div class="rs-step" data-step="4" onclick="toggleStep(4, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">4</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Entrevista de desligamento</div>
+        <span class="rs-step-tag tag-rh">RH</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Escuta ativa e estruturada — momento de coletar informações valiosas para o RH e encerrar o vínculo com dignidade.</div>
+      <div class="rs-panel" id="panel-4">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">🎯 Objetivo da entrevista</div>
+            <div class="card-body">
+              <p>A entrevista de desligamento não é uma formalidade — é uma das principais fontes de dados para o RH entender padrões de turnover, problemas de gestão e gaps de processo. Deve acontecer <strong>antes do último dia de trabalho</strong>, em local reservado, em tom acolhedor e sem julgamentos.</p>
+              <div class="tip"><strong>Momento ideal:</strong> após a comunicação do desligamento e antes do último dia. Evite fazer a entrevista no mesmo dia da comunicação — o colaborador precisa de tempo para processar.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Como conduzir a entrevista</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Usar o <strong>Formulário de Entrevista de Desligamento</strong> (v2 — Metodologia por Competências) como roteiro</div></li>
+                <li><div class="snum">2</div><div>Começar pela <strong>avaliação quantitativa</strong> (notas 1–5 por aspecto) — ajuda o colaborador a se situar antes das perguntas abertas</div></li>
+                <li><div class="snum">3</div><div>Conduzir as <strong>8 perguntas qualitativas</strong> com escuta ativa — anotar as respostas sem interromper</div></li>
+                <li><div class="snum">4</div><div>Preencher a <strong>Seção 4 (Indicadores internos)</strong> sozinha, após a saída do colaborador</div></li>
+                <li><div class="snum">5</div><div>Coletar assinatura do colaborador e do entrevistador ao final</div></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🔒 Confidencialidade e uso dos dados</div>
+            <div class="card-body">
+              <p>O formulário preenchido é de uso <strong>exclusivo do RH</strong> — não compartilhar com o gestor da área nem com outros colaboradores. As informações coletadas devem alimentar os indicadores de turnover e o diagnóstico organizacional, sem exposição individual.</p>
+              <div class="warn"><strong>Se o colaborador não quiser participar:</strong> não obrigar. Registrar a recusa e seguir o processo. A entrevista é voluntária — forçar cria resistência e dados não confiáveis.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marcar data da entrevista e resultado: realizada, recusada ou pendente. Arquivar o formulário fisicamente no prontuário do colaborador. Status: <em>"🎤 Entrevista Realizada"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 5 — EXAME DEMISSIONAL ────────────────────────────────────── -->
+  <div class="rs-step" data-step="5" onclick="toggleStep(5, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">5</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Exame demissional (ASO)</div>
+        <span class="rs-step-tag tag-dp">DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Exame médico obrigatório por lei — deve ser realizado até o último dia de trabalho do colaborador.</div>
+      <div class="rs-panel" id="panel-5">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">🏥 O que é e por que é obrigatório</div>
+            <div class="card-body">
+              <p>O exame demissional é exigido pela <strong>NR-7</strong> e tem como objetivo registrar as condições de saúde do colaborador no momento da saída. Ele protege tanto o colaborador quanto a empresa — sem ele, qualquer doença ocupacional diagnosticada posteriormente pode ser atribuída ao período trabalhado na Vitta Rio.</p>
+              <div class="info-box"><strong>Pode ser dispensado</strong> quando o colaborador realizou exame periódico nos últimos <strong>135 dias</strong> (para empresas de grau de risco 1 e 2) ou <strong>90 dias</strong> (grau 3 e 4). Verificar com a contabilidade/médico do trabalho antes de dispensar.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Como encaminhar</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Preparar o encaminhamento para a clínica DELF com os dados do colaborador e o tipo de exame: <strong>Demissional</strong></div></li>
+                <li><div class="snum">2</div><div>Lembrar ao colaborador: <strong>DELF funciona de segunda a quinta, das 08h às 12h</strong> — não atende às sextas</div></li>
+                <li><div class="snum">3</div><div>Agendar dentro do período de aviso prévio — não deixar para o último dia</div></li>
+                <li><div class="snum">4</div><div>Receber o ASO por e-mail da clínica e encaminhar à contabilidade junto com os documentos rescisórios</div></li>
+              </ul>
+              <div class="warn"><strong>Atenção ao horário da clínica (DELF):</strong> segunda a quinta-feira, das 08h às 12h. Não há atendimento às sextas-feiras. Planejar com antecedência para não perder o prazo do último dia de trabalho.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Registrar data do exame e resultado (Apto / Inapto / Dispensado com justificativa). Status: <em>"🏥 Exame Demissional OK"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 6 — DEVOLUÇÃO DE ITENS ──────────────────────────────────── -->
+  <div class="rs-step" data-step="6" onclick="toggleStep(6, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">6</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Devolução de itens e bloqueio de acessos</div>
+        <span class="rs-step-tag tag-shared">RH + DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Garantir que todos os itens da empresa sejam devolvidos e os acessos encerrados no último dia.</div>
+      <div class="rs-panel" id="panel-6">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📦 Checklist de devolução de itens</div>
+            <div class="card-body">
+              <p>Conferir com o gestor da área quais itens o colaborador possui e garantir a devolução:</p>
+              <ul>
+                <li>Uniforme(s) e EPI — verificar estado de conservação</li>
+                <li>Crachá de identificação</li>
+                <li>Chaves (sala, armário, veículo, portão)</li>
+                <li>Equipamentos: computador, celular corporativo, tablet</li>
+                <li>Ferramentas ou materiais específicos da função</li>
+                <li>Cartão de acesso ao sistema de ponto (ControlId)</li>
+                <li>Materiais de trabalho entregues no onboarding</li>
+              </ul>
+              <div class="tip"><strong>Termo de devolução:</strong> para itens de alto valor (equipamentos, veículos), emitir um termo de devolução assinado pelo colaborador. Isso protege a empresa em caso de contestação posterior.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🔐 Bloqueio de acessos</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Inativar o cadastro do colaborador no <strong>sistema de ponto ControlId</strong> no último dia</div></li>
+                <li><div class="snum">2</div><div>Solicitar ao gestor ou TI o bloqueio de acessos a sistemas internos e e-mail corporativo</div></li>
+                <li><div class="snum">3</div><div>Inativar o colaborador no sistema de <strong>benefícios Flash</strong> (VT) — interromper recarga</div></li>
+                <li><div class="snum">4</div><div>Comunicar à portaria/segurança o encerramento do vínculo</div></li>
+              </ul>
+              <div class="danger-box"><strong>Fazer no último dia, não antes:</strong> bloquear o acesso antes do término do contrato configura impedimento de trabalho — pode gerar obrigação de pagamento mesmo sem presença.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marcar cada item como devolvido e confirmar bloqueio de acessos. Status: <em>"🔐 Acessos Encerrados"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 7 — RESCISÃO E HOMOLOGAÇÃO ──────────────────────────────── -->
+  <div class="rs-step" data-step="7" onclick="toggleStep(7, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">7</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Rescisão contratual e pagamento</div>
+        <span class="rs-step-tag tag-legal">DP + Contabilidade</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Formalização do TRCT e pagamento das verbas rescisórias dentro do prazo legal de 10 dias.</div>
+      <div class="rs-panel" id="panel-7">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📄 O que compõe a rescisão</div>
+            <div class="card-body">
+              <p>O TRCT (Termo de Rescisão do Contrato de Trabalho) deve ser preparado pela contabilidade e contempla, conforme o tipo de desligamento:</p>
+              <ul>
+                <li><strong>Saldo de salário</strong> (dias trabalhados no mês da saída)</li>
+                <li><strong>Férias vencidas + 1/3</strong> (se houver)</li>
+                <li><strong>Férias proporcionais + 1/3</strong></li>
+                <li><strong>13º proporcional</strong></li>
+                <li><strong>Aviso prévio</strong> (se indenizado)</li>
+                <li><strong>Multa de 40% sobre o FGTS</strong> (demissão sem justa causa)</li>
+                <li><strong>Horas extras não pagas</strong> (se houver — checar espelho de ponto)</li>
+              </ul>
+              <div class="info-box"><strong>Prazo legal:</strong> o pagamento deve ocorrer em até <strong>10 dias corridos</strong> após o término do contrato (art. 477 da CLT). O descumprimento gera multa de 1 salário em favor do colaborador.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">✍️ Assinatura do TRCT</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Receber o TRCT calculado da contabilidade e revisar os valores antes de apresentar ao colaborador</div></li>
+                <li><div class="snum">2</div><div>Apresentar o TRCT ao colaborador, explicando cada verba em linguagem simples</div></li>
+                <li><div class="snum">3</div><div>Colher a assinatura do colaborador em 2 vias — uma fica com a empresa, uma com o colaborador</div></li>
+                <li><div class="snum">4</div><div>Confirmar os dados bancários para o depósito (Pix ou conta corrente)</div></li>
+              </ul>
+              <div class="warn"><strong>Se o colaborador discordar dos valores:</strong> não pressionar para assinar. Comunicar imediatamente à Amanda e à Dra. Araçari. O colaborador tem direito de questionar os valores antes da assinatura.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🔓 Liberação do FGTS e seguro-desemprego</div>
+            <div class="card-body">
+              <p>Nos casos de demissão sem justa causa:</p>
+              <ul>
+                <li>A empresa deve <strong>assinar a Guia de Recolhimento Rescisório (GRRF)</strong> e depositar a multa de 40% — a contabilidade cuida disso</li>
+                <li>Fornecer ao colaborador as <strong>guias para saque do FGTS</strong></li>
+                <li>Fornecer as <strong>informações para requerimento do seguro-desemprego</strong> (via e-Social / Carta de Apresentação)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Marcar data da assinatura do TRCT, data do pagamento e confirmação do depósito. Status: <em>"💰 Rescisão Paga"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 8 — BAIXA NA CTPS E e-SOCIAL ────────────────────────────── -->
+  <div class="rs-step" data-step="8" onclick="toggleStep(8, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">8</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Baixa na CTPS e obrigações e-Social</div>
+        <span class="rs-step-tag tag-legal">DP + Contabilidade</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Encerramento legal do vínculo empregatício — obrigações junto ao e-Social e entrega da CTPS ao colaborador.</div>
+      <div class="rs-panel" id="panel-8">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">📱 e-Social — evento de desligamento</div>
+            <div class="card-body">
+              <p>O evento <strong>S-2299 (Desligamento)</strong> deve ser enviado pela contabilidade ao e-Social até o <strong>dia 15 do mês seguinte</strong> ao desligamento. Certifique-se de que a contabilidade está ciente da data exata do último dia.</p>
+              <div class="danger-box"><strong>Atenção:</strong> o envio incorreto ou tardio do S-2299 gera inconsistências que podem impedir o colaborador de sacar o FGTS ou requerer o seguro-desemprego. Confirmar com a contabilidade que o envio foi realizado.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📒 CTPS — anotação de saída</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">1</div><div>Se o colaborador usa <strong>CTPS física</strong>: anotar a data de saída e o motivo. Devolver ao colaborador no ato</div></li>
+                <li><div class="snum">2</div><div>Se usa <strong>CTPS digital</strong>: a baixa é feita automaticamente via e-Social após o envio do S-2299 — não requer ação manual</div></li>
+                <li><div class="snum">3</div><div>Confirmar com o colaborador que a baixa apareceu na CTPS Digital (app Carteira de Trabalho Digital)</div></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Registrar na planilha</div>
+            <div class="card-body">
+              <p>Confirmar data de envio do S-2299 e baixa na CTPS. Status: <em>"✅ Baixa Realizada"</em>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── ETAPA 9 — FECHAMENTO DO PROCESSO ──────────────────────────────── -->
+  <div class="rs-step" data-step="9" onclick="toggleStep(9, 9)">
+    <div class="rs-step-left"><div class="rs-step-circle">9</div><div class="rs-step-line"></div></div>
+    <div class="rs-step-content">
+      <div class="rs-step-header">
+        <div class="rs-step-name">Fechamento do processo e análise de indicadores</div>
+        <span class="rs-step-tag tag-shared">RH + DP</span>
+        <span class="rs-step-arrow">›</span>
+      </div>
+      <div class="rs-step-desc">Encerrar o prontuário do colaborador, atualizar indicadores e extrair aprendizados para a gestão de pessoas.</div>
+      <div class="rs-panel" id="panel-9">
+        <div class="rs-panel-inner">
+          <div class="card">
+            <div class="card-title">✅ Checklist de fechamento</div>
+            <div class="card-body">
+              <ul class="step-list">
+                <li><div class="snum">✔</div><div>Aviso prévio formalizado e carta assinada</div></li>
+                <li><div class="snum">✔</div><div>Contabilidade acionada com todos os dados corretos</div></li>
+                <li><div class="snum">✔</div><div>Entrevista de desligamento realizada e formulário arquivado</div></li>
+                <li><div class="snum">✔</div><div>Exame demissional (ASO) realizado e enviado à contabilidade</div></li>
+                <li><div class="snum">✔</div><div>Itens devolvidos e acessos bloqueados no último dia</div></li>
+                <li><div class="snum">✔</div><div>TRCT assinado e pagamento confirmado dentro dos 10 dias</div></li>
+                <li><div class="snum">✔</div><div>S-2299 enviado ao e-Social e CTPS baixada</div></li>
+                <li><div class="snum">✔</div><div>Planilha de Controle de Desligamentos 100% atualizada</div></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📊 Atualizar os indicadores de RH</div>
+            <div class="card-body">
+              <p>Após o encerramento, o RH deve atualizar:</p>
+              <ul>
+                <li><strong>Taxa de turnover do mês</strong> — incluir saída no cálculo do setor</li>
+                <li><strong>Mapa de motivos de desligamento</strong> — categorizar pela Seção 4 do formulário</li>
+                <li><strong>Análise por tempo de casa</strong> — saídas no período de experiência x após experiência</li>
+                <li><strong>Índice por gestor / setor</strong> — identificar padrões que precisam de intervenção</li>
+              </ul>
+              <div class="tip"><strong>Esses dados alimentam o diagnóstico organizacional</strong> que está sendo construído para a Fabiane e a Joana — cada desligamento é uma fonte de informação estratégica sobre a saúde da empresa.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📁 Arquivamento do prontuário</div>
+            <div class="card-body">
+              <p>Reunir em uma pasta (física e/ou digital) todos os documentos do ciclo do colaborador:</p>
+              <ul>
+                <li>Contrato de trabalho e aditivos</li>
+                <li>ASO admissional e demissional</li>
+                <li>TRCT assinado</li>
+                <li>Carta de aviso prévio</li>
+                <li>Formulário de entrevista de desligamento</li>
+                <li>Termos de devolução de itens (se houver)</li>
+                <li>Ocorrências disciplinares (se houver)</li>
+              </ul>
+              <div class="info-box"><strong>Prazo de guarda:</strong> documentos trabalhistas devem ser conservados por no mínimo <strong>5 anos</strong> após o término do contrato (prazo prescricional trabalhista). Não descartar antes.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Encerrar na planilha</div>
+            <div class="card-body">
+              <p>Com tudo concluído, atualizar o status final para <strong>"✅ Processo Encerrado"</strong> na Planilha de Controle de Desligamentos. O painel de indicadores de turnover será atualizado automaticamente.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:1px; background:var(--gray-border); margin:1.5rem 0;"></div>
+
+  <div class="final-note">
+    <strong>Lembre-se:</strong> um desligamento bem conduzido protege a empresa juridicamente, preserva a dignidade do colaborador e gera dados estratégicos para o RH. Em caso de dúvida em qualquer etapa — especialmente em justa causa ou valores rescisórios — consulte a Amanda e a Dra. Araçari antes de avançar.
+  </div>
+
+</div>
+
+<script>
+  var opened = new Set();
+  function toggleStep(n, total) {
+    var panel = document.getElementById('panel-' + n);
+    var step  = document.querySelector('[data-step="' + n + '"]');
+    var isOpen = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+      step.classList.remove('active');
+      opened.delete(n);
+    } else {
+      panel.classList.add('open');
+      step.classList.add('active');
+      opened.add(n);
+    }
+    var pct = Math.round((opened.size / total) * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = opened.size + ' de ' + total + ' etapas abertas';
+  }
+</script>
+</body>
+</html>
