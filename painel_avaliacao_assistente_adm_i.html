@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação Mensal de KPIs — Assistente Administrativo I · Vitta Rio</title>
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #2E7D32; --green-light: #e8f5e9; --green-border: #a5d6a7;
+    --amber: #F57F17; --amber-light: #fff8e1;
+    --red: #B71C1C;
+    --bg: #f4f6f4; --surface: #fff; --border: #e0e0e0;
+    --text: #1c2118; --text-muted: #5a6358; --text-light: #8a9488;
+    --radius: 10px;
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+  header { background: var(--green); color: #fff; padding: 0 1.5rem; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+  .header-brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; }
+  .header-dot { width: 8px; height: 8px; border-radius: 50%; background: #a5d6a7; }
+  .header-badge { background: rgba(255,255,255,.15); font-size: 11px; padding: 3px 10px; border-radius: 20px; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.9); }
+  .container { max-width: 480px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .tab-bar { display: flex; background: #fff; border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; margin-bottom: 1.25rem; }
+  .tab-btn { flex: 1; padding: 10px 8px; border: none; background: none; cursor: pointer; font-size: 13px; color: var(--text-muted); font-weight: 500; transition: all .15s; font-family: inherit; }
+  .tab-btn.active { background: var(--green); color: #fff; font-weight: 600; }
+  .intro-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); border-left: 4px solid var(--green); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .intro-card h2 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .intro-card p { font-size: 13px; color: var(--text-muted); }
+  .field-group { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .field-group > label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); margin-bottom: 8px; }
+  .field-group input, .field-group select { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 13.5px; color: var(--text); background: #fafafa; font-family: inherit; }
+  .periodo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .periodo-grid label { display: block; font-size: 11px; color: var(--text-light); margin-bottom: 4px; }
+  .kpi-block { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: .875rem; }
+  .kpi-header { display: flex; gap: 10px; align-items: flex-start; margin-bottom: .5rem; }
+  .kpi-num { min-width: 24px; height: 24px; border-radius: 50%; background: var(--green); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .kpi-info { flex: 1; }
+  .kpi-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .kpi-meta-text { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .kpi-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; border-bottom: 1px solid var(--border); padding-bottom: .625rem; margin-bottom: .625rem; }
+  .rating-row { display: flex; gap: 8px; }
+  .rating-btn { flex: 1; padding: 8px 4px; border: 1.5px solid var(--border); border-radius: 6px; background: #fafafa; cursor: pointer; font-size: 12px; font-weight: 600; text-align: center; transition: all .15s; color: var(--text-muted); font-family: inherit; }
+  .sel-green { border-color: #2E7D32 !important; background: #e8f5e9 !important; color: #2E7D32 !important; }
+  .sel-amber { border-color: #F57F17 !important; background: #fff8e1 !important; color: #F57F17 !important; }
+  .sel-red { border-color: #B71C1C !important; background: #ffebee !important; color: #B71C1C !important; }
+  .resumo-card { display: none; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .resumo-title { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); margin-bottom: .75rem; }
+  .resumo-info { font-size: 13px; color: var(--text-muted); margin-bottom: .75rem; }
+  .resumo-linha { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .resumo-linha:last-child { border-bottom: none; }
+  .badge-green { display: inline-block; background: #e8f5e9; color: #2E7D32; border: 1px solid #a5d6a7; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .badge-amber { display: inline-block; background: #fff8e1; color: #F57F17; border: 1px solid #ffe082; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .badge-red { display: inline-block; background: #ffebee; color: #B71C1C; border: 1px solid #ef9a9a; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .resultado-final { margin-top: .75rem; padding: .75rem 1rem; border-radius: 6px; font-size: 13px; font-weight: 600; text-align: center; }
+  .res-acima { background: #e8f5e9; color: #2E7D32; }
+  .res-dentro { background: #fff8e1; color: #F57F17; }
+  .res-abaixo { background: #ffebee; color: #B71C1C; }
+  .res-dev { background: #f5f5f5; color: #757575; }
+  .obs-field { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .obs-field label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-light); margin-bottom: 6px; }
+  .obs-field textarea { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 13px; color: var(--text); background: #fafafa; resize: vertical; min-height: 70px; font-family: inherit; }
+  .btn-salvar { display: none; width: 100%; padding: 12px; background: var(--green); color: #fff; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
+  .btn-salvar:hover { background: #1B5E20; }
+  .btn-reiniciar { width: 100%; padding: 10px; background: none; color: var(--text-muted); border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; font-family: inherit; }
+  .hist-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: .75rem; }
+  .hist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .4rem; }
+  .hist-nome { font-size: 14px; font-weight: 600; color: var(--text); }
+  .hist-periodo { font-size: 12px; color: var(--text-muted); margin-bottom: .4rem; }
+  .hist-resultado { font-size: 12px; margin-bottom: .5rem; font-weight: 600; }
+  .hist-delete { border: none; background: none; color: var(--text-light); cursor: pointer; font-size: 14px; padding: 4px; }
+  .empty-hist { text-align: center; color: var(--text-light); font-size: 13px; padding: 2rem 0; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 1rem; }
+  .evolucao-wrap { margin-top: .5rem; }
+  .evol-item { margin-bottom: 1.25rem; }
+  .evol-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .evol-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 3px; }
+  .evol-bar-fill { height: 100%; border-radius: 4px; transition: width .5s; }
+  .fill-green { background: #639922; }
+  .fill-amber { background: #BA7517; }
+  .fill-red { background: #A32D2D; }
+  .evol-stats { font-size: 11px; color: var(--text-light); }
+  .plano-section { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand"><div class="header-dot"></div>Vitta Rio · Avaliação de KPIs</div>
+  <div class="header-badge">Administrativo-Financeiro</div>
+</header>
+
+<div class="container">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('avaliacao', this)">Avaliação</button>
+    <button class="tab-btn" onclick="switchTab('historico', this)">Histórico</button>
+    <button class="tab-btn" onclick="switchTab('evolucao', this)">Evolução</button>
+  </div>
+
+  <div id="tab-avaliacao">
+    <div class="intro-card">
+      <h2>Painel de Avaliação Mensal</h2>
+      <p>Assistente Administrativo I · Avaliação mensal de indicadores de desempenho</p>
+    </div>
+
+    <div class="field-group">
+      <label>Nome do colaborador</label>
+      <input type="text" id="input-nome" placeholder="Nome completo">
+    </div>
+
+    <div class="field-group">
+      <label>Período de avaliação</label>
+      <div class="periodo-grid">
+        <div>
+          <label>Mês</label>
+          <select id="sel-mes">
+            <option value="">Selecione</option>
+            <option>Janeiro</option><option>Fevereiro</option><option>Março</option>
+            <option>Abril</option><option>Maio</option><option>Junho</option>
+            <option>Julho</option><option>Agosto</option><option>Setembro</option>
+            <option>Outubro</option><option>Novembro</option><option>Dezembro</option>
+          </select>
+        </div>
+        <div>
+          <label>Ano</label>
+          <select id="sel-ano">
+            <option>2025</option><option selected>2026</option><option>2027</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-block">
+      <div class="kpi-header">
+        <div class="kpi-num">1</div>
+        <div class="kpi-info">
+          <div class="kpi-name">Pagamentos realizados no prazo</div>
+          <div class="kpi-meta-text">Meta: ≥ 98%</div>
+        </div>
+      </div>
+      <div class="kpi-desc">Percentual de contas a pagar liquidadas dentro do vencimento no período, sem geração de juros ou multas.</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi1','green')">✔ Atingiu</button>
+        <button class="rating-btn" onclick="rate(this,'kpi1','amber')">~ Parcial</button>
+        <button class="rating-btn" onclick="rate(this,'kpi1','red')">✘ Não atingiu</button>
+      </div>
+    </div>
+
+    <div class="kpi-block">
+      <div class="kpi-header">
+        <div class="kpi-num">2</div>
+        <div class="kpi-info">
+          <div class="kpi-name">NFs de entrada processadas no prazo</div>
+          <div class="kpi-meta-text">Meta: ≥ 95%</div>
+        </div>
+      </div>
+      <div class="kpi-desc">Percentual de notas fiscais de entrada conferidas, lançadas e encaminhadas dentro do prazo definido.</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi2','green')">✔ Atingiu</button>
+        <button class="rating-btn" onclick="rate(this,'kpi2','amber')">~ Parcial</button>
+        <button class="rating-btn" onclick="rate(this,'kpi2','red')">✘ Não atingiu</button>
+      </div>
+    </div>
+
+    <div class="kpi-block">
+      <div class="kpi-header">
+        <div class="kpi-num">3</div>
+        <div class="kpi-info">
+          <div class="kpi-name">Precisão nos lançamentos</div>
+          <div class="kpi-meta-text">Meta: ≤ 2 inconsistências/mês</div>
+        </div>
+      </div>
+      <div class="kpi-desc">Quantidade de erros identificados em lançamentos de pagamento, NF ou conciliação bancária no período.</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi3','green')">✔ Atingiu</button>
+        <button class="rating-btn" onclick="rate(this,'kpi3','amber')">~ Parcial</button>
+        <button class="rating-btn" onclick="rate(this,'kpi3','red')">✘ Não atingiu</button>
+      </div>
+    </div>
+
+    <div class="kpi-block">
+      <div class="kpi-header">
+        <div class="kpi-num">4</div>
+        <div class="kpi-info">
+          <div class="kpi-name">NFs emitidas sem retrabalho</div>
+          <div class="kpi-meta-text">Meta: ≥ 98%</div>
+        </div>
+      </div>
+      <div class="kpi-desc">Percentual de notas fiscais emitidas sem necessidade de cancelamento, correção ou reemissão.</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi4','green')">✔ Atingiu</button>
+        <button class="rating-btn" onclick="rate(this,'kpi4','amber')">~ Parcial</button>
+        <button class="rating-btn" onclick="rate(this,'kpi4','red')">✘ Não atingiu</button>
+      </div>
+    </div>
+
+    <div class="kpi-block">
+      <div class="kpi-header">
+        <div class="kpi-num">5</div>
+        <div class="kpi-info">
+          <div class="kpi-name">Conformidade documental</div>
+          <div class="kpi-meta-text">Meta: 100% arquivados no mês</div>
+        </div>
+      </div>
+      <div class="kpi-desc">Percentual de documentos físicos e digitais do mês organizados e arquivados conforme o padrão estabelecido.</div>
+      <div class="rating-row">
+        <button class="rating-btn" onclick="rate(this,'kpi5','green')">✔ Atingiu</button>
+        <button class="rating-btn" onclick="rate(this,'kpi5','amber')">~ Parcial</button>
+        <button class="rating-btn" onclick="rate(this,'kpi5','red')">✘ Não atingiu</button>
+      </div>
+    </div>
+
+    <div class="resumo-card" id="resumo-card">
+      <div class="resumo-title">Resumo da avaliação</div>
+      <div class="resumo-info" id="resumo-info"></div>
+      <div id="resumo-kpis"></div>
+      <div id="resultado-final" class="resultado-final"></div>
+    </div>
+
+    <div class="plano-section" id="plano-section">
+      <div class="obs-field">
+        <label>Observações gerais</label>
+        <textarea id="input-obs" placeholder="Contexto, destaques positivos ou situações relevantes do período..."></textarea>
+      </div>
+      <div class="obs-field">
+        <label>Plano de ação para o próximo período</label>
+        <textarea id="input-plano" placeholder="Ações concretas para manter ou melhorar os resultados no próximo mês..."></textarea>
+      </div>
+    </div>
+
+    <button class="btn-salvar" id="btn-salvar" onclick="salvarAvaliacao()">Salvar avaliação</button>
+    <button class="btn-reiniciar" onclick="reiniciar()">Limpar formulário</button>
+  </div>
+
+  <div id="tab-historico" style="display:none;">
+    <div class="section-label">Avaliações registradas</div>
+    <div id="historico-lista"><div class="empty-hist">Nenhuma avaliação registrada ainda.</div></div>
+  </div>
+
+  <div id="tab-evolucao" style="display:none;">
+    <div class="section-label">Evolução por indicador</div>
+    <div id="evolucao-content"><div class="empty-hist">Registre pelo menos uma avaliação para visualizar a evolução.</div></div>
+  </div>
+</div>
+
+<script>
+const CARGO_KEY = 'assistente_adm';
+const ratings = {kpi1:null,kpi2:null,kpi3:null,kpi4:null,kpi5:null};
+const kpiLabels = {kpi1:"Pagamentos realizados no prazo",kpi2:"NFs de entrada processadas no prazo",kpi3:"Precisão nos lançamentos",kpi4:"NFs emitidas sem retrabalho",kpi5:"Conformidade documental"};
+
+function rate(btn, kpi, color) {
+  btn.closest('.rating-row').querySelectorAll('.rating-btn').forEach(function(b) { b.className = 'rating-btn'; });
+  btn.classList.add('sel-' + color);
+  ratings[kpi] = color;
+  updateResumo();
+}
+
+function updateResumo() {
+  var vals = Object.values(ratings);
+  if (!vals.some(function(v) { return v; })) return;
+  document.getElementById('resumo-card').style.display = 'block';
+  document.getElementById('plano-section').style.display = 'block';
+  document.getElementById('btn-salvar').style.display = 'block';
+  var nome = document.getElementById('input-nome').value || 'Colaborador';
+  var mes = document.getElementById('sel-mes').value || '—';
+  var ano = document.getElementById('sel-ano').value;
+  document.getElementById('resumo-info').textContent = nome + ' · ' + mes + '/' + ano;
+  var html = ''; var g = 0, r = 0, preenchidos = 0;
+  Object.entries(ratings).forEach(function(entry) {
+    var k = entry[0], v = entry[1];
+    if (!v) return;
+    preenchidos++;
+    var cls = v === 'green' ? 'badge-green' : v === 'amber' ? 'badge-amber' : 'badge-red';
+    var lbl = v === 'green' ? 'Atingiu' : v === 'amber' ? 'Parcial' : 'Não atingiu';
+    if (v === 'green') g++;
+    if (v === 'red') r++;
+    html += '<div class="resumo-linha"><span>' + kpiLabels[k] + '</span><span class="' + cls + '">' + lbl + '</span></div>';
+  });
+  document.getElementById('resumo-kpis').innerHTML = html;
+  var res = '', resCls = '';
+  if (g >= 4) { res = '⭐ Acima do esperado'; resCls = 'res-acima'; }
+  else if (preenchidos >= 3 && r === 0) { res = '✅ Dentro do esperado'; resCls = 'res-dentro'; }
+  else if (r >= 2) { res = '⚠️ Abaixo do esperado'; resCls = 'res-abaixo'; }
+  else { res = '📈 Em desenvolvimento'; resCls = 'res-dev'; }
+  var el = document.getElementById('resultado-final');
+  el.textContent = res;
+  el.className = 'resultado-final ' + resCls;
+}
+
+function salvarAvaliacao() {
+  var nome = document.getElementById('input-nome').value;
+  var mes = document.getElementById('sel-mes').value;
+  var ano = document.getElementById('sel-ano').value;
+  if (!nome || !mes) { alert('Preencha o nome e o período antes de salvar.'); return; }
+  if (!Object.values(ratings).every(function(v) { return v; })) { alert('Avalie todos os KPIs antes de salvar.'); return; }
+  var obs = document.getElementById('input-obs').value;
+  var plano = document.getElementById('input-plano').value;
+  var resultado = document.getElementById('resultado-final').textContent;
+  var reg = { nome: nome, mes: mes, ano: ano, obs: obs, plano: plano, resultado: resultado, ratings: Object.assign({}, ratings), timestamp: new Date().toISOString() };
+  var chave = 'vr_' + CARGO_KEY + '_historico';
+  var hist = JSON.parse(localStorage.getItem(chave) || '[]');
+  hist.unshift(reg);
+  localStorage.setItem(chave, JSON.stringify(hist));
+  alert('Avaliação salva com sucesso!');
+  renderHistorico();
+  renderEvolucao();
+}
+
+function reiniciar() {
+  Object.keys(ratings).forEach(function(k) { ratings[k] = null; });
+  document.querySelectorAll('.rating-btn').forEach(function(b) { b.className = 'rating-btn'; });
+  document.getElementById('input-nome').value = '';
+  document.getElementById('sel-mes').value = '';
+  document.getElementById('input-obs').value = '';
+  document.getElementById('input-plano').value = '';
+  document.getElementById('resumo-card').style.display = 'none';
+  document.getElementById('plano-section').style.display = 'none';
+  document.getElementById('btn-salvar').style.display = 'none';
+}
+
+function renderHistorico() {
+  var chave = 'vr_' + CARGO_KEY + '_historico';
+  var hist = JSON.parse(localStorage.getItem(chave) || '[]');
+  var el = document.getElementById('historico-lista');
+  if (!hist.length) { el.innerHTML = '<div class="empty-hist">Nenhuma avaliação registrada ainda.</div>'; return; }
+  var html = '';
+  hist.forEach(function(h, i) {
+    html += '<div class="hist-card">';
+    html += '<div class="hist-header"><span class="hist-nome">' + h.nome + '</span><button class="hist-delete" onclick="deletarAvaliacao(' + i + ')">🗑</button></div>';
+    html += '<div class="hist-periodo">' + h.mes + '/' + h.ano + '</div>';
+    html += '<div class="hist-resultado">' + h.resultado + '</div>';
+    Object.entries(h.ratings).forEach(function(entry) {
+      var k = entry[0], v = entry[1];
+      if (!v) return;
+      var cls = v === 'green' ? 'badge-green' : v === 'amber' ? 'badge-amber' : 'badge-red';
+      var lbl = v === 'green' ? 'Atingiu' : v === 'amber' ? 'Parcial' : 'Não atingiu';
+      html += '<div class="resumo-linha"><span>' + kpiLabels[k] + '</span><span class="' + cls + '">' + lbl + '</span></div>';
+    });
+    if (h.obs) html += '<div style="margin-top:8px;font-size:12px;color:var(--text-muted)"><strong>Obs:</strong> ' + h.obs + '</div>';
+    if (h.plano) html += '<div style="margin-top:4px;font-size:12px;color:var(--text-muted)"><strong>Plano:</strong> ' + h.plano + '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function deletarAvaliacao(idx) {
+  if (!confirm('Remover esta avaliação?')) return;
+  var chave = 'vr_' + CARGO_KEY + '_historico';
+  var hist = JSON.parse(localStorage.getItem(chave) || '[]');
+  hist.splice(idx, 1);
+  localStorage.setItem(chave, JSON.stringify(hist));
+  renderHistorico();
+  renderEvolucao();
+}
+
+function renderEvolucao() {
+  var chave = 'vr_' + CARGO_KEY + '_historico';
+  var hist = JSON.parse(localStorage.getItem(chave) || '[]');
+  var el = document.getElementById('evolucao-content');
+  if (!hist.length) { el.innerHTML = '<div class="empty-hist">Registre pelo menos uma avaliação para visualizar a evolução.</div>'; return; }
+  var html = '<div class="evolucao-wrap">';
+  Object.keys(kpiLabels).forEach(function(kpiKey) {
+    var vals = hist.map(function(h) { return h.ratings[kpiKey]; }).filter(Boolean);
+    if (!vals.length) return;
+    var g = vals.filter(function(v) { return v === 'green'; }).length;
+    var a = vals.filter(function(v) { return v === 'amber'; }).length;
+    var r = vals.filter(function(v) { return v === 'red'; }).length;
+    var total = vals.length;
+    var dominant, fillClass, pct;
+    if (g >= a && g >= r) { dominant = 'green'; fillClass = 'fill-green'; pct = Math.round(g / total * 100); }
+    else if (a >= r) { dominant = 'amber'; fillClass = 'fill-amber'; pct = Math.round(a / total * 100); }
+    else { dominant = 'red'; fillClass = 'fill-red'; pct = Math.round(r / total * 100); }
+    html += '<div class="evol-item">';
+    html += '<div class="evol-label">' + kpiLabels[kpiKey] + '</div>';
+    html += '<div class="evol-bar-bg"><div class="evol-bar-fill ' + fillClass + '" style="width:' + pct + '%"></div></div>';
+    html += '<div class="evol-stats">' + g + ' atingiu · ' + a + ' parcial · ' + r + ' não atingiu (' + total + ' avaliações)</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function switchTab(tab, btn) {
+  ['tab-avaliacao', 'tab-historico', 'tab-evolucao'].forEach(function(id) {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('tab-' + tab).style.display = 'block';
+  btn.classList.add('active');
+  if (tab === 'historico') renderHistorico();
+  if (tab === 'evolucao') renderEvolucao();
+}
+
+renderHistorico();
+</script>
+</body>
+</html>
