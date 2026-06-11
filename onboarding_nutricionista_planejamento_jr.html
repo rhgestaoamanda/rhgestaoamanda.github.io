@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding — Nutricionista de Planejamento Junior · Vitta Rio</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --vr-green: #1a6b38; --vr-green-dark: #134f2a; --vr-green-mid: #2a8a4e;
+    --vr-green-light: #eaf5ef; --vr-green-border: #b4ddc4;
+    --vr-orange: #d97b25; --vr-orange-light: #fdf1e3; --vr-orange-border: #f5c07a;
+    --bg: #f7f8f6; --surface: #ffffff; --border: #e2e5df;
+    --text: #1c2118; --text-muted: #5a6358; --text-light: #8a9488;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+  .topbar { background: var(--vr-green-dark); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 15px; font-weight: 600; }
+  .topbar-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: #6fdb9a; }
+  .topbar-badge { background: rgba(255,255,255,.12); color: rgba(255,255,255,.8); font-size: 11px; padding: 3px 10px; border-radius: 20px; letter-spacing: .06em; text-transform: uppercase; }
+  .shell { display: flex; min-height: calc(100vh - 56px); }
+  .sidebar { width: 230px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 1rem; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
+  .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-light); padding: 0 .5rem; margin-bottom: 6px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13.5px; color: var(--text-muted); transition: all .15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: var(--vr-green-light); color: var(--vr-green); }
+  .nav-item.active { background: var(--vr-green-light); color: var(--vr-green); font-weight: 600; }
+  .nav-item .nav-icon { width: 20px; text-align: center; font-size: 15px; flex-shrink: 0; }
+  .nav-divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .main { flex: 1; padding: 2rem 2.5rem; max-width: 820px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .cover { background: var(--vr-green); border-radius: var(--radius); padding: 2.5rem 2rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+  .cover::before { content:''; position:absolute; right:-50px; top:-50px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.05); }
+  .cover h1 { color:#fff; font-size:28px; font-weight:700; line-height:1.2; margin-bottom:.5rem; position:relative; }
+  .cover .sub { color:rgba(255,255,255,.7); font-size:14px; }
+  .cover-tag { display:inline-block; background:rgba(255,255,255,.15); color:rgba(255,255,255,.9); font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:1rem; }
+  .cover-meta { display:flex; flex-wrap:wrap; gap:1.5rem; margin-top:1.75rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.18); }
+  .cover-meta-item { color:rgba(255,255,255,.85); font-size:13px; }
+  .cover-meta-item span { display:block; font-size:11px; color:rgba(255,255,255,.5); margin-bottom:2px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1rem; }
+  .card-title { font-size:12px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--text-light); margin-bottom:1rem; }
+  .hl-green { background:var(--vr-green-light); border-left:3px solid var(--vr-green); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:1rem 1.25rem; margin-bottom:1rem; }
+  .hl-green .hl-title { font-size:13px; font-weight:600; color:var(--vr-green); margin-bottom:5px; }
+  .hl-green p { font-size:14px; color:var(--text); line-height:1.7; }
+  .hl-orange { background:var(--vr-orange-light); border-left:3px solid var(--vr-orange); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:1rem 1.25rem; margin-bottom:1rem; }
+  .hl-orange .hl-title { font-size:13px; font-weight:600; color:var(--vr-orange); margin-bottom:5px; }
+  .hl-orange p { font-size:14px; color:var(--text); line-height:1.7; }
+  .sec-header { display:flex; align-items:center; gap:12px; margin-bottom:1.5rem; }
+  .sec-icon { width:36px; height:36px; border-radius:var(--radius-sm); background:var(--vr-green-light); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .sec-header h2 { font-size:20px; font-weight:700; color:var(--text); }
+  .team-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .team-item:last-child { border-bottom:none; }
+  .avatar { width:38px; height:38px; border-radius:50%; background:var(--vr-green-light); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--vr-green); flex-shrink:0; }
+  .team-name { font-size:13px; font-weight:600; color:var(--text); }
+  .team-desc { font-size:12px; color:var(--text-muted); }
+  .resp-item { display:flex; gap:14px; padding:1.1rem 0; border-bottom:1px solid var(--border); }
+  .resp-item:last-child { border-bottom:none; padding-bottom:0; }
+  .resp-num { width:28px; height:28px; border-radius:50%; background:var(--vr-green); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .resp-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .resp-desc { font-size:13px; color:var(--text-muted); line-height:1.65; }
+  .comp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; margin-bottom:1rem; }
+  .comp-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1rem; }
+  .comp-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .comp-desc { font-size:12px; color:var(--text-muted); line-height:1.55; margin-bottom:8px; }
+  .stars { display:flex; gap:4px; }
+  .star { width:9px; height:9px; border-radius:50%; background:var(--border); }
+  .star.on { background:var(--vr-orange); }
+  .kpi-item { display:flex; gap:14px; align-items:flex-start; padding:1rem 1.25rem; background:#f7f9f7; border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:8px; }
+  .kpi-badge { min-width:30px; height:30px; border-radius:var(--radius-sm); background:var(--vr-orange); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .kpi-label { font-size:14px; font-weight:600; color:var(--text); margin-bottom:3px; }
+  .kpi-meta { font-size:13px; color:var(--text-muted); line-height:1.5; }
+  .check-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .check-list li { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:var(--text-muted); line-height:1.5; }
+  .check-list li::before { content:'✓'; color:var(--vr-green); font-weight:700; flex-shrink:0; margin-top:1px; }
+  .plan-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:1rem; }
+  .plan-phase { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .plan-header { padding:.9rem 1rem; color:#fff; }
+  .plan-header strong { display:block; font-size:13px; font-weight:600; }
+  .plan-header small { display:block; font-size:11px; opacity:.8; margin-top:2px; }
+  .p1{background:var(--vr-green);} .p2{background:var(--vr-green-mid);} .p3{background:var(--vr-orange);}
+  .plan-body { padding:.75rem 0; }
+  .plan-task { padding:7px 1rem; font-size:12.5px; color:var(--text-muted); border-bottom:1px solid var(--border); line-height:1.4; }
+  .plan-task:last-child { border-bottom:none; }
+  .expect-item { display:flex; gap:14px; padding:1.1rem 0; border-bottom:1px solid var(--border); }
+  .expect-item:last-child { border-bottom:none; }
+  .expect-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+  .expect-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .expect-desc { font-size:13px; color:var(--text-muted); line-height:1.65; }
+  .footer { text-align:center; font-size:11.5px; color:var(--text-light); padding:1.5rem; border-top:1px solid var(--border); margin-top:2rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand"><div class="dot"></div>Vitta Rio · Manual de Integração</div>
+  <div class="topbar-badge">Qualidade / Nutrição</div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar-label">Navegação</div>
+    <button class="nav-item active" id="nav-bv" onclick="goTo('bv',this)"><span class="nav-icon">👋</span> Boas-vindas</button>
+    <button class="nav-item" id="nav-resp" onclick="goTo('resp',this)"><span class="nav-icon">📋</span> Responsabilidades</button>
+    <button class="nav-item" id="nav-comp" onclick="goTo('comp',this)"><span class="nav-icon">⭐</span> Competências</button>
+    <div class="nav-divider"></div>
+    <button class="nav-item" id="nav-kpi" onclick="goTo('kpi',this)"><span class="nav-icon">📊</span> KPIs</button>
+    <button class="nav-item" id="nav-plan" onclick="goTo('plan',this)"><span class="nav-icon">📅</span> Plano 30·60·90</button>
+    <button class="nav-item" id="nav-esp" onclick="goTo('esp',this)"><span class="nav-icon">🎯</span> O que esperamos</button>
+  </aside>
+
+  <main class="main">
+
+    <!-- BOAS-VINDAS -->
+    <div class="section active" id="sec-bv">
+      <div class="cover">
+        <div class="cover-tag">Manual de Integração · Qualidade / Nutrição</div>
+        <h1>Nutricionista de Planejamento Junior</h1>
+        <p class="sub">Bem-vindo à Vitta Rio. Este é o seu guia de entrada no cargo.</p>
+        <div class="cover-meta">
+          <div class="cover-meta-item"><span>Departamento</span>Qualidade / Nutrição</div>
+          <div class="cover-meta-item"><span>Horário</span>Comercial — segunda a sexta</div>
+          <div class="cover-meta-item"><span>Reporta a</span>Coordenador Operacional / Responsável pela Qualidade</div>
+          <div class="cover-meta-item"><span>Revisão</span>00 · Jun/2026</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sobre a Vitta Rio</div>
+        <p style="font-size:14px;line-height:1.75;color:var(--text);">A <strong>Vitta Rio</strong> é uma distribuidora de hortifruti — in natura e higienizado — que abastece hotéis, hospitais, restaurantes e escolas no Rio de Janeiro. A qualidade do produto não começa na entrega ao cliente: começa no recebimento, passa pelo armazenamento, atravessa o processamento e a cozinha e chega à expedição. Uma distribuidora que abastece hospitais e escolas não pode tratar a qualidade como processo secundário — ela é o que diferencia a Vitta Rio de um fornecedor qualquer e o que mantém a confiança dos clientes mais exigentes.</p>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Por que este cargo importa</div>
+        <p>O Nutricionista de Planejamento Junior é o profissional que garante que a operação da Vitta Rio cumpra os padrões técnicos de Boas Práticas de Fabricação (BPF) e PPHO com rigor e consistência. Mais do que fiscalizar, esse profissional estrutura: elabora fichas técnicas, padroniza processos de higienização, controla não conformidades e documenta tudo com precisão técnica. <strong>Numa operação que serve hospitais, o erro técnico não é só custo — é risco à saúde do consumidor final. O padrão técnico exigido aqui é o mais alto da empresa.</strong></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sua equipe e principais interfaces</div>
+        <div class="team-item"><div class="avatar">CO</div><div><div class="team-name">Coordenador Operacional</div><div class="team-desc">Superior imediato operacional. Parceiro para integração das ações de qualidade nas rotinas dos subsetores.</div></div></div>
+        <div class="team-item"><div class="avatar">CZ</div><div><div class="team-name">Cozinha / Técnico de Nutrição</div><div class="team-desc">Interface diária para padronização de receitas, fichas técnicas e processos de higienização na cozinha de higienizados.</div></div></div>
+        <div class="team-item"><div class="avatar">AE</div><div><div class="team-name">Analista/Estoquista de Estoque</div><div class="team-desc">Parceiro para auditorias de temperatura, armazenamento e conformidade do estoque com padrões de BPF.</div></div></div>
+        <div class="team-item"><div class="avatar">SM</div><div><div class="team-name">Supervisor de Manutenção</div><div class="team-desc">Interface para não conformidades relacionadas a equipamentos, temperatura e infraestrutura que afetam a qualidade.</div></div></div>
+        <div class="team-item"><div class="avatar">DR</div><div><div class="team-name">Diretoria</div><div class="team-desc">Prestação de contas sobre resultados de qualidade, não conformidades e ações corretivas — com linguagem técnica e acessível.</div></div></div>
+        <div class="team-item"><div class="avatar">RH</div><div><div class="team-name">RH / DP</div><div class="team-desc">Parceiro para treinamentos de BPF com a equipe operacional e registros de avaliação de desempenho.</div></div></div>
+      </div>
+
+      <div class="hl-orange">
+        <div class="hl-title">O momento atual da empresa</div>
+        <p>A Vitta Rio possui hoje uma técnica de nutrição que vem exercendo funções de nutricionista de planejamento — mas a diretoria não está satisfeita com os resultados e com o perfil de entrega. A empresa está buscando um profissional com CRN ativo, capacidade técnica real e visão de construção de processos — não apenas execução de rotinas. Você entra sabendo que o padrão esperado é alto e que os resultados serão avaliados com seriedade a partir do primeiro mês.</p>
+      </div>
+    </div>
+
+    <!-- RESPONSABILIDADES -->
+    <div class="section" id="sec-resp">
+      <div class="sec-header">
+        <div class="sec-icon">📋</div>
+        <h2>Principais responsabilidades</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">As responsabilidades abaixo definem <strong>o que você faz, como faz e para que faz</strong> no cargo. Entendê-las é o primeiro passo para uma atuação de alto impacto.</p>
+      <div class="card">
+        <div class="resp-item"><div class="resp-num">1</div><div><div class="resp-title">Gestão e execução das auditorias de BPF e PPHO</div><div class="resp-desc">Realizar auditorias periódicas de Boas Práticas de Fabricação em todos os setores que manipulam alimentos: cozinha, estoque, área de higienização e expedição. Verificar: higiene pessoal dos colaboradores, condições de higienização das superfícies e equipamentos, uso correto de EPIs, organização e identificação dos produtos. Cada auditoria gera relatório com pontuação, não conformidades identificadas e prazo de correção.</div></div></div>
+        <div class="resp-item"><div class="resp-num">2</div><div><div class="resp-title">Elaboração e atualização de fichas técnicas</div><div class="resp-desc">Elaborar, padronizar e manter atualizadas as fichas técnicas dos produtos e processos da cozinha de higienizados e da operação de processamento. A ficha técnica não é um documento burocrático — é a garantia de que o produto será sempre produzido da mesma forma, com o mesmo padrão, independente de qual colaborador esteja no turno.</div></div></div>
+        <div class="resp-item"><div class="resp-num">3</div><div><div class="resp-title">Gestão de não conformidades</div><div class="resp-desc">Registrar, classificar e acompanhar todas as não conformidades identificadas nas auditorias e no dia a dia da operação. Para cada não conformidade, abrir registro formal com: descrição, causa raiz, responsável, ação corretiva e prazo. Acompanhar o fechamento de cada NC dentro do prazo. NC aberta sem ação é NC não tratada — e é sinal de que o processo de qualidade não está funcionando.</div></div></div>
+        <div class="resp-item"><div class="resp-num">4</div><div><div class="resp-title">Controle de temperatura dos alimentos em processamento</div><div class="resp-desc">Monitorar e registrar as temperaturas dos alimentos durante o processamento e armazenamento — temperatura de cocção, refrigeração de higienizados, câmaras de produto acabado e temperatura de expedição. Identificar desvios, acionar a manutenção quando necessário e registrar formalmente. O controle de temperatura em alimentos servidos a hospitais não é opcional — é obrigação legal e ética.</div></div></div>
+        <div class="resp-item"><div class="resp-num">5</div><div><div class="resp-title">Treinamento da equipe operacional em boas práticas</div><div class="resp-desc">Planejar e executar treinamentos periódicos de BPF e PPHO com os colaboradores da cozinha, do estoque e da expedição. Treinamento não é palestra — é mudança de comportamento. Acompanhar se as práticas ensinadas estão sendo aplicadas no dia a dia e reforçar onde houver desvio. Registrar a participação e o conteúdo de cada treinamento no sistema do RH.</div></div></div>
+        <div class="resp-item"><div class="resp-num">6</div><div><div class="resp-title">Elaboração de relatórios técnicos de qualidade</div><div class="resp-desc">Elaborar e entregar mensalmente ao coordenador e à diretoria o relatório técnico de qualidade: índice de conformidade de BPF, não conformidades abertas vs fechadas, temperatura média das câmaras, ocorrências de produto fora do padrão e ações em andamento. O relatório deve ser técnico e acessível — a diretoria precisa entender o que está acontecendo sem ser nutricionista.</div></div></div>
+        <div class="resp-item"><div class="resp-num">7</div><div><div class="resp-title">Elaboração e revisão de documentos e procedimentos de qualidade</div><div class="resp-desc">Criar, atualizar e manter o manual de BPF/PPHO da empresa, os POPs de higienização, os formulários de controle e os checklists de auditoria. A documentação é a base do sistema de qualidade — sem ela, cada troca de colaborador reinicia o processo do zero.</div></div></div>
+        <div class="resp-item"><div class="resp-num">8</div><div><div class="resp-title">Análise de reclamações relacionadas à qualidade do produto</div><div class="resp-desc">Receber, investigar e responder tecnicamente às reclamações de clientes relacionadas à qualidade: produto fora do padrão, temperatura inadequada, contaminação, identificação incorreta. Para cada reclamação com investigação concluída, emitir parecer técnico com causa raiz e ação corretiva. Reclamação não investigada é oportunidade de melhoria desperdiçada.</div></div></div>
+      </div>
+    </div>
+
+    <!-- COMPETÊNCIAS -->
+    <div class="section" id="sec-comp">
+      <div class="sec-header">
+        <div class="sec-icon">⭐</div>
+        <h2>Competências do cargo</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">As competências abaixo formam o perfil esperado e serão avaliadas periodicamente. O grau de exigência é indicado em escala de 1 a 5 (● preenchido = esperado no nível máximo).</p>
+
+      <div class="card">
+        <div class="card-title">Competências comportamentais</div>
+        <div class="comp-grid">
+          <div class="comp-card"><div class="comp-name">Rigor técnico</div><div class="comp-desc">Aplicar os padrões de BPF e PPHO com consistência — sem relativizar exigências por pressão operacional.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Comunicação técnica e acessível</div><div class="comp-desc">Traduzir linguagem técnica em linguagem operacional para colaboradores de diferentes níveis de escolaridade.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Organização e disciplina documental</div><div class="comp-desc">Manter registros, laudos e documentos técnicos completos, atualizados e acessíveis.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Proatividade na identificação de riscos</div><div class="comp-desc">Identificar potenciais não conformidades antes que se tornem problemas reais — durante auditorias e no dia a dia.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Capacidade de construção de processos</div><div class="comp-desc">Estruturar documentação, procedimentos e fichas técnicas a partir de uma operação ainda não formalizada.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Orientação ao resultado técnico</div><div class="comp-desc">Focar nos indicadores de qualidade como resultado real — não apenas como documentação de conformidade.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Competências organizacionais</div>
+        <div class="comp-grid">
+          <div class="comp-card"><div class="comp-name">Comprometimento com a segurança alimentar</div><div class="comp-desc">Tratar cada desvio técnico como risco real a clientes finais — incluindo pacientes hospitalares.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Autogerenciamento</div><div class="comp-desc">Planejar e executar auditorias, relatórios e treinamentos sem necessidade de gestão constante.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Equilíbrio emocional</div><div class="comp-desc">Conduzir auditorias e cobranças técnicas com firmeza e respeito — sem intimidação e sem condescendência.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Disciplina documental</div><div class="comp-desc">Registrar todas as auditorias, não conformidades e ações corretivas com precisão e em tempo real.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Proatividade</div><div class="comp-desc">Antecipar riscos técnicos e agir antes que se tornem ocorrências graves.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Aprendizado contínuo</div><div class="comp-desc">Manter-se atualizado sobre legislação sanitária, normas de BPF e boas práticas do setor alimentício.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div><div class="star"></div></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Requisitos técnicos do cargo</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <p style="font-size:12px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem;">Conhecimentos</p>
+            <ul class="check-list"><li>Graduação em Nutrição com CRN ativo (obrigatório)</li><li>Boas Práticas de Fabricação (BPF) e PPHO — nível operacional</li><li>Legislação sanitária: RDC 216/2004, RDC 52/2014 e normas ANVISA aplicáveis</li><li>Elaboração e gestão de fichas técnicas e POPs</li><li>Controle de temperatura e cadeia do frio em alimentos</li><li>Gestão de não conformidades e relatórios técnicos de qualidade</li></ul>
+          </div>
+          <div>
+            <p style="font-size:12px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem;">Habilidades práticas</p>
+            <ul class="check-list"><li>Execução e registro de auditorias de BPF/PPHO em ambiente industrial ou de distribuição</li><li>Elaboração de fichas técnicas de produtos e processos de higienização</li><li>Gestão de não conformidades com causa raiz e plano de ação corretivo</li><li>Treinamento de equipes operacionais em boas práticas alimentares</li><li>Monitoramento e registro de temperatura de alimentos e câmaras frias</li><li>Elaboração de relatórios técnicos de qualidade para gestão e diretoria</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="section" id="sec-kpi">
+      <div class="sec-header">
+        <div class="sec-icon">📊</div>
+        <h2>Indicadores de desempenho (KPIs)</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">Seu desempenho será avaliado em 3 pilares: <strong>conformidade de BPF/PPHO, gestão de não conformidades e entrega documental</strong>. Os 5 KPIs abaixo refletem o padrão técnico esperado pela diretoria — que tem expectativa alta de resultado e clareza sobre o que foi insuficiente anteriormente.</p>
+      <div class="kpi-item"><div class="kpi-badge">1</div><div><div class="kpi-label">Índice de conformidade nas auditorias de BPF/PPHO</div><div class="kpi-meta"><strong>Meta:</strong> ≥ 95% de conformidade nas auditorias mensais por setor (cozinha, estoque, expedição)<br><strong>Como medir:</strong> Relatório de auditoria mensal elaborado pelo nutricionista com pontuação por critério e por setor</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">2</div><div><div class="kpi-label">Não conformidades com plano de ação dentro do prazo</div><div class="kpi-meta"><strong>Meta:</strong> 100% das NCs identificadas com plano de ação formalizado em até 48h e com acompanhamento de fechamento<br><strong>Como medir:</strong> Log de não conformidades do setor — verificado quinzenalmente pelo coordenador operacional</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">3</div><div><div class="kpi-label">Fichas técnicas elaboradas e atualizadas</div><div class="kpi-meta"><strong>Meta:</strong> 100% dos produtos da cozinha e dos processos críticos com ficha técnica elaborada e validada ao fim dos 90 dias<br><strong>Como medir:</strong> Inventário de fichas técnicas — verificado mensalmente pelo coordenador operacional</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">4</div><div><div class="kpi-label">Relatórios técnicos mensais entregues no prazo</div><div class="kpi-meta"><strong>Meta:</strong> 100% dos relatórios mensais de qualidade entregues dentro do prazo definido pelo coordenador<br><strong>Como medir:</strong> Confirmação de entrega com data registrada — verificado pelo RH no processo de avaliação</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">5</div><div><div class="kpi-label">Conformidade de temperatura dos alimentos processados</div><div class="kpi-meta"><strong>Meta:</strong> 100% dos registros de temperatura de alimentos em processamento realizados nos horários definidos; zero desvios não reportados<br><strong>Como medir:</strong> Planilha de controle de temperatura — auditada mensalmente pela gestão</div></div></div>
+
+      <div class="card" style="margin-top:1rem;">
+        <div class="card-title">Indicadores de gestão — complementares</div>
+        <ul class="check-list"><li>≥ 90% de participação dos colaboradores nos treinamentos de BPF convocados no período</li><li>Zero reclamações de clientes por não conformidade técnica de responsabilidade do nutricionista</li><li>Manual de BPF/PPHO da empresa elaborado e validado ao fim dos 90 dias</li><li>Todos os POPs de higienização documentados e disponíveis para a equipe</li></ul>
+      </div>
+
+      <div class="hl-green" style="margin-top:1rem;">
+        <div class="hl-title">Avaliação de desempenho</div>
+        <p>Você terá acesso ao <strong>Painel de Avaliação do Nutricionista de Planejamento Junior</strong>, onde a apuração mensal de cada indicador ficará registrada. A avaliação acontece mensalmente e os resultados são discutidos com Coordenador Operacional / Responsável pela Qualidade. O RH é o ponto de contato para dúvidas sobre o processo avaliativo.</p>
+      </div>
+    </div>
+
+    <!-- PLANO 30/60/90 -->
+    <div class="section" id="sec-plan">
+      <div class="sec-header">
+        <div class="sec-icon">📅</div>
+        <h2>Plano de imersão — primeiros 90 dias</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">Este roteiro orienta sua jornada de entrada. Cada fase tem foco diferente: <strong>imergir na operação → estruturar a documentação técnica → garantir conformidade</strong>. Ao final dos 90 dias, você apresentará um relatório completo à sua liderança.</p>
+
+      <div class="plan-grid">
+        <div class="plan-phase">
+          <div class="plan-header p1"><strong>Fase 1 — Diagnóstico Técnico</strong><small>Dias 1 a 30</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Imersão nos setores de cozinha, estoque e expedição — entender a operação real</div>
+            <div class="plan-task">Realização de 1ª auditoria diagnóstica de BPF em todos os setores com registro formal</div>
+            <div class="plan-task">Inventário das fichas técnicas e POPs existentes — identificar o que existe e o que falta</div>
+            <div class="plan-task">Entrevistas com colaboradores da cozinha e do estoque sobre as práticas atuais</div>
+            <div class="plan-task">Verificação do estado atual dos controles de temperatura e registros de não conformidade</div>
+            <div class="plan-task">Levantamento da legislação sanitária aplicável à operação da Vitta Rio</div>
+            <div class="plan-task">1ª reunião técnica com o coordenador operacional e a diretoria sobre prioridades</div>
+          </div>
+        </div>
+        <div class="plan-phase">
+          <div class="plan-header p2"><strong>Fase 2 — Estruturação Documental</strong><small>Dias 31 a 60</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Elaboração das primeiras fichas técnicas dos produtos críticos da cozinha</div>
+            <div class="plan-task">Implantação do sistema de registro de não conformidades com rastreabilidade</div>
+            <div class="plan-task">Início do controle formal de temperatura dos alimentos em processamento</div>
+            <div class="plan-task">1º treinamento de BPF realizado com equipe da cozinha e do estoque</div>
+            <div class="plan-task">1ª auditoria mensal oficial com relatório entregue ao coordenador</div>
+            <div class="plan-task">Início da elaboração do manual de BPF/PPHO da empresa</div>
+            <div class="plan-task">Abertura e acompanhamento das primeiras não conformidades com plano de ação</div>
+          </div>
+        </div>
+        <div class="plan-phase">
+          <div class="plan-header p3"><strong>Fase 3 — Conformidade e Consistência</strong><small>Dias 61 a 90</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Índice de conformidade de BPF ≥ 95% na auditoria mensal</div>
+            <div class="plan-task">100% das NCs abertas com plano de ação dentro do prazo</div>
+            <div class="plan-task">Manual de BPF/PPHO concluído e validado com o coordenador</div>
+            <div class="plan-task">Fichas técnicas dos produtos críticos concluídas e em uso pela equipe</div>
+            <div class="plan-task">2º ciclo de treinamento de BPF realizado com os setores operacionais</div>
+            <div class="plan-task">Relatório técnico de qualidade dos 90 dias apresentado à diretoria</div>
+            <div class="plan-task">Avaliação formal com coordenador operacional e RH</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Entrega esperada ao fim dos 90 dias</div>
+        <p>Um sistema de qualidade <strong>estruturado e documentado</strong>: auditoria mensal com índice ≥ 95% de conformidade, fichas técnicas dos produtos críticos concluídas, não conformidades com plano de ação em dia, manual de BPF/PPHO elaborado e treinamentos realizados — estabelecendo o padrão técnico que a diretoria espera e que os clientes hospitalares exigem.</p>
+      </div>
+    </div>
+
+    <!-- O QUE ESPERAMOS -->
+    <div class="section" id="sec-esp">
+      <div class="sec-header">
+        <div class="sec-icon">🎯</div>
+        <h2>O que a Vitta Rio espera de você</h2>
+      </div>
+
+      <div class="card">
+        <div class="expect-item"><div class="expect-icon">🔬</div><div><div class="expect-title">Rigor técnico sem relativização</div><div class="expect-desc">A Vitta Rio atende hospitais. Isso significa que o padrão técnico aqui não é negociável por pressão operacional. Esperamos que você mantenha a exigência técnica mesmo quando for inconveniente — e que saiba comunicar o risco de forma clara para a liderança quando o padrão não for cumprido.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">📋</div><div><div class="expect-title">Documentação completa — não protocolar</div><div class="expect-desc">Ficha técnica incompleta, NC sem plano de ação e relatório sem análise são documentos inúteis. Esperamos documentação real — que reflita o que acontece na operação e que suporte decisões.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">🎓</div><div><div class="expect-title">Treinamento que muda comportamento — não que informa</div><div class="expect-desc">Treinar a equipe de BPF não é dar uma palestra e colher assinaturas. Esperamos que você acompanhe se o ensinado está sendo aplicado, reforce onde há desvio e adapte a abordagem ao perfil de cada equipe.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">📊</div><div><div class="expect-title">Relatórios que a diretoria consegue ler</div><div class="expect-desc">A diretoria precisa entender o resultado de qualidade sem ser nutricionista. Esperamos relatórios claros, objetivos e com indicadores visíveis — não laudos técnicos inacessíveis.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">⚡</div><div><div class="expect-title">Não conformidades tratadas com urgência</div><div class="expect-desc">NC identificada em segunda-feira precisa de plano de ação em até 48h. Esperamos que você trate não conformidades com a urgência que o risco sanitário exige — não que elas entrem numa fila de resolução indefinida.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">🏗️</div><div><div class="expect-title">Construir do zero — com método e sem esperar condições perfeitas</div><div class="expect-desc">A documentação de qualidade da Vitta Rio está incipiente. Esperamos que você construa com método — ficha por ficha, POP por POP — sem esperar que tudo esteja pronto para começar.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">🎯</div><div><div class="expect-title">Resultados técnicos visíveis para a diretoria</div><div class="expect-desc">A diretoria tem expectativas claras e altas para esse cargo. Esperamos que você seja proativo em reportar resultados — índice de conformidade, NCs fechadas, treinamentos realizados. Resultado não reportado é resultado invisível.</div></div></div>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Uma mensagem direta</div>
+        <p>A Vitta Rio tem expectativa alta para esse cargo — e isso é um sinal positivo: a empresa valoriza a qualidade técnica e quer um profissional que entregue de verdade. Você chega num momento em que há espaço para construir um sistema de qualidade sólido a partir de uma base ainda modesta. O coordenador operacional e o RH estão disponíveis para apoiar sua jornada. Seja bem-vindo.</p>
+      </div>
+
+      <div class="footer">
+        🌿 Vitta Rio — Distribuidora de Hortifruti · Qualidade, compromisso e resultado em cada entrega.<br><br>
+        <strong>Vitta Rio Distribuidora de Hortifruti</strong> · Documento interno de uso exclusivo do colaborador e do RH · Revisão 00 · Jun/2026
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function goTo(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

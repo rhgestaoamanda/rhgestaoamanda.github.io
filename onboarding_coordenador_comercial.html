@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding — Coordenador Comercial · Vitta Rio</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --vr-green: #1a6b38; --vr-green-dark: #134f2a; --vr-green-mid: #2a8a4e;
+    --vr-green-light: #eaf5ef; --vr-green-border: #b4ddc4;
+    --vr-orange: #d97b25; --vr-orange-light: #fdf1e3; --vr-orange-border: #f5c07a;
+    --bg: #f7f8f6; --surface: #ffffff; --border: #e2e5df;
+    --text: #1c2118; --text-muted: #5a6358; --text-light: #8a9488;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+  .topbar { background: var(--vr-green-dark); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 15px; font-weight: 600; }
+  .topbar-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: #6fdb9a; }
+  .topbar-badge { background: rgba(255,255,255,.12); color: rgba(255,255,255,.8); font-size: 11px; padding: 3px 10px; border-radius: 20px; letter-spacing: .06em; text-transform: uppercase; }
+  .shell { display: flex; min-height: calc(100vh - 56px); }
+  .sidebar { width: 230px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 1rem; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
+  .sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-light); padding: 0 .5rem; margin-bottom: 6px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13.5px; color: var(--text-muted); transition: all .15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: var(--vr-green-light); color: var(--vr-green); }
+  .nav-item.active { background: var(--vr-green-light); color: var(--vr-green); font-weight: 600; }
+  .nav-item .nav-icon { width: 20px; text-align: center; font-size: 15px; flex-shrink: 0; }
+  .nav-divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .main { flex: 1; padding: 2rem 2.5rem; max-width: 820px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .cover { background: var(--vr-green); border-radius: var(--radius); padding: 2.5rem 2rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+  .cover::before { content:''; position:absolute; right:-50px; top:-50px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.05); }
+  .cover h1 { color:#fff; font-size:28px; font-weight:700; line-height:1.2; margin-bottom:.5rem; position:relative; }
+  .cover .sub { color:rgba(255,255,255,.7); font-size:14px; }
+  .cover-tag { display:inline-block; background:rgba(255,255,255,.15); color:rgba(255,255,255,.9); font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:1rem; }
+  .cover-meta { display:flex; flex-wrap:wrap; gap:1.5rem; margin-top:1.75rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.18); }
+  .cover-meta-item { color:rgba(255,255,255,.85); font-size:13px; }
+  .cover-meta-item span { display:block; font-size:11px; color:rgba(255,255,255,.5); margin-bottom:2px; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1rem; }
+  .card-title { font-size:12px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--text-light); margin-bottom:1rem; }
+  .hl-green { background:var(--vr-green-light); border-left:3px solid var(--vr-green); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:1rem 1.25rem; margin-bottom:1rem; }
+  .hl-green .hl-title { font-size:13px; font-weight:600; color:var(--vr-green); margin-bottom:5px; }
+  .hl-green p { font-size:14px; color:var(--text); line-height:1.7; }
+  .hl-orange { background:var(--vr-orange-light); border-left:3px solid var(--vr-orange); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:1rem 1.25rem; margin-bottom:1rem; }
+  .hl-orange .hl-title { font-size:13px; font-weight:600; color:var(--vr-orange); margin-bottom:5px; }
+  .hl-orange p { font-size:14px; color:var(--text); line-height:1.7; }
+  .sec-header { display:flex; align-items:center; gap:12px; margin-bottom:1.5rem; }
+  .sec-icon { width:36px; height:36px; border-radius:var(--radius-sm); background:var(--vr-green-light); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .sec-header h2 { font-size:20px; font-weight:700; color:var(--text); }
+  .team-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .team-item:last-child { border-bottom:none; }
+  .avatar { width:38px; height:38px; border-radius:50%; background:var(--vr-green-light); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--vr-green); flex-shrink:0; }
+  .team-name { font-size:13px; font-weight:600; color:var(--text); }
+  .team-desc { font-size:12px; color:var(--text-muted); }
+  .resp-item { display:flex; gap:14px; padding:1.1rem 0; border-bottom:1px solid var(--border); }
+  .resp-item:last-child { border-bottom:none; padding-bottom:0; }
+  .resp-num { width:28px; height:28px; border-radius:50%; background:var(--vr-green); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .resp-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .resp-desc { font-size:13px; color:var(--text-muted); line-height:1.65; }
+  .comp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; margin-bottom:1rem; }
+  .comp-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1rem; }
+  .comp-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .comp-desc { font-size:12px; color:var(--text-muted); line-height:1.55; margin-bottom:8px; }
+  .stars { display:flex; gap:4px; }
+  .star { width:9px; height:9px; border-radius:50%; background:var(--border); }
+  .star.on { background:var(--vr-orange); }
+  .kpi-item { display:flex; gap:14px; align-items:flex-start; padding:1rem 1.25rem; background:#f7f9f7; border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:8px; }
+  .kpi-badge { min-width:30px; height:30px; border-radius:var(--radius-sm); background:var(--vr-orange); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .kpi-label { font-size:14px; font-weight:600; color:var(--text); margin-bottom:3px; }
+  .kpi-meta { font-size:13px; color:var(--text-muted); line-height:1.5; }
+  .check-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .check-list li { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:var(--text-muted); line-height:1.5; }
+  .check-list li::before { content:'✓'; color:var(--vr-green); font-weight:700; flex-shrink:0; margin-top:1px; }
+  .plan-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:1rem; }
+  .plan-phase { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .plan-header { padding:.9rem 1rem; color:#fff; }
+  .plan-header strong { display:block; font-size:13px; font-weight:600; }
+  .plan-header small { display:block; font-size:11px; opacity:.8; margin-top:2px; }
+  .p1{background:var(--vr-green);} .p2{background:var(--vr-green-mid);} .p3{background:var(--vr-orange);}
+  .plan-body { padding:.75rem 0; }
+  .plan-task { padding:7px 1rem; font-size:12.5px; color:var(--text-muted); border-bottom:1px solid var(--border); line-height:1.4; }
+  .plan-task:last-child { border-bottom:none; }
+  .expect-item { display:flex; gap:14px; padding:1.1rem 0; border-bottom:1px solid var(--border); }
+  .expect-item:last-child { border-bottom:none; }
+  .expect-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+  .expect-title { font-size:14px; font-weight:600; color:var(--text); margin-bottom:5px; }
+  .expect-desc { font-size:13px; color:var(--text-muted); line-height:1.65; }
+  .footer { text-align:center; font-size:11.5px; color:var(--text-light); padding:1.5rem; border-top:1px solid var(--border); margin-top:2rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand"><div class="dot"></div>Vitta Rio · Manual de Integração</div>
+  <div class="topbar-badge">Comercial</div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar-label">Navegação</div>
+    <button class="nav-item active" id="nav-bv" onclick="goTo('bv',this)"><span class="nav-icon">👋</span> Boas-vindas</button>
+    <button class="nav-item" id="nav-resp" onclick="goTo('resp',this)"><span class="nav-icon">📋</span> Responsabilidades</button>
+    <button class="nav-item" id="nav-comp" onclick="goTo('comp',this)"><span class="nav-icon">⭐</span> Competências</button>
+    <div class="nav-divider"></div>
+    <button class="nav-item" id="nav-kpi" onclick="goTo('kpi',this)"><span class="nav-icon">📊</span> KPIs</button>
+    <button class="nav-item" id="nav-plan" onclick="goTo('plan',this)"><span class="nav-icon">📅</span> Plano 30·60·90</button>
+    <button class="nav-item" id="nav-esp" onclick="goTo('esp',this)"><span class="nav-icon">🎯</span> O que esperamos</button>
+  </aside>
+
+  <main class="main">
+
+    <!-- BOAS-VINDAS -->
+    <div class="section active" id="sec-bv">
+      <div class="cover">
+        <div class="cover-tag">Manual de Integração · Comercial</div>
+        <h1>Coordenador Comercial</h1>
+        <p class="sub">Bem-vindo à Vitta Rio. Este é o seu guia de entrada no cargo.</p>
+        <div class="cover-meta">
+          <div class="cover-meta-item"><span>Departamento</span>Comercial</div>
+          <div class="cover-meta-item"><span>Horário</span>Comercial — segunda a sexta, 08h às 18h</div>
+          <div class="cover-meta-item"><span>Reporta a</span>Gerente Comercial</div>
+          <div class="cover-meta-item"><span>Revisão</span>00 · Jun/2026</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sobre a Vitta Rio</div>
+        <p style="font-size:14px;line-height:1.75;color:var(--text);">A <strong>Vitta Rio</strong> é uma distribuidora de hortifruti — in natura e higienizado — que abastece hotéis, hospitais, restaurantes e escolas no Rio de Janeiro. O setor comercial está em plena reestruturação: um novo gerente comercial está realizando o diagnóstico do setor e definindo a estratégia de crescimento. O Coordenador Comercial é o cargo criado para ser o elo entre a estratégia do gerente e a execução diária da equipe de Televendas — liberando o gerente para focar em clientes estratégicos, expansão e gestão de alto nível.</p>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Por que este cargo importa</div>
+        <p>O Coordenador Comercial existe para que o Gerente Comercial não precise gerenciar o dia a dia da equipe de vendas. Sem esse cargo, o gerente fica preso em acompanhamento operacional — cobrança de metas, resolução de conflitos, monitoramento de CRM — e não consegue dedicar tempo à estratégia, à expansão e aos grandes clientes. <strong>Você é o que permite ao gerente ser gerente de verdade.</strong></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sua equipe e principais interfaces</div>
+        <div class="team-item"><div class="avatar">GC</div><div><div class="team-name">Gerente Comercial</div><div class="team-desc">Superior direto e principal parceiro estratégico. Define metas, estratégias e clientes prioritários. Você é quem garante que a equipe execute o que ele define.</div></div></div>
+        <div class="team-item"><div class="avatar">TV</div><div><div class="team-name">Equipe de Televendas Ativo</div><div class="team-desc">Sua equipe direta. Você acompanha, desenvolve, cobra e apoia os Televendas no dia a dia — sendo o primeiro ponto de contato deles para dúvidas, negociações complexas e suporte comercial.</div></div></div>
+        <div class="team-item"><div class="avatar">CO</div><div><div class="team-name">Coordenador Operacional</div><div class="team-desc">Interface para confirmação de disponibilidade de produto, capacidade de entrega e alinhamento de janelas operacionais para os grandes pedidos.</div></div></div>
+        <div class="team-item"><div class="avatar">FN</div><div><div class="team-name">Financeiro / Administrativo</div><div class="team-desc">Verificação de crédito, limites comerciais, inadimplência e condições especiais de pagamento para negociações acima do padrão.</div></div></div>
+        <div class="team-item"><div class="avatar">RH</div><div><div class="team-name">RH / DP</div><div class="team-desc">Avaliações de desempenho da equipe de Televendas, comissionamento e gestão de clima do setor.</div></div></div>
+      </div>
+
+      <div class="hl-orange">
+        <div class="hl-title">O momento atual da empresa</div>
+        <p>O setor comercial da Vitta Rio não tem processos estruturados — sem CRM consolidado, sem metas formalizadas, sem rotina comercial padronizada e sem histórico de carteira organizado. O gerente comercial está em fase de diagnóstico e precisa de um coordenador que assuma a gestão operacional do setor enquanto ele constrói a estratégia. Você entra num momento de construção — o que significa liberdade para estruturar e responsabilidade para entregar resultados junto com a equipe.</p>
+      </div>
+    </div>
+
+    <!-- RESPONSABILIDADES -->
+    <div class="section" id="sec-resp">
+      <div class="sec-header">
+        <div class="sec-icon">📋</div>
+        <h2>Principais responsabilidades</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">As responsabilidades abaixo definem <strong>o que você faz, como faz e para que faz</strong> no cargo. Entendê-las é o primeiro passo para uma atuação de alto impacto.</p>
+      <div class="card">
+        <div class="resp-item"><div class="resp-num">1</div><div><div class="resp-title">Gestão diária da equipe de Televendas</div><div class="resp-desc">Acompanhar o desempenho diário dos vendedores de Televendas — verificando volume de contatos, conversões, evolução de carteira e cumprimento de metas parciais. Realizar briefing matinal com a equipe para alinhamento de prioridades, objeções recorrentes e oportunidades do dia. Não é supervisão por pressão — é gestão por ritmo e cultura de resultado.</div></div></div>
+        <div class="resp-item"><div class="resp-num">2</div><div><div class="resp-title">Acompanhamento e análise de indicadores comerciais</div><div class="resp-desc">Monitorar os KPIs individuais e do setor: volume de vendas, novos clientes, ticket médio, carteira ativa e reativações. Identificar desvios na primeira semana do mês — não na última. Elaborar relatório semanal de performance para o gerente comercial com análise, não apenas com números.</div></div></div>
+        <div class="resp-item"><div class="resp-num">3</div><div><div class="resp-title">Suporte a negociações complexas e contas estratégicas</div><div class="resp-desc">Atuar como segunda linha de suporte para os vendedores em negociações acima do padrão — condições especiais de pagamento, grandes volumes, novos clientes estratégicos. Antes de qualquer concessão fora do parâmetro, verificar com o financeiro e alinhar com o gerente. Nenhuma condição especial é concedida sem validação.</div></div></div>
+        <div class="resp-item"><div class="resp-num">4</div><div><div class="resp-title">Desenvolvimento da equipe de vendas</div><div class="resp-desc">Identificar gaps de competência em cada vendedor e desenvolver individualmente — seja em técnica de abordagem, gestão de carteira, negociação ou disciplina com registro. Realizar feedbacks estruturados quinzenais com cada membro da equipe. O coordenador que não desenvolve a equipe reproduz resultados medianos indefinidamente.</div></div></div>
+        <div class="resp-item"><div class="resp-num">5</div><div><div class="resp-title">Gestão e curadoria do CRM e do histórico comercial</div><div class="resp-desc">Garantir que o CRM ou a planilha comercial esteja sempre atualizado e reflita a realidade da carteira. Auditar os registros semanalmente, identificar gaps e cobrar os vendedores. O CRM é a memória comercial da empresa — dados desatualizados geram decisões erradas.</div></div></div>
+        <div class="resp-item"><div class="resp-num">6</div><div><div class="resp-title">Controle de metas e plano de ação corretivo</div><div class="resp-desc">Monitorar o ritmo de cumprimento de metas ao longo do mês. Quando identificar vendedor ou equipe abaixo da meta na primeira quinzena, estruturar plano de ação corretivo imediato — com aumento de volume de prospecção, reativação de inativos ou foco em mix de produto específico. Não chegar ao fim do mês sem atingir a meta sem ter tentado corrigir no meio do caminho.</div></div></div>
+        <div class="resp-item"><div class="resp-num">7</div><div><div class="resp-title">Interface com a operação para viabilidade de entrega</div><div class="resp-desc">Antes de confirmar pedidos de grande volume ou condições especiais de entrega, alinhar com o coordenador operacional sobre disponibilidade de produto, capacidade de separação e janelas de expedição. O setor comercial não pode comprometer ao cliente o que a operação não consegue cumprir.</div></div></div>
+        <div class="resp-item"><div class="resp-num">8</div><div><div class="resp-title">Inteligência de mercado e feedback para o gerente</div><div class="resp-desc">Consolidar as informações captadas pelos vendedores sobre concorrência, necessidades não atendidas dos clientes e oportunidades de segmento. Apresentar mensalmente ao gerente comercial um relatório de inteligência de mercado — com base em dados reais das ligações da equipe, não em percepções subjetivas.</div></div></div>
+      </div>
+    </div>
+
+    <!-- COMPETÊNCIAS -->
+    <div class="section" id="sec-comp">
+      <div class="sec-header">
+        <div class="sec-icon">⭐</div>
+        <h2>Competências do cargo</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">As competências abaixo formam o perfil esperado e serão avaliadas periodicamente. O grau de exigência é indicado em escala de 1 a 5 (● preenchido = esperado no nível máximo).</p>
+
+      <div class="card">
+        <div class="card-title">Competências comportamentais</div>
+        <div class="comp-grid">
+          <div class="comp-card"><div class="comp-name">Liderança de equipe comercial</div><div class="comp-desc">Desenvolver, cobrar e motivar vendedores com método — construindo cultura de resultado e não de pressão.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Comunicação executiva</div><div class="comp-desc">Apresentar relatórios, análises e planos de ação ao gerente comercial com clareza e objetividade.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Orientação a resultados</div><div class="comp-desc">Manter o foco nas metas da equipe mesmo diante de demandas operacionais urgentes.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Negociação</div><div class="comp-desc">Apoiar e conduzir negociações complexas com clientes estratégicos dentro dos parâmetros da empresa.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Análise de dados comerciais</div><div class="comp-desc">Interpretar KPIs, identificar padrões e propor ações com base em dados — não em intuição.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Gestão de conflitos</div><div class="comp-desc">Mediar conflitos internos da equipe e entre equipe e outros setores com equilíbrio e critério.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div><div class="star"></div></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Competências organizacionais</div>
+        <div class="comp-grid">
+          <div class="comp-card"><div class="comp-name">Comprometimento</div><div class="comp-desc">Assumir os resultados da equipe como responsabilidade própria — não atribuir a fatores externos.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Autogerenciamento</div><div class="comp-desc">Organizar a própria agenda e a da equipe sem necessidade de supervisão minuciosa do gerente.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Equilíbrio emocional</div><div class="comp-desc">Manter a serenidade diante de meses de baixo resultado ou pressão do gerente.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Disciplina com processos</div><div class="comp-desc">Garantir que a equipe siga o processo comercial definido — CRM atualizado, abordagem padronizada e metas monitoradas.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Proatividade</div><div class="comp-desc">Identificar desvios e propor ações antes que o gerente precise solicitar.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div></div></div>
+          <div class="comp-card"><div class="comp-name">Visão estratégica</div><div class="comp-desc">Entender a direção do negócio e traduzir para o dia a dia da equipe com clareza.</div><div class="stars"><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star  on"></div><div class="star"></div></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Requisitos técnicos do cargo</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <p style="font-size:12px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem;">Conhecimentos</p>
+            <ul class="check-list"><li>Formação em Administração, Marketing, Gestão Comercial ou afins</li><li>Gestão de equipes comerciais e métricas de vendas (conversão, ticket médio, churn)</li><li>CRM e ferramentas de gestão de carteira de clientes</li><li>Técnicas avançadas de vendas, negociação e gestão de objeções</li><li>Análise de indicadores comerciais e elaboração de relatórios de performance</li><li>Conhecimento do segmento alimentício B2B é diferencial relevante</li></ul>
+          </div>
+          <div>
+            <p style="font-size:12px;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem;">Habilidades práticas</p>
+            <ul class="check-list"><li>Liderança e desenvolvimento de equipes de televendas ou comercial interno</li><li>Análise e apresentação de KPIs comerciais com plano de ação</li><li>Gestão e curadoria de CRM com visão de carteira</li><li>Suporte a negociações complexas e aprovação de condições especiais</li><li>Elaboração de relatórios de inteligência de mercado</li><li>Planejamento de metas e acompanhamento de performance individual e coletiva</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="section" id="sec-kpi">
+      <div class="sec-header">
+        <div class="sec-icon">📊</div>
+        <h2>Indicadores de desempenho (KPIs)</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">Seu desempenho será avaliado em 3 pilares: <strong>resultado da equipe, processo comercial e desenvolvimento de pessoas</strong>. Os 5 KPIs abaixo refletem o que o gerente comercial espera da coordenação neste momento de reestruturação do setor.</p>
+      <div class="kpi-item"><div class="kpi-badge">1</div><div><div class="kpi-label">Meta coletiva de vendas da equipe</div><div class="kpi-meta"><strong>Meta:</strong> ≥ 100% da meta mensal de faturamento da equipe de Televendas sob sua coordenação<br><strong>Como medir:</strong> Relatório mensal de faturamento consolidado — apurado pelo financeiro e apresentado ao gerente comercial</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">2</div><div><div class="kpi-label">Novos clientes convertidos pela equipe por mês</div><div class="kpi-meta"><strong>Meta:</strong> ≥ 5 novos clientes ativos por vendedor por mês (meta individual monitorada coletivamente)<br><strong>Como medir:</strong> CRM / planilha de prospecção — registro de 1ª compra por vendedor, consolidado pelo coordenador</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">3</div><div><div class="kpi-label">Índice de churn da carteira</div><div class="kpi-meta"><strong>Meta:</strong> ≤ 5% de churn mensal (clientes que compraram no mês anterior e não compraram neste)<br><strong>Como medir:</strong> Relatório de atividade da carteira — comparativo mês a mês pelo financeiro, consolidado pelo coordenador</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">4</div><div><div class="kpi-label">Conformidade de processo comercial</div><div class="kpi-meta"><strong>Meta:</strong> ≥ 95% das vendas realizadas dentro dos parâmetros de preço, prazo e condição aprovados<br><strong>Como medir:</strong> Auditoria mensal de pedidos pelo financeiro — verificação de desvio de condição por vendedor</div></div></div>
+      <div class="kpi-item"><div class="kpi-badge">5</div><div><div class="kpi-label">Feedbacks estruturados com a equipe</div><div class="kpi-meta"><strong>Meta:</strong> 100% dos membros da equipe com pelo menos 1 feedback formal por mês documentado no RH<br><strong>Como medir:</strong> Registro de feedbacks no RH — verificado mensalmente pela gestora de RH</div></div></div>
+
+      <div class="card" style="margin-top:1rem;">
+        <div class="card-title">Indicadores de gestão — complementares</div>
+        <ul class="check-list"><li>Relatório semanal de performance entregue ao gerente comercial sem atraso</li><li>100% do CRM da equipe auditado e sem pendências no final de cada semana</li><li>Zero pedidos com condição especial aprovada sem validação do financeiro e do gerente</li><li>Nenhum vendedor com queda de performance por 2 meses consecutivos sem plano de ação ativo</li></ul>
+      </div>
+
+      <div class="hl-green" style="margin-top:1rem;">
+        <div class="hl-title">Avaliação de desempenho</div>
+        <p>Você terá acesso ao <strong>Painel de Avaliação do Coordenador Comercial</strong>, onde a apuração mensal de cada indicador ficará registrada. A avaliação acontece mensalmente e os resultados são discutidos com Gerente Comercial. O RH é o ponto de contato para dúvidas sobre o processo avaliativo.</p>
+      </div>
+    </div>
+
+    <!-- PLANO 30/60/90 -->
+    <div class="section" id="sec-plan">
+      <div class="sec-header">
+        <div class="sec-icon">📅</div>
+        <h2>Plano de imersão — primeiros 90 dias</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem;">Este roteiro orienta sua jornada de entrada. Cada fase tem foco diferente: <strong>entender o setor → estruturar o processo → liderar com resultado</strong>. Ao final dos 90 dias, você apresentará um relatório completo à sua liderança.</p>
+
+      <div class="plan-grid">
+        <div class="plan-phase">
+          <div class="plan-header p1"><strong>Fase 1 — Diagnóstico Comercial</strong><small>Dias 1 a 30</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Imersão na carteira de clientes atual: volume, segmento, frequência e histórico de compra</div>
+            <div class="plan-task">Entrevista individual com cada membro da equipe de Televendas: perfil, percepção e desafios</div>
+            <div class="plan-task">Análise dos últimos 3 meses de faturamento por vendedor e por segmento</div>
+            <div class="plan-task">Mapeamento do estado atual do CRM: completude, atualização e gaps</div>
+            <div class="plan-task">Entendimento das condições comerciais vigentes e limites de negociação</div>
+            <div class="plan-task">Alinhamento com o gerente comercial sobre metas, estratégia e prioridades</div>
+            <div class="plan-task">1ª reunião de feedback informal com cada vendedor ao fim do mês</div>
+          </div>
+        </div>
+        <div class="plan-phase">
+          <div class="plan-header p2"><strong>Fase 2 — Estruturação do Processo</strong><small>Dias 31 a 60</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Implantação da rotina de briefing matinal da equipe comercial</div>
+            <div class="plan-task">Padronização do uso do CRM com regras claras de registro e atualização</div>
+            <div class="plan-task">Início dos feedbacks quinzenais estruturados com cada vendedor</div>
+            <div class="plan-task">Entrega do 1º relatório semanal de performance ao gerente comercial</div>
+            <div class="plan-task">Identificação e plano de ação para os vendedores abaixo da meta</div>
+            <div class="plan-task">Mapeamento de oportunidades de expansão de carteira para o gerente</div>
+            <div class="plan-task">1ª apuração formal de KPIs com o gerente comercial ao fim de 60 dias</div>
+          </div>
+        </div>
+        <div class="plan-phase">
+          <div class="plan-header p3"><strong>Fase 3 — Resultado e Liderança</strong><small>Dias 61 a 90</small></div>
+          <div class="plan-body">
+            <div class="plan-task">Equipe atingindo ou próxima da meta coletiva de vendas</div>
+            <div class="plan-task">CRM auditado e atualizado semanalmente pela equipe</div>
+            <div class="plan-task">100% dos feedbacks mensais realizados e documentados</div>
+            <div class="plan-task">Relatório de inteligência de mercado entregue ao gerente com base em dados reais</div>
+            <div class="plan-task">Planos de desenvolvimento individuais ativos para cada vendedor</div>
+            <div class="plan-task">Apresentação do diagnóstico comercial e proposta de estrutura para o gerente</div>
+            <div class="plan-task">Avaliação formal de 90 dias com gerente comercial e RH</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Entrega esperada ao fim dos 90 dias</div>
+        <p>Um setor comercial <strong>com processo estruturado e equipe gerenciada</strong>: CRM atualizado, metas monitoradas, feedbacks realizados, relatório de performance semanal funcionando e o gerente comercial com mais tempo para estratégia — porque a gestão operacional do setor está nas suas mãos.</p>
+      </div>
+    </div>
+
+    <!-- O QUE ESPERAMOS -->
+    <div class="section" id="sec-esp">
+      <div class="sec-header">
+        <div class="sec-icon">🎯</div>
+        <h2>O que a Vitta Rio espera de você</h2>
+      </div>
+
+      <div class="card">
+        <div class="expect-item"><div class="expect-icon">🔓</div><div><div class="expect-title">Liberar o gerente para a estratégia — este é o seu papel principal</div><div class="expect-desc">O gerente comercial não pode passar o dia gerenciando a equipe. Esperamos que você assuma completamente a gestão operacional do setor — para que ele possa dedicar tempo a clientes estratégicos, expansão e desenvolvimento de negócios.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">📈</div><div><div class="expect-title">Resultados da equipe são seus resultados</div><div class="expect-desc">Não adianta você ser bom tecnicamente se a equipe não bate meta. Esperamos que você entenda que os números da equipe são os seus números — e que não haja desculpa para resultado coletivo ruim sem diagnóstico e ação.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">📋</div><div><div class="expect-title">Processo antes de pressão</div><div class="expect-desc">Vendedores que não têm processo não sabem o que fazer diferente quando estão abaixo da meta. Esperamos que você construa o processo primeiro e cobre depois — com critério e com coaching.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">🔍</div><div><div class="expect-title">Desvio identificado na primeira semana — não na última</div><div class="expect-desc">Meta não cumprida no fim do mês depois de 3 semanas de sinal vermelho ignorado é falha de coordenação. Esperamos que você monitore o ritmo diariamente e aja no início do mês, não no fim.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">🤝</div><div><div class="expect-title">Interface ativa com operação e financeiro</div><div class="expect-desc">Venda que a operação não consegue entregar ou financeiro não aprova gera problema para o cliente e para a empresa. Esperamos que você seja o filtro que garante que o que é vendido pode ser cumprido.</div></div></div>
+        <div class="expect-item"><div class="expect-icon">📊</div><div><div class="expect-title">Dados, não percepção</div><div class="expect-desc">Esperamos relatórios baseados em números reais — não em 'a equipe está bem' ou 'este mês foi difícil'. O gerente toma decisões com os dados que você apresenta.</div></div></div>
+      </div>
+
+      <div class="hl-green">
+        <div class="hl-title">Uma mensagem direta</div>
+        <p>O gerente comercial está construindo o setor do zero e precisa de um coordenador em quem confiar a gestão do dia a dia. Você chega numa posição de alta responsabilidade e alta visibilidade — o que você entregar nos primeiros 90 dias vai definir a percepção do setor sobre esse cargo. O RH e a gerência estão disponíveis. Seja bem-vindo.</p>
+      </div>
+
+      <div class="footer">
+        🌿 Vitta Rio — Distribuidora de Hortifruti · Qualidade, compromisso e resultado em cada entrega.<br><br>
+        <strong>Vitta Rio Distribuidora de Hortifruti</strong> · Documento interno de uso exclusivo do colaborador e do RH · Revisão 00 · Jun/2026
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function goTo(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
