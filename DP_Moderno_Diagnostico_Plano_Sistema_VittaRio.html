@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP Moderno — Diagnóstico, Plano e Sistema · Vitta Rio</title>
+<style>
+  :root{
+    --green:#1A6B38; --green-d:#12502a; --orange:#D97B25; --orange-d:#b9621a;
+    --ink:#23302a; --muted:#5c6b62; --line:#e3e8e3; --bg:#f4f7f4; --card:#ffffff;
+    --soft:#eef3ee; --warn-bg:#fff6ec; --warn-line:#f0cfa3;
+    --shadow:0 1px 2px rgba(16,40,24,.06),0 8px 24px rgba(16,40,24,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 22px 90px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px;
+    letter-spacing:.10em;text-transform:uppercase;color:var(--orange)}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--orange);display:inline-block}
+  h1{font-size:36px;line-height:1.1;margin:14px 0 10px;letter-spacing:-.02em}
+  h1 span{color:var(--green)}
+  .sub{font-size:17px;color:var(--muted);max-width:64ch;margin:0 0 8px}
+  .meta{font-size:12.5px;color:var(--muted);margin:0 0 30px}
+  h2{font-size:23px;letter-spacing:-.01em;margin:46px 0 4px;display:flex;align-items:baseline;gap:12px}
+  h2 b{color:var(--orange);font-size:15px;font-weight:700}
+  .h2sub{color:var(--muted);font-size:15px;margin:0 0 18px}
+  p{margin:0 0 14px;font-size:15.5px}
+  .lead{background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--green);
+    border-radius:12px;padding:18px 20px;font-size:16px}
+  .lead b{color:var(--green-d)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+    margin:0 0 12px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:17px;color:var(--green-d);display:flex;gap:10px;align-items:baseline}
+  .card h3 i{font-style:normal;font-weight:700;color:var(--orange);font-size:15px}
+  .card p{margin:0;font-size:14.5px;color:var(--ink)}
+  .grid{display:grid;gap:12px}
+  .rec{background:#eef5ef;border:1px solid #cfe3d6;border-radius:12px;padding:16px 18px;margin:14px 0;font-size:14.5px}
+  .rec b{color:var(--green-d)}
+  .warn{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;padding:16px 18px;margin:14px 0;font-size:14.5px}
+  .warn b{color:var(--orange-d)}
+  .pick{border:2px solid var(--green);border-radius:14px;padding:18px 20px;margin:0 0 12px;background:#fff;position:relative;box-shadow:var(--shadow)}
+  .pick .badge{position:absolute;top:-11px;left:18px;background:var(--green);color:#fff;font-size:11px;
+    font-weight:700;letter-spacing:.05em;padding:3px 10px;border-radius:99px;text-transform:uppercase}
+  .pick h3{margin:6px 0 6px;font-size:18px}
+  .alt{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:0 0 12px;background:#fff}
+  .alt h3{margin:0 0 4px;font-size:16px;color:var(--green-d)}
+  ul{margin:8px 0;padding-left:22px} li{margin:6px 0;font-size:14.5px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:var(--green);color:#fff;font-weight:700}
+  td b{color:var(--green-d)}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;
+    background:#eef5ef;color:var(--green-d);border:1px solid #cfe3d6;margin-right:6px}
+  .check li{list-style:none;position:relative;padding-left:6px}
+  .check{padding-left:14px}
+  .check li::before{content:"○";position:absolute;left:-14px;color:var(--orange);font-weight:700}
+  .foot{text-align:center;color:var(--muted);font-size:12.5px;margin:50px 0 0;border-top:1px solid var(--line);padding-top:18px}
+  @media (max-width:560px){ h1{font-size:28px} h2{font-size:20px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow">Vitta Rio · Gestão de Pessoas · Departamento Pessoal</span>
+  <h1>DP moderno: <span>diagnóstico, plano e sistema</span></h1>
+  <p class="sub">Por que o setor virou um caos manual, o que precisa mudar e qual caminho de sistema seguir — em linguagem clara, para decidir e para a equipe aprender.</p>
+  <p class="meta">Documento de trabalho · uso interno do RH</p>
+
+  <p class="lead"><b>A mensagem em uma frase:</b> o caos que você sentiu não vem da quantidade de tarefas — vem de o DP não ter <b>uma fonte única de dados</b> nem um <b>sistema integrado</b>. Por isso a mesma informação é redigitada à mão em mais de 13 planilhas, e tudo anda por e-mail, WhatsApp, papel e impressão. Resolver isso é antes organização e ferramenta certa; não é "programar um software do zero".</p>
+
+  <h2><b>01</b> O que está acontecendo</h2>
+  <p class="h2sub">Você não se perdeu por falta de capacidade. O setor está objetivamente desorganizado — e isso tem explicação.</p>
+  <p>O DP da Vitta Rio cresceu junto com a empresa, mas sem processo, sem padronização e sem sistema. O resultado é um setor que faz manualmente, repetidamente e em três empresas separadas (Vitta, Eunice, Solution) um trabalho que ferramentas modernas fazem em uma fração do tempo. A sua assistente não consegue organizar o próprio raciocínio porque o trabalho dela nunca foi escrito nem desenhado — ele só existe na memória e na repetição.</p>
+
+  <h2><b>02</b> As 5 causas-raiz do caos</h2>
+  <p class="h2sub">Atacar a causa, não o sintoma. Toda a desorganização que você viu sai destas cinco raízes.</p>
+  <div class="grid">
+    <div class="card"><h3><i>1</i> Sem fonte única de verdade</h3><p>O mesmo dado (nome, CPF, empresa, cargo) é digitado à mão em mais de 13 planilhas. Cada planilha recomeça do zero. Isso multiplica trabalho, divergência e erro — é a raiz principal.</p></div>
+    <div class="card"><h3><i>2</i> Tudo flui por canais soltos</h3><p>Os dados andam por e-mail, WhatsApp, papel e impressão entre DP, Elaine, Financeiro, contabilidade e líderes. Nada conversa com nada; cada transferência é manual e re-digitada.</p></div>
+    <div class="card"><h3><i>3</i> As ferramentas existem, mas são subutilizadas</h3><p>Control iD, Flash e AlterData fazem muito mais do que está sendo usado — importação em lote, extrato por período, pedido em massa, exportação em TXT. Hoje se faz 1 a 1 o que a ferramenta resolve de uma vez.</p></div>
+    <div class="card"><h3><i>4</i> Três empresas multiplicam tudo por três</h3><p>Cada rotina é refeita para Vitta, Eunice e Solution. Sem um sistema que trate vários CNPJs juntos, o volume de trabalho triplica sozinho.</p></div>
+    <div class="card"><h3><i>5</i> O conhecimento mora numa cabeça só</h3><p>As regras (banco de horas, exceções, cálculos) estão só na memória da assistente. Sem procedimentos escritos, nada é transferível nem auditável — e fica impossível ela organizar um raciocínio que nunca foi posto no papel.</p></div>
+  </div>
+
+  <h2><b>03</b> O que é "um sistema" — de verdade</h2>
+  <p class="h2sub">Você disse não ter conhecimento de sistemas. Então vamos desmistificar: "sistema" não é um software mágico. São 4 camadas trabalhando juntas.</p>
+  <table>
+    <tr><th>Camada</th><th>O que é</th><th>Onde vocês estão</th></tr>
+    <tr><td><b>1. Base única</b></td><td>Um cadastro mestre de pessoas. A fonte da verdade. Tudo puxa daqui.</td><td>Não existe — é a peça que falta. <span class="tag">posso construir já</span></td></tr>
+    <tr><td><b>2. Ferramentas operacionais</b></td><td>Ponto, benefícios, folha, admissão, férias.</td><td>Já têm Control iD (ponto) e Flash (benefícios).</td></tr>
+    <tr><td><b>3. Integrações</b></td><td>A "cola" que faz as ferramentas conversarem em vez de você copiar e colar.</td><td>Quase inexistente — daí o re-trabalho.</td></tr>
+    <tr><td><b>4. Procedimentos (POPs)</b></td><td>O passo a passo escrito. Sem isso, nenhum sistema se sustenta.</td><td>Já começamos: POP do Flash e da Folha.</td></tr>
+  </table>
+  <div class="rec"><b>O ponto-chave:</b> a maior parte do ganho vem das camadas <b>1</b> e <b>4</b> — que <b>não custam licença de software</b>. Comprar um sistema (camada 2/3) acelera muito, mas só rende de verdade depois que a base e os procedimentos existem. Por isso a ordem importa.</div>
+
+  <h2><b>04</b> "Você consegue montar um sistema pra gente?"</h2>
+  <p class="h2sub">Resposta honesta, dividida em duas partes.</p>
+  <p><b>O que eu posso construir para vocês (e recomendo começar já):</b> a <b>Base Única de Pessoas</b> — uma planilha mestra, na identidade da Vitta, que vira a fonte de verdade do DP. Um cadastro por colaborador (nome, CPF, empresa, cargo, admissão, salário, VT, benefícios, escala) de onde as outras planilhas passam a puxar, em vez de redigitar. É o mesmo tipo de automação que você já tem no R&S (Google Sheets + script). Isso elimina a causa-raiz nº 1 sem custo de licença.</p>
+  <p><b>O que NÃO faz sentido eu "programar do zero":</b> um software de folha/ponto/benefícios. Construir e manter isso leva anos, exige conformidade legal (CLT, eSocial) e já existe pronto no mercado, barato, por assinatura. Programar do zero seria reinventar — e caro — o que dá para assinar.</p>
+  <div class="warn"><b>Importante sobre a folha:</b> a folha de pagamento de vocês é calculada pela <b>contabilidade externa (via AlterData)</b>. Vocês <b>não</b> precisam comprar um motor de folha. O que falta é a camada de <b>DP/operacional</b> (ponto, benefícios, admissão, férias, base única) que entregue dados limpos para a contabilidade. Isso reduz o escopo — e o custo — do que precisa ser contratado.</div>
+
+  <h2><b>05</b> A recomendação de sistema</h2>
+  <p class="h2sub">Com a folha ficando na contabilidade, o que vocês precisam é de uma plataforma de gestão de pessoas/DP. Há uma escolha natural.</p>
+
+  <div class="pick">
+    <span class="badge">Caminho recomendado</span>
+    <h3>Expandir o Flash que vocês já usam (Flash Gestão de Pessoas)</h3>
+    <p>O Flash, hoje usado só para benefícios, virou uma plataforma completa de RH/DP — com admissão digital, controle de ponto, férias, organograma e relatórios, tratando <b>vários CNPJs juntos</b> e exportando em xlsx/PDF/CSV/TXT. Por quê este é o caminho mais inteligente para vocês:</p>
+    <ul>
+      <li><b>Menor curva de aprendizado:</b> sua assistente já opera o Flash todos os dias. Expandir o que ela conhece é muito mais fácil do que ensinar um sistema novo — e esse é o seu maior limitador.</li>
+      <li><b>Resolve as 3 empresas:</b> é multi-CNPJ de fábrica.</li>
+      <li><b>Cobre as dores certas:</b> ponto, admissão e férias são exatamente os processos mais manuais hoje.</li>
+      <li><b>Conversa com a contabilidade:</b> exporta TXT/planilha para o AlterData — o handoff da folha deixa de ser manual.</li>
+      <li><b>Unifica benefícios + pessoas:</b> a mesma base que paga benefícios pode alimentar o resto, encolhendo o ciclo "planilha → pedido no Flash → relatório → financeiro".</li>
+    </ul>
+  </div>
+
+  <p style="margin:18px 0 8px;font-weight:700;color:var(--green-d)">Alternativas para comparar nas demos (sempre cotar 2 a 3):</p>
+  <div class="alt"><h3>Convenia</h3><p>Plataforma de RH/DP feita para PMEs, com foco em departamento pessoal e integração com contabilidade. Boa referência de mercado para o seu porte.</p></div>
+  <div class="alt"><h3>Sólides</h3><p>All-in-one de RH/DP com forte inteligência comportamental (perfil/Profiler) — casa bem com a sua gestão por competências. Mais robusta na parte estratégica de RH.</p></div>
+  <div class="alt"><h3>TOTVS / Senior (provável exagero por ora)</h3><p>Sistemas corporativos completos, porém pesados e caros para 130 pessoas. Guardar para quando a empresa for bem maior.</p></div>
+
+  <div class="rec"><b>Antes de decidir, confirme com a contabilidade</b> qual formato de importação o AlterData aceita (TXT/eSocial). O sistema que vocês escolherem deve exportar exatamente nesse formato — isso é o que elimina a digitação dupla no fechamento.</div>
+
+  <p style="margin:18px 0 8px;font-weight:700;color:var(--green-d)">Perguntas para fazer em toda demonstração:</p>
+  <ul class="check">
+    <li>Trata vários CNPJs (Vitta, Eunice, Solution) numa conta só?</li>
+    <li>Exporta para a contabilidade no formato do AlterData? Em TXT/eSocial?</li>
+    <li>O ponto integra com a folha e com os benefícios? Migra o que já existe no Control iD?</li>
+    <li>Como é a cobrança — por colaborador ativo/mês? Tem custo de implantação?</li>
+    <li>A implantação inclui treinamento da equipe? Suporte em português?</li>
+    <li>Atende LGPD e controla acessos por pessoa (sem senha compartilhada)?</li>
+  </ul>
+  <p style="font-size:13.5px;color:var(--muted)">Sobre custo: ferramentas de DP para PME costumam cobrar por colaborador ativo por mês, então o investimento é uma assinatura mensal proporcional ao quadro (~130 pessoas). Os valores variam e se negociam — por isso a regra é trazer 2-3 orçamentos, não um número fixo.</p>
+
+  <h2><b>06</b> O plano em 3 horizontes</h2>
+  <p class="h2sub">Mudança drástica não significa mudança de uma vez. Significa uma sequência certa, da organização barata ao sistema integrado.</p>
+  <table>
+    <tr><th>Horizonte</th><th>O que fazer</th><th>Resultado</th></tr>
+    <tr><td><b>1 · 0–60 dias</b><br>Organizar sem comprar nada</td><td>Construir a Base Única de Pessoas; escrever os POPs (Flash, Folha, Ponto); ligar os recursos que já existem (Extrato por Período, TXT, pedido em massa no Flash, importação no Control iD).</td><td>A re-digitação cai; o fechamento acelera; a assistente passa a ter um "mapa" para seguir.</td></tr>
+    <tr><td><b>2 · 2–6 meses</b><br>Ferramenta integrada</td><td>Fazer as demos (Flash People / Convenia / Sólides), escolher e implantar ponto + admissão + férias + base, conectando à contabilidade.</td><td>Fim das planilhas soltas; os dados passam a conversar; menos erro e menos idas e vindas.</td></tr>
+    <tr><td><b>3 · 6–12 meses</b><br>Plataforma e autonomia</td><td>Benefícios, ponto e DP num só lugar, exportando limpo para a contabilidade; a assistente operando com autonomia sobre os POPs.</td><td>DP moderno, automatizado e auditável — e o RH livre para o estratégico.</td></tr>
+  </table>
+
+  <h2><b>07</b> Como mudar sem travar a assistente</h2>
+  <p class="h2sub">Toda mudança precisa ser absorvível por quem tem dificuldade de aprender. Esta é a regra de ouro do projeto.</p>
+  <ul>
+    <li><b>Uma mudança por vez.</b> Nunca mexer em várias rotinas juntas. Estabiliza uma, depois passa para a próxima.</li>
+    <li><b>Cada mudança vira um POP visual</b> — como os que já fizemos. Ela aprende <b>vendo</b> o passo a passo, não decorando.</li>
+    <li><b>"Definição de pronto" clara</b> em cada processo: ela sabe sozinha quando terminou certo, sem precisar te perguntar a cada etapa.</li>
+    <li><b>Acompanhamento na 1:1 semanal.</b> Os ajustes acontecem no ritmo da reunião, não no susto do erro.</li>
+    <li><b>Começar pela rotina que mais dói</b> (o ponto manual dos motoristas 12x36): o ganho é sentido logo e gera confiança para o resto.</li>
+  </ul>
+
+  <h2><b>08</b> O que levar para a Fabiane</h2>
+  <p class="h2sub">Enquadre como redução de risco e liberação do time — não como "mais um gasto".</p>
+  <div class="grid">
+    <div class="card"><h3>O problema</h3><p>O DP é manual porque não tem fonte única nem sistema integrado. Isso consome o time inteiro e gera risco trabalhista (erro de folha, falta de rastro, passivo).</p></div>
+    <div class="card"><h3>A proposta</h3><p>Horizonte 1 não custa licença (organização interna, feita por nós). Horizonte 2 exige escolher um sistema — assinatura mensal por colaborador. Trago 2-3 orçamentos para comparar.</p></div>
+    <div class="card"><h3>A decisão que peço</h3><p>Autorização para fazer as demos e um teto de investimento mensal para o sistema de DP. Com isso, sigo para a escolha e a implantação.</p></div>
+  </div>
+
+  <p class="foot">Vitta Rio · Gestão de Pessoas — Departamento Pessoal · Diagnóstico, Plano e Sistema · v1</p>
+</div>
+</body>
+</html>
