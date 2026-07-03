@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxo de Controle de Estoque de Uniformes — Vitta Rio RH</title>
+<style>
+  :root{
+    --green:#1A6B38;
+    --green-dark:#124d28;
+    --green-light:#E8F3EC;
+    --orange:#D97B25;
+    --orange-light:#FBEADD;
+    --ink:#232323;
+    --muted:#6b6b6b;
+    --line:#e4e2dc;
+    --paper:#FBFAF7;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  .topbar{
+    background:var(--green);
+    color:#fff;
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:20;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  }
+  .topbar .brand{font-weight:700;letter-spacing:.3px;font-size:15px;}
+  .topbar .brand span{opacity:.85;font-weight:400;}
+  .progress-wrap{display:flex;align-items:center;gap:10px;font-size:13px;}
+  .progress-track{width:130px;height:6px;background:rgba(255,255,255,.25);border-radius:6px;overflow:hidden;}
+  .progress-bar{height:100%;background:var(--orange);width:0%;transition:width .3s ease;}
+  main{max-width:880px;margin:0 auto;padding:36px 20px 80px;}
+  h1{
+    font-size:clamp(26px,4vw,36px);
+    margin:6px 0 8px;
+    color:var(--green-dark);
+    line-height:1.15;
+  }
+  .lede{color:var(--muted);font-size:16px;max-width:680px;margin-bottom:26px;}
+  .intro-box{
+    background:var(--green-light);
+    border-left:4px solid var(--green);
+    border-radius:8px;
+    padding:16px 20px;
+    font-size:14.5px;
+    margin-bottom:28px;
+  }
+  .intro-box b{color:var(--green-dark);}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px;}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12.5px;font-weight:600;
+    padding:6px 12px;border-radius:20px;
+  }
+  .pill.rh{background:var(--green-light);color:var(--green-dark);}
+  .pill.colab{background:var(--orange-light);color:#9a5416;}
+  .pill.both{background:linear-gradient(90deg,var(--green-light) 50%, var(--orange-light) 50%);color:#3a3a3a;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .rh .dot{background:var(--green);}
+  .colab .dot{background:var(--orange);}
+  .both .dot{background:linear-gradient(90deg,var(--green),var(--orange));}
+
+  .step{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-bottom:14px;
+    overflow:hidden;
+    transition:box-shadow .2s ease, border-color .2s ease;
+  }
+  .step[open]{border-color:var(--green);box-shadow:0 6px 24px rgba(26,107,56,0.09);}
+  .step summary{
+    list-style:none;
+    cursor:pointer;
+    padding:18px 20px;
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+  }
+  .step summary::-webkit-details-marker{display:none;}
+  .num{
+    flex:0 0 auto;
+    width:36px;height:36px;
+    border-radius:50%;
+    background:var(--green);
+    color:#fff;
+    font-weight:700;
+    font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step[open] .num{background:var(--orange);}
+  .step-head{flex:1;}
+  .step-head .title-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:4px;}
+  .step-head h3{margin:0;font-size:17px;color:var(--ink);}
+  .badge{
+    font-size:11px;font-weight:700;letter-spacing:.3px;
+    padding:3px 9px;border-radius:20px;white-space:nowrap;
+  }
+  .badge.rh{background:var(--green-light);color:var(--green-dark);}
+  .badge.colab{background:var(--orange-light);color:#9a5416;}
+  .badge.both{background:#EFEAF2;color:#5b4a73;}
+  .step-head p{margin:0;color:var(--muted);font-size:14px;}
+  .chevron{
+    flex:0 0 auto;margin-left:auto;
+    width:22px;height:22px;color:var(--muted);
+    transition:transform .2s ease;
+    margin-top:6px;
+  }
+  .step[open] .chevron{transform:rotate(180deg);color:var(--orange);}
+
+  .step-body{
+    padding:0 20px 26px 72px;
+    font-size:14.5px;
+    color:#333;
+  }
+  .step-body h4{
+    color:var(--green-dark);
+    font-size:14.5px;
+    margin:22px 0 10px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .step-body h4:first-child{margin-top:4px;}
+  .step-body ul{margin:0 0 4px;padding-left:20px;}
+  .step-body li{margin-bottom:7px;}
+  .step-body p{margin:0 0 10px;}
+  .tip{
+    background:var(--orange-light);
+    border-left:4px solid var(--orange);
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:13.8px;
+    margin:14px 0;
+  }
+  .tip b{color:#9a5416;}
+  .example{
+    background:#F4F6F4;
+    border:1px dashed #b9c9bd;
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:13.8px;
+    margin:14px 0;
+  }
+  .example b{color:var(--green-dark);}
+  .mini-flow{
+    display:flex;flex-wrap:wrap;gap:8px;
+    margin:12px 0 16px;
+  }
+  .mini-flow span{
+    background:var(--green-light);
+    color:var(--green-dark);
+    font-size:12.5px;font-weight:600;
+    padding:6px 12px;border-radius:8px;
+  }
+  .mini-flow .arrow{background:none;color:var(--muted);padding:6px 0;}
+  table.simple{width:100%;border-collapse:collapse;margin:12px 0 16px;font-size:13.5px;}
+  table.simple th, table.simple td{border:1px solid var(--line);padding:8px 10px;text-align:left;}
+  table.simple th{background:var(--green-light);color:var(--green-dark);}
+  .checklist{list-style:none;padding-left:0;}
+  .checklist li{padding-left:26px;position:relative;margin-bottom:9px;}
+  .checklist li::before{
+    content:"";
+    position:absolute;left:0;top:2px;
+    width:16px;height:16px;
+    border:2px solid var(--green);
+    border-radius:4px;
+  }
+  .closing{
+    margin-top:30px;
+    background:var(--green-light);
+    border-radius:12px;
+    padding:20px 22px;
+    font-size:14.5px;
+    color:#2c2c2c;
+  }
+  .closing b{color:var(--green-dark);}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;padding:30px 0 10px;}
+  @media (max-width:560px){
+    .step-body{padding-left:20px;}
+    .num{width:30px;height:30px;font-size:13px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Vitta Rio <span>· RH</span></div>
+  <div class="progress-wrap">
+    <span id="progress-label">0 de 8 etapas abertas</span>
+    <div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div>
+  </div>
+</div>
+
+<main>
+  <h1>Fluxo de controle de estoque de uniformes</h1>
+  <p class="lede">Guia prático e didático para entender e aplicar cada etapa do processo — do recebimento da nota fiscal à conferência mensal. Clique em cada etapa para expandir o conteúdo.</p>
+
+  <div class="intro-box">
+    <b>Antes de começar:</b> controlar estoque de uniformes significa saber, a qualquer momento, <b>quanto entrou, quanto saiu, quanto sobra e para quem foi entregue</b> — com prova documental de cada movimentação. Não é sobre decorar processo de logística complexo: é sobre criar o hábito de registrar cada entrada e cada saída, sempre, sem exceção. Se isso virar rotina, o controle nunca falha.
+  </div>
+
+  <div class="legend">
+    <span class="pill rh"><span class="dot"></span>Responsabilidade do RH</span>
+    <span class="pill colab"><span class="dot"></span>Responsabilidade do colaborador</span>
+    <span class="pill both"><span class="dot"></span>RH + colaborador juntos</span>
+  </div>
+
+  <!-- STEP 1 -->
+  <details class="step">
+    <summary>
+      <div class="num">1</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Recebimento da mercadoria</h3>
+          <span class="badge rh">RH ›</span>
+        </div>
+        <p>O uniforme chega na empresa — antes de guardar qualquer coisa, é preciso registrar que ele chegou.</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>💡 O que é e por que fazer?</h4>
+      <p>Todo lote de uniformes chega acompanhado de uma <b>nota fiscal (NF)</b>. O primeiro erro que gera "sumiço" de estoque acontece exatamente aqui: alguém recebe a caixa, guarda na sala e não anota nada. A partir daí, ninguém mais sabe exatamente quanto entrou.</p>
+      <p>A regra é simples: <b>nada entra na sala de estoque sem antes virar uma linha na planilha</b>, na aba <b>ENTRADAS_NF</b>.</p>
+
+      <h4>📋 O que anotar assim que o material chega</h4>
+      <ul>
+        <li><b>Data do recebimento</b> — o dia em que a mercadoria fisicamente chegou</li>
+        <li><b>Número da nota fiscal</b> — está sempre no cabeçalho do documento do fornecedor</li>
+        <li><b>Nome do fornecedor</b></li>
+        <li><b>Quantos volumes/caixas</b> chegaram, mesmo antes de abrir</li>
+      </ul>
+
+      <div class="tip"><b>Dica:</b> mantenha a nota fiscal física (ou o PDF) guardada junto com o registro. Se precisar, anote na planilha onde a NF está arquivada — isso evita ter que procurar depois.</div>
+
+      <h4>➡️ O que vem a seguir</h4>
+      <p>Com a mercadoria recebida e a NF em mãos, o próximo passo é abrir as caixas e <b>conferir</b> — é o que garantimos na Etapa 2.</p>
+    </div>
+  </details>
+
+  <!-- STEP 2 -->
+  <details class="step">
+    <summary>
+      <div class="num">2</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Conferência física x nota fiscal</h3>
+          <span class="badge rh">RH ›</span>
+        </div>
+        <p>Abrir, contar e confirmar se o que chegou bate exatamente com o que está escrito na nota fiscal.</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>💡 O que é e por que fazer?</h4>
+      <p>Conferir é abrir cada volume e contar item por item, tamanho por tamanho, comparando com o que a nota fiscal diz que deveria ter dentro. É a etapa que evita pagar por algo que não veio completo e é a única forma de garantir que o número que entra na planilha é real — não o número que "deveria" ter vindo.</p>
+
+      <h4>📋 Passo a passo da conferência</h4>
+      <ol class="checklist">
+        <li>Separe os itens por categoria e tamanho antes de contar (ex.: todas as camisas P juntas, todas as M juntas)</li>
+        <li>Conte fisicamente cada grupo</li>
+        <li>Compare com a quantidade descrita na nota fiscal para aquele item</li>
+        <li>Se bateu, marque como <b>"Conforme"</b></li>
+        <li>Se não bateu (veio a mais, a menos, ou com defeito), marque como <b>"Divergência"</b> e descreva o problema</li>
+        <li>Só depois de conferido o item vai para a prateleira</li>
+      </ol>
+
+      <div class="example">
+        <b>Como fica na planilha (aba ENTRADAS_NF):</b> você preenche "Qtd. na NF" e "Qtd. Conferida" — a planilha calcula sozinha a diferença e já mostra "Conforme" ou "Divergência" na cor certa. Você não precisa calcular nada, só contar e digitar.
+      </div>
+
+      <div class="tip"><b>Dica:</b> nunca assine o canhoto de recebimento da transportadora/fornecedor antes de conferir. Depois de assinado, fica muito mais difícil reclamar de uma divergência.</div>
+
+      <h4>⚠️ Se der divergência</h4>
+      <p>Registre exatamente o que faltou ou veio errado, avise o fornecedor e guarde o registro. Isso também vira histórico — se um fornecedor errar repetidamente, esse é um dado concreto para renegociar ou trocar de fornecedor.</p>
+    </div>
+  </details>
+
+  <!-- STEP 3 -->
+  <details class="step">
+    <summary>
+      <div class="num">3</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Cadastro do item (só quando é novo)</h3>
+          <span class="badge rh">RH ›</span>
+        </div>
+        <p>Antes de conseguir registrar entrada ou saída de um item, ele precisa existir na "lista mestra".</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>🧠 O que é a "lista mestra"?</h4>
+      <p>É a aba <b>CADASTRO_ITENS</b> — cada modelo de uniforme, em cada tamanho, é cadastrado <b>uma única vez</b>, com um código próprio (ex.: <code>CAM-P-M</code> para Camisa Polo tamanho M). Depois de cadastrado, esse item nunca mais precisa ser recriado: ele só é usado (referenciado) nas entradas e saídas.</p>
+
+      <h4>📋 O que preencher no cadastro de um item novo</h4>
+      <ul>
+        <li><b>Código do item</b> — uma sigla curta que você mesma cria (categoria + tamanho)</li>
+        <li><b>Categoria</b> — camisa, calça, colete, botina, etc.</li>
+        <li><b>Descrição</b> — nome completo do item</li>
+        <li><b>Tamanho e cor</b></li>
+        <li><b>Estoque mínimo</b> — abaixo de quantas unidades você quer ser avisada para repor</li>
+        <li><b>Localização</b> — em qual prateleira ele vai morar (ver Etapa 4)</li>
+      </ul>
+
+      <div class="tip"><b>Dica:</b> pense no estoque mínimo como um "alarme". Se um item tem alta rotatividade (ex.: camisa tamanho M, o mais pedido), coloque um mínimo mais alto. Itens raros podem ter mínimo baixo.</div>
+
+      <h4>➡️ Quando isso NÃO é necessário</h4>
+      <p>Se o item já existe na lista (é uma reposição de um modelo que a empresa já usa), pule esta etapa — vá direto para o registro da entrada, usando o código já cadastrado.</p>
+    </div>
+  </details>
+
+  <!-- STEP 4 -->
+  <details class="step">
+    <summary>
+      <div class="num">4</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Organização e etiquetagem das prateleiras</h3>
+          <span class="badge rh">RH ›</span>
+        </div>
+        <p>Cada item tem um endereço fixo na sala — assim qualquer pessoa acha (e guarda) qualquer coisa rápido.</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>💡 O que é e por que fazer?</h4>
+      <p>Hoje os uniformes são dobrados e colocados na prateleira sem nenhum critério fixo. Isso obriga quem procura a "caçar" o item toda vez, e torna impossível saber, só de olhar, se algo está fora do lugar ou se sumiu. A solução é simples: <b>cada prateleira/nível ganha um código</b>, e cada item cadastrado é associado a um código.</p>
+
+      <div class="mini-flow">
+        <span>Prateleira A, nível 1</span><span class="arrow">→</span><span>Camisas P–M</span>
+      </div>
+      <div class="mini-flow">
+        <span>Prateleira B, nível 1</span><span class="arrow">→</span><span>Calças</span>
+      </div>
+      <div class="mini-flow">
+        <span>Prateleira C, nível 1</span><span class="arrow">→</span><span>Botinas</span>
+      </div>
+
+      <h4>📋 Como montar o sistema de etiquetas</h4>
+      <ol class="checklist">
+        <li>Numere cada prateleira e cada nível (ex.: A1, A2, A3, B1, B2...)</li>
+        <li>Decida o que vai em cada posição, agrupando por categoria e, se possível, por tamanho</li>
+        <li>Imprima ou escreva à mão uma etiqueta com o código e cole na prateleira</li>
+        <li>Registre essa decisão na aba <b>LOCALIZACAO_PRATELEIRAS</b> e no campo "Localização" do cadastro de cada item</li>
+      </ol>
+
+      <div class="tip"><b>Dica:</b> deixe os itens de maior saída (tamanhos mais comuns) nas prateleiras de nível mais baixo/mais acessível. Isso economiza tempo em todo dia de entrega.</div>
+
+      <h4>🧠 Por que isso resolve o problema de rastreabilidade</h4>
+      <p>Com endereço fixo, uma simples olhada na sala já mostra se algo está errado — item fora do lugar, prateleira vazia sem registro de saída, etc. É a etapa que transforma "uma sala de estoque" em "um estoque organizado".</p>
+    </div>
+  </details>
+
+  <!-- STEP 5 -->
+  <details class="step">
+    <summary>
+      <div class="num">5</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Entrega ao colaborador</h3>
+          <span class="badge both">RH + colaborador ›</span>
+        </div>
+        <p>O momento em que o uniforme sai da prateleira e vai para as mãos de quem vai usar.</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>💡 O que é e por que fazer?</h4>
+      <p>A entrega pode acontecer por motivos diferentes, e isso importa registrar: admissão de um colaborador novo, reposição por desgaste natural, troca de tamanho, substituição por perda/dano, ou devolução no desligamento. Cada motivo conta uma história diferente sobre o seu estoque — por isso a planilha pede para você marcar qual foi.</p>
+
+      <h4>📋 O que verificar antes de entregar</h4>
+      <ul>
+        <li>Confirme o tamanho certo com o colaborador (evita troca desnecessária depois)</li>
+        <li>Separe o item exatamente da prateleira correspondente</li>
+        <li>Confirme o motivo da entrega (novo, reposição, troca, substituição, devolução)</li>
+      </ul>
+
+      <div class="tip"><b>Dica:</b> aproveite o momento da entrega para já anotar o motivo na ficha física — isso evita ter que perguntar de novo depois, na hora de digitar na planilha.</div>
+
+      <h4>➡️ O que vem a seguir</h4>
+      <p>Toda entrega física precisa terminar em uma assinatura — é a Etapa 6, e é o ponto mais frágil do processo atual de vocês.</p>
+    </div>
+  </details>
+
+  <!-- STEP 6 -->
+  <details class="step">
+    <summary>
+      <div class="num">6</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Ficha de controle e assinatura</h3>
+          <span class="badge both">RH + colaborador ›</span>
+        </div>
+        <p>A prova formal de que o colaborador recebeu o item — o elo que hoje está mais frágil no processo.</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>💡 Por que a assinatura importa tanto?</h4>
+      <p>A ficha assinada é o documento que protege a empresa (comprova que o item foi entregue e que o colaborador é responsável por ele) e protege o colaborador (comprova o que ele recebeu, caso haja qualquer dúvida no futuro, inclusive em desligamento). Sem assinatura, a entrega não tem validade formal — só existe "de boca".</p>
+
+      <h4>📋 O que preencher e conferir na ficha</h4>
+      <ul>
+        <li><b>Numeração da ficha</b> — cada ficha usada precisa de um número sequencial próprio, sem repetir</li>
+        <li><b>Nome completo e setor do colaborador</b></li>
+        <li><b>Item, tamanho e quantidade entregues</b></li>
+        <li><b>Data da entrega</b></li>
+        <li><b>Assinatura do colaborador</b> — confirmando o recebimento</li>
+        <li><b>Assinatura de quem entregou</b> — RH ou responsável no momento</li>
+      </ul>
+
+      <div class="tip"><b>Dica:</b> guarde as fichas físicas em ordem numérica, em uma pasta única — nunca soltas. Se preferir, digitalize e guarde também em nuvem, associando o número da ficha ao nome do arquivo digitalizado.</div>
+
+      <h4>⚠️ Regra sem exceção</h4>
+      <p>Nenhuma saída é lançada como concluída na planilha sem o número da ficha assinada. Se por algum motivo o colaborador ainda não assinou, isso precisa ficar visível — é exatamente para isso que a coluna "Ficha Assinada?" da aba SAIDAS_DISTRIBUICAO existe: enquanto estiver marcada "Não", a linha aparece destacada em vermelho até ser resolvida.</p>
+    </div>
+  </details>
+
+  <!-- STEP 7 -->
+  <details class="step">
+    <summary>
+      <div class="num">7</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Registro da saída na planilha</h3>
+          <span class="badge rh">RH ›</span>
+        </div>
+        <p>Transformar a entrega física (e a ficha assinada) em um dado rastreável no sistema.</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>💡 O que é e por que fazer?</h4>
+      <p>Assim que a ficha estiver assinada, a informação precisa virar uma linha na aba <b>SAIDAS_DISTRIBUICAO</b>. Esse é o passo que "fecha o ciclo" — sem ele, o item continua contando como estoque disponível na planilha, mesmo já estando fisicamente com o colaborador.</p>
+
+      <h4>📋 O que registrar</h4>
+      <table class="simple">
+        <tr><th>Campo</th><th>Preenchimento</th></tr>
+        <tr><td>Data da entrega</td><td>Dia real em que o item saiu da prateleira</td></tr>
+        <tr><td>Colaborador e setor</td><td>Quem recebeu</td></tr>
+        <tr><td>Código do item</td><td>Puxa automaticamente descrição e tamanho</td></tr>
+        <tr><td>Quantidade</td><td>Quantas unidades saíram</td></tr>
+        <tr><td>Motivo</td><td>Novo / reposição / troca / substituição / devolução</td></tr>
+        <tr><td>Nº da ficha e assinatura</td><td>Vínculo com o documento físico</td></tr>
+      </table>
+
+      <div class="tip"><b>Dica de rotina:</b> não deixe fichas acumularem para digitar depois "em lote". O ideal é registrar no mesmo dia — assim o saldo do sistema está sempre atualizado quando alguém perguntar.</div>
+
+      <h4>🧠 O que acontece automaticamente depois disso</h4>
+      <p>A aba <b>SALDO_ATUAL</b> recalcula sozinha: pega tudo que entrou (aba de entradas) menos tudo que saiu (aba de saídas) e mostra o saldo real de cada item, avisando em vermelho quando algo está abaixo do estoque mínimo.</p>
+    </div>
+  </details>
+
+  <!-- STEP 8 -->
+  <details class="step">
+    <summary>
+      <div class="num">8</div>
+      <div class="step-head">
+        <div class="title-row">
+          <h3>Conferência mensal e prestação de contas</h3>
+          <span class="badge rh">RH ›</span>
+        </div>
+        <p>Uma vez por mês: contar fisicamente, comparar com o sistema, e ter tudo pronto para o Adriano.</p>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </summary>
+    <div class="step-body">
+      <h4>💡 Por que fazer uma conferência mensal?</h4>
+      <p>Mesmo seguindo todos os passos anteriores certinho, erros humanos acontecem — uma entrada esquecida, uma ficha perdida. A conferência mensal é o "raio-x" que pega qualquer coisa que passou despercebida, <b>antes</b> que vire um problema grande (ou uma cobrança de auditoria, como já aconteceu antes).</p>
+
+      <h4>📋 Passo a passo da conferência mensal</h4>
+      <ol class="checklist">
+        <li>Escolha um dia fixo do mês (ex.: sempre no último dia útil)</li>
+        <li>Vá até a sala de estoque e conte fisicamente, prateleira por prateleira</li>
+        <li>Compare a contagem física com o total que a aba SALDO_ATUAL está mostrando</li>
+        <li>Registre o resultado na aba <b>CONFERENCIA_MENSAL</b>: se bateu, "Conforme"; se não bateu, "Divergência"</li>
+        <li>Se houve divergência, investigue a causa (entrada não lançada? ficha sem registrar? erro de contagem?) e anote a ação corretiva</li>
+      </ol>
+
+      <div class="example">
+        <b>Na prática:</b> a conferência mensal é o que transforma sua planilha de "controle" em "controle auditável" — é literalmente a resposta pronta para o dia em que o Adriano entrar na sala e perguntar como está o estoque.
+      </div>
+
+      <h4>✅ O que olhar na aba DASHBOARD antes de qualquer reunião</h4>
+      <ul>
+        <li>Total de uniformes em estoque hoje</li>
+        <li>Itens abaixo do estoque mínimo (precisam de reposição)</li>
+        <li>Entradas e saídas do mês selecionado</li>
+        <li>Fichas de entrega ainda pendentes de assinatura</li>
+        <li>Divergências de conferência de nota fiscal em aberto</li>
+        <li>Status da última conferência mensal registrada</li>
+      </ul>
+
+      <div class="tip"><b>Dica:</b> antes de qualquer reunião com a diretoria, abra o DASHBOARD primeiro. Em menos de um minuto você tem todos os números na ponta do dedo, sem precisar procurar em planilha nenhuma.</div>
+    </div>
+  </details>
+
+  <div class="closing">
+    <b>Lembrete final:</b> este fluxo funciona porque cada etapa alimenta a seguinte — entrada conferida vira saldo, saída com ficha assinada vira saldo, e a conferência mensal prova que tudo bate. A única regra que não pode quebrar é: <b>nada entra ou sai da sala sem virar uma linha na planilha, no mesmo dia.</b> Em caso de dúvida em qualquer etapa, alinhe com a Amanda antes de seguir.
+  </div>
+
+  <footer>Vitta Rio · RH — Guia interno de processos</footer>
+</main>
+
+<script>
+  const steps = document.querySelectorAll('.step');
+  const label = document.getElementById('progress-label');
+  const bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const open = document.querySelectorAll('.step[open]').length;
+    label.textContent = open + ' de ' + steps.length + ' etapas abertas';
+    bar.style.width = (open / steps.length * 100) + '%';
+  }
+  steps.forEach(s => s.addEventListener('toggle', updateProgress));
+  updateProgress();
+</script>
+
+</body>
+</html>
