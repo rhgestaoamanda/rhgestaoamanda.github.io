@@ -1,0 +1,169 @@
+
+<style>
+  .wrap { padding: 1.5rem 0; font-family: var(--font-sans); }
+  .header-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1rem; }
+  .avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--bg-accent); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; color: var(--text-accent); flex-shrink: 0; }
+  .verdict { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 500; }
+  .v-cond { background: var(--bg-warning); color: var(--text-warning); border: 0.5px solid var(--border-warning); }
+  .section-label { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin: 1.5rem 0 .6rem; }
+  .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .score-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: var(--radius); padding: .9rem 1rem; }
+  .sc-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .sc-num { font-size: 22px; font-weight: 500; }
+  .sc-max { font-size: 12px; color: var(--text-muted); }
+  .sc-tag { font-size: 11px; font-weight: 500; margin-top: 4px; display: inline-block; padding: 2px 8px; border-radius: 20px; }
+  .tag-ok { background: var(--bg-success); color: var(--text-success); }
+  .tag-warn { background: var(--bg-warning); color: var(--text-warning); }
+  .tag-danger { background: var(--bg-danger); color: var(--text-danger); }
+  .total-bar { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .bar-wrap { flex: 1; height: 8px; background: var(--border-strong); border-radius: 99px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; background: #EF9F27; width: 57%; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.25rem; }
+  .list-card { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+  .list-card h4 { font-size: 13px; font-weight: 500; margin: 0 0 .6rem; display: flex; align-items: center; gap: 6px; }
+  .item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.4; }
+  .dot-ok { width: 6px; height: 6px; border-radius: 50%; background: var(--fill-success); margin-top: 5px; flex-shrink: 0; }
+  .dot-bad { width: 6px; height: 6px; border-radius: 50%; background: var(--fill-danger); margin-top: 5px; flex-shrink: 0; }
+  .dot-warn { width: 6px; height: 6px; border-radius: 50%; background: var(--fill-warning); margin-top: 5px; flex-shrink: 0; }
+  .q-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.25rem; }
+  .q-row { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: var(--radius); padding: .7rem 1rem; display: grid; grid-template-columns: 3fr 1fr 1fr; align-items: center; gap: .5rem; }
+  .q-title { font-size: 13px; color: var(--text-primary); }
+  .q-note { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .q-score { font-size: 13px; font-weight: 500; text-align: center; }
+  .q-badge { font-size: 11px; text-align: center; }
+  .rec-box { background: var(--surface-1); border-radius: 12px; border: 0.5px solid var(--border-warning); padding: 1.25rem 1.5rem; }
+  .rec-box h3 { font-size: 14px; font-weight: 500; margin: 0 0 .6rem; }
+  .rec-box p { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin: 0 0 .5rem; }
+  .flag-list { margin: .75rem 0 0; }
+  .flag-item { font-size: 12px; color: var(--text-secondary); padding: 6px 10px; background: var(--bg-warning); border-radius: var(--radius); border: 0.5px solid var(--border-warning); margin-bottom: 5px; line-height: 1.4; }
+</style>
+
+<div class="wrap">
+
+  <div class="header-card">
+    <div class="avatar">CVF</div>
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:15px;font-weight:500">Cássio Raniele Vieira da Fonseca</span>
+        <span class="verdict v-cond"><i class="ti ti-alert-triangle" style="font-size:13px" aria-hidden="true"></i> Aprovação condicional</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:3px">Assistente / Analista de Logística Júnior · 32 anos · R$ 2.900–3.000 · Disponibilidade imediata</div>
+    </div>
+  </div>
+
+  <div class="section-label">Pontuação por bloco</div>
+  <div class="score-grid">
+    <div class="score-card">
+      <div class="sc-label">Situações práticas</div>
+      <div><span class="sc-num">31</span><span class="sc-max"> / 60</span></div>
+      <span class="sc-tag tag-warn">52% — regular</span>
+    </div>
+    <div class="score-card">
+      <div class="sc-label">Conhecimento técnico</div>
+      <div><span class="sc-num">16</span><span class="sc-max"> / 25</span></div>
+      <span class="sc-tag tag-warn">64% — regular</span>
+    </div>
+    <div class="score-card">
+      <div class="sc-label">Análise de indicadores</div>
+      <div><span class="sc-num">10</span><span class="sc-max"> / 15</span></div>
+      <span class="sc-tag tag-ok">67% — bom</span>
+    </div>
+  </div>
+
+  <div class="total-bar">
+    <div style="font-size:13px;color:var(--text-muted);white-space:nowrap">Pontuação total</div>
+    <div class="bar-wrap"><div class="bar-fill"></div></div>
+    <div style="font-size:20px;font-weight:500;white-space:nowrap">57 <span style="font-size:13px;color:var(--text-muted);font-weight:400">/ 100</span></div>
+    <span class="sc-tag tag-warn" style="white-space:nowrap">Limiar inferior</span>
+  </div>
+
+  <div class="section-label">Detalhe das questões — teste técnico</div>
+  <div class="q-grid">
+    <div class="q-row" style="background:var(--surface-2);border-color:var(--border-strong)">
+      <div><div class="q-title" style="font-size:11px;color:var(--text-muted)">Questão</div></div>
+      <div style="font-size:11px;color:var(--text-muted);text-align:center">Nota</div>
+      <div style="font-size:11px;color:var(--text-muted);text-align:center">Status</div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q01 · Pedido com erro na saída</div><div class="q-note">Achou a solução do 2.º caminhão (correto), mas precisou de push para ir ao essencial. Sem menção a comunicação proativa ao cliente.</div></div>
+      <div class="q-score">9/15</div>
+      <div class="q-badge"><span class="sc-tag tag-warn">parcial</span></div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q02 · Motorista ausente</div><div class="q-note">Identificou a entrega emergencial. Falha crítica: não comunicou o restaurante antes de agir, não acionou o supervisor.</div></div>
+      <div class="q-score">8/15</div>
+      <div class="q-badge"><span class="sc-tag tag-warn">parcial</span></div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q03 · Divergência de estoque</div><div class="q-note">Abordagem analítica correta. Falha importante: não bloqueou os 3 pedidos com tomate italiano já separados.</div></div>
+      <div class="q-score">7/15</div>
+      <div class="q-badge"><span class="sc-tag tag-warn">parcial</span></div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q04 · Separação desorganizada</div><div class="q-note">Entrou na operação, sugeriu 5S, demarcações. Não corrigiu os 2 pedidos já errados. Sem comunicação ao encarregado.</div></div>
+      <div class="q-score">7/15</div>
+      <div class="q-badge"><span class="sc-tag tag-warn">parcial</span></div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q05 · FEFO vs FIFO</div><div class="q-note">Respondeu FIFO como padrão — incorreto para perecíveis. Fez ressalvas sobre validade mas não conhece FEFO pelo nome.</div></div>
+      <div class="q-score">1/3</div>
+      <div class="q-badge"><span class="sc-tag tag-danger">erro</span></div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q06, Q07, Q08 · Múltipla escolha</div><div class="q-note">Todas corretas. Roteirização, OTIF e ação ante divergência — acertou sem hesitação relevante.</div></div>
+      <div class="q-score">10/10</div>
+      <div class="q-badge"><span class="sc-tag tag-ok">correto</span></div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q09 · Verdadeiro ou Falso (5 itens)</div><div class="q-note">Acertou 4/5. Errou: "conferência da carga é responsabilidade exclusiva do motorista" (respondeu verdadeiro).</div></div>
+      <div class="q-score">4/5</div>
+      <div class="q-badge"><span class="sc-tag tag-ok">bom</span></div>
+    </div>
+    <div class="q-row" style="border-color:var(--border-danger)">
+      <div><div class="q-title">Q10 · Checklist de expedição</div><div class="q-note">Criou checklist de manutenção do veículo (combustível, pneus, óleo). Explicitamente excluiu a carga. Confusão conceitual grave entre expedição e transporte.</div></div>
+      <div class="q-score">1/7</div>
+      <div class="q-badge"><span class="sc-tag tag-danger">erro grave</span></div>
+    </div>
+    <div class="q-row">
+      <div><div class="q-title">Q11 · Análise de indicadores</div><div class="q-note">Escolheu perda de estoque + tempo de separação (gabarito: erros + perda). Raciocínio causal correto, ações bem estruturadas.</div></div>
+      <div class="q-score">10/15</div>
+      <div class="q-badge"><span class="sc-tag tag-ok">bom</span></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="list-card">
+      <h4><i class="ti ti-circle-check" style="font-size:16px;color:var(--text-success)" aria-hidden="true"></i> Pontos de alinhamento</h4>
+      <div class="item"><div class="dot-ok"></div><span>FLV no Assaí Atacadista (2016–19): única experiência direta com hortifruti na carteira</span></div>
+      <div class="item"><div class="dot-ok"></div><span>Operação 24h confirmada — sabe que perecíveis têm turno de madrugada</span></div>
+      <div class="item"><div class="dot-ok"></div><span>Criação de processos do zero no Grupo Intel: exatamente o que a Vitta Rio precisa</span></div>
+      <div class="item"><div class="dot-ok"></div><span>Perfil analítico sólido: curva ABC, OTIF, inventário cíclico, parametrização</span></div>
+      <div class="item"><div class="dot-ok"></div><span>Six Sigma White + Yellow, cursando Green Belt — mentalidade de melhoria contínua</span></div>
+      <div class="item"><div class="dot-ok"></div><span>Pretensão salarial e disponibilidade totalmente alinhados</span></div>
+      <div class="item"><div class="dot-ok"></div><span>Busca estruturar processos, não só executar — isso é diferencial para Vitta Rio</span></div>
+    </div>
+    <div class="list-card">
+      <h4><i class="ti ti-alert-circle" style="font-size:16px;color:var(--text-danger)" aria-hidden="true"></i> Lacunas identificadas</h4>
+      <div class="item"><div class="dot-bad"></div><span>FEFO não conhecido pelo nome — erro conceitual relevante para distribuidora de hortifruti</span></div>
+      <div class="item"><div class="dot-bad"></div><span>Checklist de expedição confundido com manutenção de veículo — gap entre logística interna e expedição</span></div>
+      <div class="item"><div class="dot-bad"></div><span>Autodeclarado: "pouco conhecimento em transporte" — área que faz parte do escopo</span></div>
+      <div class="item"><div class="dot-warn"></div><span>Não comunica o cliente antes de agir em crise (Q02): reativo, não proativo</span></div>
+      <div class="item"><div class="dot-warn"></div><span>Não bloqueia pedidos ao detectar divergência de estoque (Q03): risco operacional</span></div>
+      <div class="item"><div class="dot-warn"></div><span>4 empregos diferentes em 2024, todos temporários — trajetória recente instável</span></div>
+      <div class="item"><div class="dot-warn"></div><span>Precisa de push para ir ao essencial: inicia respostas com processo em vez de ação imediata</span></div>
+    </div>
+  </div>
+
+  <div class="rec-box">
+    <h3>Recomendação final</h3>
+    <p><strong>Aprovação condicional para entrevista com a gerente</strong> — com briefing prévio sobre os gaps encontrados, para que a entrevista final possa investigá-los diretamente.</p>
+    <p>O candidato tem o perfil de quem já operou em contexto parecido com a Vitta Rio: alto giro, 24h, sem processo formalizado. O raciocínio analítico é genuíno e o alinhamento cultural (quer construir, não só executar) é exatamente o que a vaga demanda. O teste ficou em 57/100 — no limiar inferior — mas parte das lacunas (FEFO, expedição) é de conhecimento treinável, não de visão de gestão.</p>
+    <p>O que preocupa de verdade não é a nota — é o checklist de expedição. Criar um checklist de combustível e pneus quando se pede conferência de carga é uma confusão conceitual que mostra que a cabeça dele ainda está mais voltada para o interior do CD do que para o fluxo de saída. A gerente precisa saber disso e sondar se ele já atuou diretamente na expedição ou se sempre ficou no lado de estoque e inventário.</p>
+    <div class="flag-list">
+      <div class="flag-item"><strong>Ponto 1 para a gerente sondar:</strong> Ele já atuou com conferência de expedição e saída de veículos, ou sempre ficou na parte de estoque e inventário interno?</div>
+      <div class="flag-item"><strong>Ponto 2 para a gerente sondar:</strong> Como ele faria para aprender o que não sabe sobre transporte e expedição? Tem iniciativa real ou depende de alguém que ensine?</div>
+      <div class="flag-item"><strong>Ponto 3 para a gerente sondar:</strong> Com 4 experiências temporárias em 2024, o que ele busca de permanência e como se vê daqui a 2 anos na Vitta Rio?</div>
+    </div>
+  </div>
+
+</div>
